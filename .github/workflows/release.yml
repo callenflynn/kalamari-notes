@@ -5,10 +5,6 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Release tag (e.g. v1.0.0)'
-        required: true
 
 permissions:
   contents: write
@@ -28,8 +24,12 @@ jobs:
       - name: Install CMake
         uses: lukka/get-cmake@latest
 
+      - name: Compute version
+        id: version
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Configure
-        run: cmake -S . -B build -A x64
+        run: cmake -S . -B build -A x64 -DKALAMARI_VERSION_SHA=${{ steps.version.outputs.sha }}
 
       - name: Build
         run: cmake --build build --config ${{ env.BUILD_TYPE }}
@@ -66,8 +66,12 @@ jobs:
       - name: Install CMake
         uses: lukka/get-cmake@latest
 
+      - name: Compute version
+        id: version
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Configure
-        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DKALAMARI_VERSION_SHA=${{ steps.version.outputs.sha }}
 
       - name: Build
         run: cmake --build build --config ${{ env.BUILD_TYPE }}
@@ -100,8 +104,12 @@ jobs:
             libxkbcommon-dev libgl1-mesa-dev libegl1-mesa-dev libdbus-1-dev \
             libpulse-dev libasound2-dev libpipewire-0.3-dev libcurl4-openssl-dev
 
+      - name: Compute version
+        id: version
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
       - name: Configure
-        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSDL_X11_XTEST=OFF
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSDL_X11_XTEST=OFF -DKALAMARI_VERSION_SHA=${{ steps.version.outputs.sha }}
 
       - name: Build
         run: cmake --build build --config ${{ env.BUILD_TYPE }}
@@ -136,7 +144,7 @@ jobs:
         id: tag
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "version=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+            echo "version=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
           else
             echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi

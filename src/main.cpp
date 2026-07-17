@@ -138,7 +138,11 @@ int main(int, char**)
         sentry_options_set_dsn(options,
             "https://d93df2fd5b1f23837e7fde7246198213@o4511748121886720.ingest.us.sentry.io/4511748130078720");
         sentry_options_set_database_path(options, ".sentry-native");
+#ifdef KALAMARI_VERSION_SHA
+        sentry_options_set_release(options, "kalamari@" KALAMARI_VERSION_SHA);
+#else
         sentry_options_set_release(options, "kalamari@1.0.0");
+#endif
         sentry_options_set_debug(options, 0);
         sentry_options_set_enable_logs(options, 1);
         sentry_init(options);

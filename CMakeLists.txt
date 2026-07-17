@@ -73,6 +73,12 @@ add_executable(Kalamari WIN32 MACOSX_BUNDLE
 )
 target_link_libraries(Kalamari PRIVATE SDL3::SDL3 imgui_lib sentry::sentry)
 
+# Optional commit-SHA based version (used by CI workflow_dispatch)
+set(KALAMARI_VERSION_SHA "" CACHE STRING "Short commit SHA used for release versioning")
+if(KALAMARI_VERSION_SHA)
+    target_compile_definitions(Kalamari PRIVATE KALAMARI_VERSION_SHA="${KALAMARI_VERSION_SHA}")
+endif()
+
 # ---------------------------------------------------------------------------
 # Copy assets next to the executable (for development / running from build)
 # ---------------------------------------------------------------------------
@@ -139,6 +145,11 @@ set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+# Use commit SHA in package filenames when provided
+if(KALAMARI_VERSION_SHA)
+    set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${KALAMARI_VERSION_SHA}-${CMAKE_SYSTEM_NAME}")
+endif()
 
 # ---------------------------------------------------------------------------
 # Windows: WiX MSI Installer
