@@ -105,6 +105,21 @@ static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size
     }
 }
 
+static bool AtomicReplaceFile(const std::filesystem::path& from, const std::filesystem::path& to)
+{
+#ifdef _WIN32
+    // On Windows, MoveFileExW with MOVEFILE_REPLACE_EXISTING performs an
+    // atomic replacement of the destination file.
+    std::wstring fromW = from.wstring();
+    std::wstring toW = to.wstring();
+    return ::MoveFileExW(fromW.c_str(), toW.c_str(), MOVEFILE_REPLACE_EXISTING) != 0;
+#else
+    std::error_code ec;
+    std::filesystem::rename(from, to, ec);
+    return !ec;
+#endif
+}
+
 static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer, size_t bufferSize)
 {
     try
@@ -123,17 +138,10 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
             file.write(buffer, static_cast<std::streamsize>(writeLen));
         }
 
-        std::error_code ec;
-        // On some platforms (notably Windows) rename may refuse to overwrite
-        // an existing file. Remove the old file first, then rename.
-        if (std::filesystem::exists(notesPath, ec) && !ec)
-        {
-            std::filesystem::remove(notesPath, ec);
-        }
-        std::filesystem::rename(tempPath, notesPath, ec);
-        if (ec)
+        if (!AtomicReplaceFile(tempPath, notesPath))
         {
             SDL_Log("Warning: Failed to replace notes file at %s", notesPath.string().c_str());
+            std::error_code ec;
             std::filesystem::remove(tempPath, ec);
         }
     }
