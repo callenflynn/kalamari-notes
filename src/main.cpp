@@ -99,24 +99,50 @@ static std::filesystem::path GetNotesFilePath(const std::filesystem::path& vault
     return vaultPath / NOTES_FILE_NAME;
 }
 
-static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size_t bufferSize)
+static std::vector<std::string> LoadNotes(const std::filesystem::path& notesPath)
 {
-    if (bufferSize == 0) return;
-    buffer[0] = '\0';
+    std::vector<std::string> lines;
 
     std::error_code ec;
-    if (!std::filesystem::exists(notesPath, ec) || ec) return;
+    if (!std::filesystem::exists(notesPath, ec) || ec) return lines;
 
     std::ifstream file(notesPath, std::ios::binary);
-    if (!file) return;
+    if (!file) return lines;
 
     std::string content((std::istreambuf_iterator<char>(file)),
                          std::istreambuf_iterator<char>());
 
-    size_t copyLen = content.size();
-    if (copyLen >= bufferSize) copyLen = bufferSize - 1;
-    std::memcpy(buffer, content.data(), copyLen);
-    buffer[copyLen] = '\0';
+    // Normalize line endings to \n
+    std::string normalized;
+    normalized.reserve(content.size());
+    for (size_t i = 0; i < content.size(); ++i)
+    {
+        if (content[i] == '\r' && i + 1 < content.size() && content[i + 1] == '\n')
+        {
+            normalized.push_back('\n');
+            ++i;
+        }
+        else
+        {
+            normalized.push_back(content[i]);
+        }
+    }
+
+    // Split into lines
+    size_t start = 0;
+    while (start <= normalized.size())
+    {
+        size_t end = normalized.find('\n', start);
+        if (end == std::string::npos)
+        {
+            lines.emplace_back(normalized.substr(start));
+            break;
+        }
+        lines.emplace_back(normalized.substr(start, end - start));
+        start = end + 1;
+    }
+
+    return lines;
 }
 
 static bool AtomicReplaceFile(const std::filesystem::path& from, const std::filesystem::path& to)
@@ -134,7 +160,7 @@ static bool AtomicReplaceFile(const std::filesystem::path& from, const std::file
 #endif
 }
 
-static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer, size_t bufferSize)
+static void SaveNotes(const std::filesystem::path& notesPath, const std::vector<std::string>& lines)
 {
     std::filesystem::path tempPath = notesPath;
     tempPath += ".tmp";
@@ -146,8 +172,11 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
             SDL_Log("Warning: Could not open notes file for writing: %s", tempPath.string().c_str());
             return;
         }
-        size_t writeLen = static_cast<size_t>(std::find(buffer, buffer + bufferSize, '\0') - buffer);
-        file.write(buffer, static_cast<std::streamsize>(writeLen));
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            file.write(lines[i].data(), static_cast<std::streamsize>(lines[i].size()));
+            file.put('\n');
+        }
     }
 
     if (!AtomicReplaceFile(tempPath, notesPath))
@@ -156,6 +185,38 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
         std::error_code ec;
         std::filesystem::remove(tempPath, ec);
     }
+}
+
+static void RenderMarkdownLine(const std::string& line)
+{
+    // Trim leading whitespace for markdown detection
+    size_t start = line.find_first_not_of(" \t");
+    if (start == std::string::npos)
+    {
+        ImGui::Text(" ");
+        return;
+    }
+
+    std::string trimmed = line.substr(start);
+
+    // Heading
+    if (trimmed.rfind("# ", 0) == 0)
+    {
+        ImGui::SetWindowFontScale(1.35f);
+        ImGui::TextColored(ACCENT_COLOR, "%s", trimmed.substr(2).c_str());
+        ImGui::SetWindowFontScale(1.0f);
+        return;
+    }
+
+    // List item
+    if (trimmed.rfind("- ", 0) == 0)
+    {
+        ImGui::BulletText("%s", trimmed.substr(2).c_str());
+        return;
+    }
+
+    // Plain text (bold/italic left as raw for now)
+    ImGui::TextWrapped("%s", line.c_str());
 }
 
 static std::string GenerateNoteFilename()
@@ -210,10 +271,49 @@ static std::filesystem::path CreateNewNote(const std::filesystem::path& vaultPat
     std::ofstream file(path, std::ios::binary | std::ios::trunc);
     if (file)
     {
-        const char* welcome = "# New Note\n\nStart writing here...\n";
+        const char* welcome = "# New Note\nStart writing here...\n";
         file.write(welcome, std::strlen(welcome));
     }
     return path;
+}
+
+static bool RenameNote(const std::filesystem::path& oldPath, const std::string& newName,
+                       std::filesystem::path& outNewPath)
+{
+    std::error_code ec;
+    std::filesystem::path newPath = oldPath.parent_path() / newName;
+    if (newPath.extension() != ".md")
+    {
+        newPath += ".md";
+    }
+
+    if (std::filesystem::exists(newPath, ec) && newPath != oldPath)
+    {
+        SDL_Log("Warning: Cannot rename to existing file %s", newPath.string().c_str());
+        return false;
+    }
+
+    std::filesystem::rename(oldPath, newPath, ec);
+    if (ec)
+    {
+        SDL_Log("Warning: Failed to rename note: %s", ec.message().c_str());
+        return false;
+    }
+
+    outNewPath = newPath;
+    return true;
+}
+
+static bool DeleteNote(const std::filesystem::path& path)
+{
+    std::error_code ec;
+    std::filesystem::remove(path, ec);
+    if (ec)
+    {
+        SDL_Log("Warning: Failed to delete note: %s", ec.message().c_str());
+        return false;
+    }
+    return true;
 }
 
 // ==========================================================================
@@ -410,14 +510,6 @@ int main(int, char**)
         kameronFont = io.Fonts->AddFontDefault();
     }
 
-    ImFont* amaticFont = io.Fonts->AddFontFromFileTTF(
-        "assets/Amatic_SC/AmaticSC-Bold.ttf", 36.0f);
-    if (!amaticFont)
-    {
-        printf("Warning: Could not load Amatic SC font, using ImGui default.\n");
-        amaticFont = io.Fonts->AddFontDefault();
-    }
-
     // TODO: Load additional assets here
     // assets/kalamari.png            -> logo (use SDL_LoadBMP + SDL_CreateTextureFromSurface)
     // assets/kalamari_square_name.png -> square logo variant
@@ -425,7 +517,9 @@ int main(int, char**)
     // ------------------------------------------------------------------
     // Application state
     // ------------------------------------------------------------------
-    static char notesBuffer[8192] = {};
+    std::vector<std::string> noteLines;
+    int focusedLineIndex = -1;
+    int previousFocusedLineIndex = -1;
 
     // Ensure default vault directory exists and load existing notes
     std::filesystem::path vaultPath = EnsureVaultDirectory(DEFAULT_VAULT_NAME);
@@ -438,7 +532,7 @@ int main(int, char**)
     if (!vaultFiles.empty())
     {
         currentFile = vaultFiles.front();
-        LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+        noteLines = LoadNotes(currentFile);
     }
 
     // Auto-save every 30 seconds when dirty
@@ -447,11 +541,11 @@ int main(int, char**)
     bool notesDirty = false;
     static char searchBuffer[256] = {};
 
-    auto MarkNotesDirty = [](ImGuiInputTextCallbackData* data) -> int {
-        bool* dirty = static_cast<bool*>(data->UserData);
-        if (dirty) *dirty = true;
-        return 0;
-    };
+    // Sidebar file operations (deferred to avoid iterator invalidation)
+    std::filesystem::path fileToDelete;
+    std::filesystem::path fileToRename;
+    static char renameBuffer[256] = {};
+    bool requestRenamePopup = false;
 
     // ------------------------------------------------------------------
     // Main loop
@@ -519,13 +613,15 @@ int main(int, char**)
             {
                 if (notesDirty && !currentFile.empty())
                 {
-                    SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                    SaveNotes(currentFile, noteLines);
                     notesDirty = false;
                 }
 
                 currentFile = CreateNewNote(vaultPath);
                 RefreshVaultFiles(vaultPath, vaultFiles);
-                LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                noteLines = LoadNotes(currentFile);
+                focusedLineIndex = noteLines.empty() ? -1 : 0;
+                previousFocusedLineIndex = -1;
             }
 
             ImGui::Spacing();
@@ -558,18 +654,36 @@ int main(int, char**)
                 {
                     if (notesDirty && !currentFile.empty())
                     {
-                        SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                        SaveNotes(currentFile, noteLines);
                         notesDirty = false;
                     }
 
                     currentFile = filePath;
-                    LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                    noteLines = LoadNotes(currentFile);
+                    focusedLineIndex = noteLines.empty() ? -1 : 0;
+                    previousFocusedLineIndex = -1;
                 }
 
                 if (isSelected)
                 {
                     ImGui::PopStyleColor();
                     ImGui::PopStyleColor();
+                }
+
+                // Context menu for rename/delete
+                if (ImGui::BeginPopupContextItem(filename.c_str()))
+                {
+                if (ImGui::Selectable("Rename"))
+                {
+                    fileToRename = filePath;
+                    std::snprintf(renameBuffer, sizeof(renameBuffer), "%s", filename.c_str());
+                    requestRenamePopup = true;
+                }
+                    if (ImGui::Selectable("Delete"))
+                    {
+                        fileToDelete = filePath;
+                    }
+                    ImGui::EndPopup();
                 }
             }
             ImGui::EndChild();
@@ -628,13 +742,64 @@ int main(int, char**)
                 ImGui::Spacing();
 
                 ImGui::PushFont(kameronFont);
-                ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
-                ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput
-                                          | ImGuiInputTextFlags_CallbackEdit;
-                ImVec2 avail = ImGui::GetContentRegionAvail();
-                ImGui::InputTextMultiline("##Notes", notesBuffer, sizeof(notesBuffer),
-                    avail, flags, MarkNotesDirty, &notesDirty);
-                ImGui::PopStyleColor();
+
+                // Ensure at least one editable line exists
+                if (noteLines.empty())
+                {
+                    noteLines.emplace_back();
+                    focusedLineIndex = 0;
+                }
+
+                for (size_t i = 0; i < noteLines.size(); ++i)
+                {
+                    ImGui::PushID(static_cast<int>(i));
+
+                    if (static_cast<int>(i) == focusedLineIndex)
+                    {
+                        // Editable line
+                        char lineBuffer[1024] = {};
+                        std::snprintf(lineBuffer, sizeof(lineBuffer), "%s", noteLines[i].c_str());
+
+                        if (previousFocusedLineIndex != focusedLineIndex)
+                        {
+                            ImGui::SetKeyboardFocusHere();
+                        }
+
+                        ImGui::PushStyleColor(ImGuiCol_FrameBg, darkMode ? DARK_FRAME_BG : LIGHT_FRAME_BG);
+                        ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue
+                                                  | ImGuiInputTextFlags_AutoSelectAll;
+                        if (ImGui::InputText("##Line", lineBuffer, sizeof(lineBuffer), flags))
+                        {
+                            // Enter pressed: create a new empty line below
+                            noteLines[i] = lineBuffer;
+                            noteLines.insert(noteLines.begin() + i + 1, std::string());
+                            focusedLineIndex = static_cast<int>(i + 1);
+                            notesDirty = true;
+                        }
+                        else if (ImGui::IsItemDeactivatedAfterEdit())
+                        {
+                            noteLines[i] = lineBuffer;
+                            notesDirty = true;
+                        }
+                        else
+                        {
+                            noteLines[i] = lineBuffer;
+                        }
+                        ImGui::PopStyleColor();
+                    }
+                    else
+                    {
+                        // Preview line
+                        RenderMarkdownLine(noteLines[i]);
+                        if (ImGui::IsItemClicked())
+                        {
+                            focusedLineIndex = static_cast<int>(i);
+                        }
+                    }
+
+                    ImGui::PopID();
+                }
+
                 ImGui::PopFont();
             }
 
@@ -643,6 +808,81 @@ int main(int, char**)
 
         ImGui::End(); // ##KalamariApp
 
+        // Track focus changes for next frame
+        previousFocusedLineIndex = focusedLineIndex;
+
+        // ==================================================
+        // Rename modal (at main window level to avoid clipping)
+        // ==================================================
+        if (requestRenamePopup)
+        {
+            ImGui::OpenPopup("Rename Note");
+            requestRenamePopup = false;
+        }
+
+        if (ImGui::BeginPopupModal("Rename Note", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("New name:");
+            ImGui::InputText("##NewName", renameBuffer, sizeof(renameBuffer));
+            if (ImGui::Button("OK", ImVec2(120, 0)))
+            {
+                std::string newFileName(renameBuffer);
+                if (!newFileName.empty() && !fileToRename.empty())
+                {
+                    if (notesDirty && currentFile == fileToRename)
+                    {
+                        SaveNotes(currentFile, noteLines);
+                        notesDirty = false;
+                    }
+
+                    std::filesystem::path renamedPath;
+                    if (RenameNote(fileToRename, newFileName, renamedPath))
+                    {
+                        if (currentFile == fileToRename)
+                        {
+                            currentFile = renamedPath;
+                        }
+                        RefreshVaultFiles(vaultPath, vaultFiles);
+                    }
+                }
+                fileToRename.clear();
+                std::memset(renameBuffer, 0, sizeof(renameBuffer));
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            {
+                fileToRename.clear();
+                std::memset(renameBuffer, 0, sizeof(renameBuffer));
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+
+        // ==================================================
+        // Deferred file operations
+        // ==================================================
+        if (!fileToDelete.empty())
+        {
+            if (notesDirty && currentFile == fileToDelete)
+            {
+                SaveNotes(currentFile, noteLines);
+                notesDirty = false;
+            }
+
+            if (DeleteNote(fileToDelete))
+            {
+                if (currentFile == fileToDelete)
+                {
+                    currentFile.clear();
+                    noteLines.clear();
+                    focusedLineIndex = -1;
+                }
+                RefreshVaultFiles(vaultPath, vaultFiles);
+            }
+            fileToDelete.clear();
+        }
+
         // ==================================================
         // Rendering
         // ==================================================
@@ -650,7 +890,7 @@ int main(int, char**)
         Uint64 currentTicks = SDL_GetTicks();
         if (notesDirty && !currentFile.empty() && currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
         {
-            SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+            SaveNotes(currentFile, noteLines);
             notesDirty = false;
             lastAutoSaveTicks = currentTicks;
         }
@@ -674,7 +914,7 @@ int main(int, char**)
     // ------------------------------------------------------------------
     if (notesDirty && !currentFile.empty())
     {
-        SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+        SaveNotes(currentFile, noteLines);
         notesDirty = false;
     }
 

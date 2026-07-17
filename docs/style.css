@@ -148,6 +148,27 @@ body {
 .brand-kalamari--lg { font-size: 2.5rem; }
 .brand-kalamari--hero { font-size: 6rem; display: block; }
 
+.nav__logo {
+    height: 2rem;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.hero__logo {
+    display: block;
+    width: 6rem;
+    height: auto;
+    margin: 0 auto 1rem;
+}
+
+.footer__logo {
+    height: 2.5rem;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 0.4rem;
+}
+
 .section-header {
     text-align: center;
     margin-bottom: 4rem;
@@ -234,6 +255,8 @@ body {
     font-weight: 700;
     font-size: 1.5rem;
     color: var(--accent);
+    display: flex;
+    align-items: center;
 }
 
 .nav__links {
@@ -592,6 +615,12 @@ body {
     grid-template-columns: 1fr 2fr;
     gap: 4rem;
     margin-bottom: 3rem;
+}
+
+.footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 }
 
 .footer__tagline {
