@@ -106,23 +106,16 @@ static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size
     std::error_code ec;
     if (!std::filesystem::exists(notesPath, ec) || ec) return;
 
-    try
-    {
-        std::ifstream file(notesPath, std::ios::binary);
-        if (!file) return;
+    std::ifstream file(notesPath, std::ios::binary);
+    if (!file) return;
 
-        std::string content((std::istreambuf_iterator<char>(file)),
-                             std::istreambuf_iterator<char>());
+    std::string content((std::istreambuf_iterator<char>(file)),
+                         std::istreambuf_iterator<char>());
 
-        size_t copyLen = content.size();
-        if (copyLen >= bufferSize) copyLen = bufferSize - 1;
-        std::memcpy(buffer, content.data(), copyLen);
-        buffer[copyLen] = '\0';
-    }
-    catch (...)
-    {
-        SDL_Log("Warning: Failed to load notes from %s", notesPath.string().c_str());
-    }
+    size_t copyLen = content.size();
+    if (copyLen >= bufferSize) copyLen = bufferSize - 1;
+    std::memcpy(buffer, content.data(), copyLen);
+    buffer[copyLen] = '\0';
 }
 
 static bool AtomicReplaceFile(const std::filesystem::path& from, const std::filesystem::path& to)
@@ -142,32 +135,25 @@ static bool AtomicReplaceFile(const std::filesystem::path& from, const std::file
 
 static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer, size_t bufferSize)
 {
-    try
+    std::filesystem::path tempPath = notesPath;
+    tempPath += ".tmp";
+
     {
-        std::filesystem::path tempPath = notesPath;
-        tempPath += ".tmp";
-
+        std::ofstream file(tempPath, std::ios::binary | std::ios::trunc);
+        if (!file)
         {
-            std::ofstream file(tempPath, std::ios::binary | std::ios::trunc);
-            if (!file)
-            {
-                SDL_Log("Warning: Could not open notes file for writing: %s", tempPath.string().c_str());
-                return;
-            }
-            size_t writeLen = std::strnlen(buffer, bufferSize);
-            file.write(buffer, static_cast<std::streamsize>(writeLen));
+            SDL_Log("Warning: Could not open notes file for writing: %s", tempPath.string().c_str());
+            return;
         }
-
-        if (!AtomicReplaceFile(tempPath, notesPath))
-        {
-            SDL_Log("Warning: Failed to replace notes file at %s", notesPath.string().c_str());
-            std::error_code ec;
-            std::filesystem::remove(tempPath, ec);
-        }
+        size_t writeLen = std::strnlen(buffer, bufferSize);
+        file.write(buffer, static_cast<std::streamsize>(writeLen));
     }
-    catch (...)
+
+    if (!AtomicReplaceFile(tempPath, notesPath))
     {
-        SDL_Log("Warning: Failed to save notes to %s", notesPath.string().c_str());
+        SDL_Log("Warning: Failed to replace notes file at %s", notesPath.string().c_str());
+        std::error_code ec;
+        std::filesystem::remove(tempPath, ec);
     }
 }
 
@@ -398,9 +384,16 @@ int main(int, char**)
     static float tutorialAlpha = 0.0f; // for fade-in animation
     static float tutorialTimer  = 0.0f;
 
-    // Auto-save every 30 seconds
+    // Auto-save every 30 seconds when dirty
     constexpr Uint32 AUTO_SAVE_INTERVAL_MS = 30000;
     Uint64 lastAutoSaveTicks = SDL_GetTicks();
+    bool notesDirty = false;
+
+    auto MarkNotesDirty = [](ImGuiInputTextCallbackData* data) -> int {
+        bool* dirty = static_cast<bool*>(data->UserData);
+        if (dirty) *dirty = true;
+        return 0;
+    };
 
     // ------------------------------------------------------------------
     // Main loop
@@ -527,9 +520,11 @@ int main(int, char**)
 
         {
             ImVec2 childSize = ImGui::GetContentRegionAvail();
+            ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput
+                                      | ImGuiInputTextFlags_EnterReturnsTrue
+                                      | ImGuiInputTextFlags_CallbackEdit;
             ImGui::InputTextMultiline("##Notes", notesBuffer, sizeof(notesBuffer),
-                childSize,
-                ImGuiInputTextFlags_AllowTabInput | ImGuiInputTextFlags_EnterReturnsTrue);
+                childSize, flags, MarkNotesDirty, &notesDirty);
         }
 
         ImGui::EndChild();
@@ -670,9 +665,10 @@ int main(int, char**)
         // ==================================================
         // ---- Auto-save notes periodically ----
         Uint64 currentTicks = SDL_GetTicks();
-        if (currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
+        if (notesDirty && currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
         {
             SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+            notesDirty = false;
             lastAutoSaveTicks = currentTicks;
         }
 
@@ -693,7 +689,11 @@ int main(int, char**)
     // ------------------------------------------------------------------
     // Save notes before shutting down
     // ------------------------------------------------------------------
-    SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+    if (notesDirty)
+    {
+        SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+        notesDirty = false;
+    }
 
     // ------------------------------------------------------------------
     // Cleanup
