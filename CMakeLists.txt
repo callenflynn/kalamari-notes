@@ -56,7 +56,7 @@ target_link_libraries(imgui_lib PUBLIC SDL3::SDL3)
 FetchContent_Declare(
     sentry
     GIT_REPOSITORY https://github.com/getsentry/sentry-native.git
-    GIT_TAG        0.24.0
+    GIT_TAG        0.15.3
     GIT_SHALLOW    TRUE
 )
 set(SENTRY_BACKEND "crashpad" CACHE STRING "Sentry crash backend")
