@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build-test\CMakeFiles\ec92cb3a697e5ac9f34729946dcd89ff\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{6B9DF779-3377-34C5-BDD3-0C482DB8433F}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -8,6 +8,7 @@
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <sentry.h>
 #include <cstdio>
 #include <cstring>
@@ -73,7 +74,6 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_Tab]                = ImVec4(0.16f, 0.16f, 0.16f, 1.0f);
         c[ImGuiCol_TabHovered]         = ACCENT_COLOR_HDR;
         c[ImGuiCol_TabSelected]        = ImVec4(0.22f, 0.22f, 0.22f, 1.0f);
-        c[ImGuiCol_CollapsingHeader]   = ImVec4(0.28f, 0.16f, 0.10f, 1.0f);
         c[ImGuiCol_ResizeGrip]         = ImVec4(0.929f, 0.314f, 0.004f, 0.20f);
         c[ImGuiCol_ResizeGripHovered]  = ImVec4(0.929f, 0.314f, 0.004f, 0.50f);
         c[ImGuiCol_ResizeGripActive]   = ImVec4(0.929f, 0.314f, 0.004f, 0.80f);
@@ -108,7 +108,6 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_Tab]                = ImVec4(0.92f, 0.86f, 0.80f, 1.0f);
         c[ImGuiCol_TabHovered]         = ACCENT_COLOR_HDR;
         c[ImGuiCol_TabSelected]        = ImVec4(0.88f, 0.80f, 0.74f, 1.0f);
-        c[ImGuiCol_CollapsingHeader]   = ImVec4(0.92f, 0.80f, 0.72f, 1.0f);
         c[ImGuiCol_ResizeGrip]         = ImVec4(0.929f, 0.314f, 0.004f, 0.15f);
         c[ImGuiCol_ResizeGripHovered]  = ImVec4(0.929f, 0.314f, 0.004f, 0.40f);
         c[ImGuiCol_ResizeGripActive]   = ImVec4(0.929f, 0.314f, 0.004f, 0.65f);
@@ -130,9 +129,6 @@ int main(int, char**)
         printf("Error: SDL_Init(): %s\n", SDL_GetError());
         return 1;
     }
-
-    // Enable IME support (must be set before window creation)
-    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
     // ------------------------------------------------------------------
     // Initialize Sentry crash monitoring
@@ -288,7 +284,9 @@ int main(int, char**)
         if (showMarkdownTutorial && tutorialAlpha < 1.0f)
         {
             tutorialTimer += io.DeltaTime;
-            tutorialAlpha = ImGui::Clamp(tutorialTimer / 0.6f, 0.0f, 1.0f);
+            tutorialAlpha = tutorialTimer / 0.6f;
+            if (tutorialAlpha < 0.0f) tutorialAlpha = 0.0f;
+            if (tutorialAlpha > 1.0f) tutorialAlpha = 1.0f;
         }
 
         // ==================================================
