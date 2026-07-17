@@ -43,10 +43,12 @@ add_library(imgui_lib STATIC
     ${imgui_SOURCE_DIR}/imgui_demo.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+    ${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp
 )
 target_include_directories(imgui_lib PUBLIC
     ${imgui_SOURCE_DIR}
     ${imgui_SOURCE_DIR}/backends
+    ${imgui_SOURCE_DIR}/misc/cpp
 )
 target_link_libraries(imgui_lib PUBLIC SDL3::SDL3)
 
@@ -70,6 +72,11 @@ FetchContent_MakeAvailable(sentry)
 # ---------------------------------------------------------------------------
 add_executable(Kalamari WIN32 MACOSX_BUNDLE
     src/main.cpp
+    src/Theme.cpp
+    src/Vault.cpp
+    src/AppRenderer.cpp
+    src/Editor.cpp
+    src/KalamariApp.cpp
     src/kalamari.rc
 )
 target_link_libraries(Kalamari PRIVATE SDL3::SDL3 imgui_lib sentry::sentry)
