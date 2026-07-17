@@ -3,18 +3,54 @@
 #include "Theme.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
+#include <cctype>
 #include <cstdio>
 
 namespace
 {
-    void SetHeadingFontScale()
+    struct HeadingInfo
     {
-        ImGui::SetWindowFontScale(1.35f);
+        int level = 0;
+        std::string text;
+    };
+
+    HeadingInfo ParseHeading(const std::string& line)
+    {
+        size_t i = 0;
+        while (i < line.size() && line[i] == ' ')
+            ++i;
+
+        int level = 0;
+        while (i < line.size() && line[i] == '#' && level < 6)
+        {
+            ++level;
+            ++i;
+        }
+
+        if (level == 0 || level > 6)
+            return {0, line};
+
+        if (i < line.size() && line[i] != ' ')
+            return {0, line};
+
+        while (i < line.size() && line[i] == ' ')
+            ++i;
+
+        return {level, line.substr(i)};
     }
 
-    void ResetFontScale()
+    bool IsListItem(const std::string& line, std::string& content)
     {
-        ImGui::SetWindowFontScale(1.0f);
+        size_t start = line.find_first_not_of(" \t");
+        if (start == std::string::npos)
+            return false;
+
+        if (start + 1 < line.size() && line[start] == '-' && line[start + 1] == ' ')
+        {
+            content = line.substr(start + 2);
+            return true;
+        }
+        return false;
     }
 }
 
@@ -34,11 +70,21 @@ namespace Kalamari
 
             ImGui::TextWrapped("Markdown basics:");
             ImGui::BulletText("# Heading");
+            ImGui::BulletText("## Heading");
+            ImGui::BulletText("### Heading");
             ImGui::BulletText("**bold**");
             ImGui::BulletText("*italic*");
             ImGui::BulletText("- list item");
             ImGui::BulletText("[link](url)");
             return;
+        }
+
+        // Reset focus state when the note changes
+        if (activeNote.get() != m_lastNote)
+        {
+            m_focusedLine = -1;
+            m_editBuffer.clear();
+            m_lastNote = activeNote.get();
         }
 
         std::string title = activeNote->path.stem().string();
@@ -50,92 +96,189 @@ namespace Kalamari
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImVec2 avail = ImGui::GetContentRegionAvail();
-        float paneWidth = avail.x * 0.5f - ImGui::GetStyle().ItemSpacing.x * 0.5f;
+        std::vector<std::string> lines;
+        SplitLines(activeNote->content, lines);
 
-        // Left pane: source
+        // Ensure at least one editable line
+        if (lines.empty())
+            lines.emplace_back();
+
+        // Clamp focused line to valid range
+        if (m_focusedLine >= static_cast<int>(lines.size()))
+            m_focusedLine = static_cast<int>(lines.size()) - 1;
+
+        ImGui::BeginChild("EditorScroll", ImVec2(0, 0), ImGuiChildFlags_None);
+
+        // Defocus on Escape
+        if (ImGui::IsKeyPressed(ImGuiKey_Escape))
         {
-            ImGui::BeginChild("SourcePane", ImVec2(paneWidth, avail.y), ImGuiChildFlags_Borders);
-            ImGui::TextDisabled("Source");
-            ImGui::Separator();
-
-            ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
-            if (ImGui::InputTextMultiline("##Source", &activeNote->content, ImVec2(-1, -1), flags))
-            {
-                activeNote->dirty = true;
-            }
-            ImGui::EndChild();
+            m_focusedLine = -1;
         }
 
-        ImGui::SameLine();
-
-        // Right pane: preview
+        for (int i = 0; i < static_cast<int>(lines.size()); ++i)
         {
-            ImGui::BeginChild("PreviewPane", ImVec2(0, avail.y), ImGuiChildFlags_Borders);
-            ImGui::TextDisabled("Preview");
-            ImGui::Separator();
-            RenderMarkdown(activeNote->content);
-            ImGui::EndChild();
-        }
-    }
-
-    void Editor::RenderMarkdown(const std::string& content)
-    {
-        // Normalize line endings
-        std::string normalized;
-        normalized.reserve(content.size());
-        for (size_t i = 0; i < content.size(); ++i)
-        {
-            if (content[i] == '\r' && i + 1 < content.size() && content[i + 1] == '\n')
+            if (i == m_focusedLine)
             {
-                normalized.push_back('\n');
-                ++i;
+                // Editable line
+                if (m_editBuffer != lines[i])
+                {
+                    m_editBuffer = lines[i];
+                }
+
+                ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(ImGuiCol_WindowBg));
+                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
+                ImGui::PushItemWidth(-1);
+
+                if (m_focusJustChanged)
+                {
+                    ImGui::SetKeyboardFocusHere();
+                    m_focusJustChanged = false;
+                }
+
+                ImGuiInputTextFlags flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AllowTabInput;
+                bool edited = ImGui::InputText("##Line", &m_editBuffer, flags);
+
+                // Live update while typing
+                if (edited || ImGui::IsItemEdited())
+                {
+                    lines[i] = m_editBuffer;
+                    JoinLines(lines, activeNote->content);
+                    activeNote->dirty = true;
+                }
+
+                if (edited)
+                {
+                    // Enter pressed: insert new line below
+                    lines.insert(lines.begin() + i + 1, std::string());
+                    JoinLines(lines, activeNote->content);
+                    m_focusedLine = i + 1;
+                    m_editBuffer.clear();
+                }
+
+                ImGui::PopItemWidth();
+                ImGui::PopStyleVar();
+                ImGui::PopStyleColor();
             }
             else
             {
-                normalized.push_back(content[i]);
+                // Render markdown preview
+                RenderMarkdownLine(lines[i], i);
             }
         }
 
-        size_t start = 0;
-        while (start <= normalized.size())
+        ImGui::EndChild();
+    }
+
+    void Editor::SplitLines(const std::string& content, std::vector<std::string>& lines) const
+    {
+        lines.clear();
+        std::string current;
+        for (size_t i = 0; i < content.size(); ++i)
         {
-            size_t end = normalized.find('\n', start);
-            if (end == std::string::npos)
+            if (content[i] == '\r')
             {
-                RenderMarkdownLine(normalized.substr(start));
-                break;
+                if (i + 1 < content.size() && content[i + 1] == '\n')
+                {
+                    lines.push_back(current);
+                    current.clear();
+                    ++i;
+                }
+                else
+                {
+                    current.push_back(content[i]);
+                }
             }
-            RenderMarkdownLine(normalized.substr(start, end - start));
-            start = end + 1;
+            else if (content[i] == '\n')
+            {
+                lines.push_back(current);
+                current.clear();
+            }
+            else
+            {
+                current.push_back(content[i]);
+            }
+        }
+        lines.push_back(current);
+    }
+
+    void Editor::JoinLines(const std::vector<std::string>& lines, std::string& content) const
+    {
+        content.clear();
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            if (i > 0)
+                content.push_back('\n');
+            content += lines[i];
         }
     }
 
-    void Editor::RenderMarkdownLine(const std::string& line)
+    void Editor::RenderMarkdownLine(const std::string& line, int lineIndex)
     {
-        size_t start = line.find_first_not_of(" \t");
-        if (start == std::string::npos)
+        ImGui::PushID(lineIndex);
+
+        // Render heading
+        HeadingInfo heading = ParseHeading(line);
+        if (heading.level > 0)
+        {
+            float scale = 1.0f;
+            switch (heading.level)
+            {
+                case 1: scale = 1.5f; break;
+                case 2: scale = 1.3f; break;
+                case 3: scale = 1.15f; break;
+                default: scale = 1.05f; break;
+            }
+
+            ImGui::SetWindowFontScale(scale);
+            ImVec4 color = Theme::ACCENT_COLOR;
+            if (heading.level >= 2)
+            {
+                color.w = 0.85f;
+            }
+            ImGui::TextColored(color, "%s", heading.text.c_str());
+            ImGui::SetWindowFontScale(1.0f);
+
+            if (ImGui::IsItemClicked())
+            {
+                m_focusedLine = lineIndex;
+                m_editBuffer = line;
+            }
+
+            ImGui::PopID();
+            return;
+        }
+
+        // Render list item
+        std::string listContent;
+        if (IsListItem(line, listContent))
+        {
+            ImGui::BulletText("%s", listContent.c_str());
+            if (ImGui::IsItemClicked())
+            {
+                m_focusedLine = lineIndex;
+                m_editBuffer = line;
+            }
+            ImGui::PopID();
+            return;
+        }
+
+        // Render plain text with wrapping
+        if (line.empty())
         {
             ImGui::Text(" ");
-            return;
         }
-
-        std::string trimmed = line.substr(start);
-
-        if (trimmed.rfind("# ", 0) == 0)
+        else
         {
-            SetHeadingFontScale();
-            ImGui::TextColored(Theme::ACCENT_COLOR, "%s", trimmed.substr(2).c_str());
-            ResetFontScale();
-            return;
+            ImGui::TextWrapped("%s", line.c_str());
         }
 
-        if (trimmed.rfind("- ", 0) == 0)
+        if (ImGui::IsItemClicked())
         {
-            ImGui::BulletText("%s", trimmed.substr(2).c_str());
-            return;
+            m_focusedLine = lineIndex;
+            m_editBuffer = line;
+            m_focusJustChanged = true;
         }
 
-        ImGui::TextWrapped("%s", line.c_str());
+        ImGui::PopID();
     }
 }
