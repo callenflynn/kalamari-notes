@@ -47,6 +47,20 @@ static constexpr ImVec4 DARK_SCROLLBAR    = ImVec4(0.250f, 0.250f, 0.250f, 1.0f)
 // ==========================================================================
 // Cross-platform vault path: <Documents>/kalimari/<vault>
 // ==========================================================================
+static std::filesystem::path Utf8ToPath(const char* utf8)
+{
+#ifdef _WIN32
+    if (!utf8) return {};
+    int len = ::MultiByteToWideChar(CP_UTF8, 0, utf8, -1, nullptr, 0);
+    if (len <= 0) return {};
+    std::wstring wstr(len - 1, 0);
+    ::MultiByteToWideChar(CP_UTF8, 0, utf8, -1, wstr.data(), len);
+    return std::filesystem::path(wstr);
+#else
+    return std::filesystem::path(utf8);
+#endif
+}
+
 static std::filesystem::path GetVaultPath(const char* vaultName)
 {
     char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
@@ -57,7 +71,7 @@ static std::filesystem::path GetVaultPath(const char* vaultName)
         return std::filesystem::current_path() / "kalimari" / vaultName;
     }
 
-    std::filesystem::path vaultPath = std::filesystem::path(docsPath) / "kalimari" / vaultName;
+    std::filesystem::path vaultPath = Utf8ToPath(docsPath) / "kalimari" / vaultName;
     SDL_free(docsPath);
     return vaultPath;
 }
