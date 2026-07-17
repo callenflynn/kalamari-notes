@@ -16,8 +16,6 @@ namespace Kalamari
 {
     namespace
     {
-        constexpr const char* DEFAULT_VAULT_NAME = "steven";
-
         std::string ToLower(std::string s)
         {
             std::transform(s.begin(), s.end(), s.begin(),
@@ -27,13 +25,12 @@ namespace Kalamari
     }
 
     Vault::Vault()
-        : m_vaultName(DEFAULT_VAULT_NAME)
     {
     }
 
     void Vault::SetVault(const std::string& vaultName)
     {
-        m_vaultName = vaultName.empty() ? DEFAULT_VAULT_NAME : vaultName;
+        m_vaultName = vaultName;
         Refresh();
     }
 
@@ -42,12 +39,35 @@ namespace Kalamari
         return GetVaultPathFor(m_vaultName);
     }
 
-    std::filesystem::path Vault::GetVaultPathFor(const std::string& vaultName)
+    std::vector<std::string> Vault::GetAvailableVaults()
+    {
+        std::vector<std::string> vaults;
+
+        std::filesystem::path basePath = GetBaseVaultsPath();
+        std::error_code ec;
+        if (!std::filesystem::exists(basePath, ec) || ec)
+        {
+            return vaults;
+        }
+
+        for (const auto& entry : std::filesystem::directory_iterator(basePath, ec))
+        {
+            if (entry.is_directory(ec))
+            {
+                vaults.push_back(entry.path().filename().string());
+            }
+        }
+
+        std::sort(vaults.begin(), vaults.end());
+        return vaults;
+    }
+
+    std::filesystem::path Vault::GetBaseVaultsPath()
     {
         const char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
         if (!docsPath)
         {
-            return std::filesystem::current_path() / "kalimari" / vaultName;
+            return std::filesystem::current_path() / "kalimari";
         }
 
 #ifdef _WIN32
@@ -56,12 +76,17 @@ namespace Kalamari
         {
             std::wstring wstr(len - 1, 0);
             ::MultiByteToWideChar(CP_UTF8, 0, docsPath, -1, wstr.data(), len - 1);
-            return std::filesystem::path(wstr) / "kalimari" / vaultName;
+            return std::filesystem::path(wstr) / "kalimari";
         }
-        return std::filesystem::current_path() / "kalimari" / vaultName;
+        return std::filesystem::current_path() / "kalimari";
 #else
-        return std::filesystem::path(docsPath) / "kalimari" / vaultName;
+        return std::filesystem::path(docsPath) / "kalimari";
 #endif
+    }
+
+    std::filesystem::path Vault::GetVaultPathFor(const std::string& vaultName)
+    {
+        return GetBaseVaultsPath() / vaultName;
     }
 
     void Vault::EnsureDirectory()

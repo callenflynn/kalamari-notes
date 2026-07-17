@@ -28,6 +28,9 @@ namespace Kalamari
         void Refresh();
         const std::vector<std::shared_ptr<Note>>& GetNotes() const { return m_notes; }
 
+        static std::vector<std::string> GetAvailableVaults();
+        static std::filesystem::path GetBaseVaultsPath();
+
         std::shared_ptr<Note> CreateNote();
         bool RenameNote(const std::shared_ptr<Note>& note, const std::string& newName);
         bool DeleteNote(const std::shared_ptr<Note>& note);
@@ -42,7 +45,6 @@ namespace Kalamari
         std::vector<std::shared_ptr<Note>> m_notes;
 
         void EnsureDirectory();
-        static std::filesystem::path Utf8ToPath(const char* utf8);
         static bool AtomicReplaceFile(const std::filesystem::path& from, const std::filesystem::path& to);
         static std::string GenerateNoteFilename();
     };

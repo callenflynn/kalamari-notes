@@ -30,13 +30,20 @@ namespace Kalamari
         char m_searchBuffer[256] = {};
         char m_renameBuffer[256] = {};
         char m_vaultSwitchBuffer[256] = {};
+        char m_newVaultBuffer[256] = {};
         std::shared_ptr<Note> m_noteToRename;
         std::shared_ptr<Note> m_noteToDelete;
+        bool m_showCreateVault = false;
 
         void DrawSidebar();
         void DrawMainArea();
         void DrawSettingsModal();
         void DrawRenameModal();
+        void DrawVaultPicker();
+        void DrawCreateVaultModal();
         void ProcessDeferredOperations();
+        void SwitchVault(const std::string& vaultName);
+        void SaveCurrentNote();
+        bool IsValidVaultName(const std::string& name) const;
     };
 }

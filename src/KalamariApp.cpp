@@ -52,13 +52,6 @@ namespace Kalamari
         // Load font from executable-relative path
         m_renderer.LoadFont("assets/Kameron/static/Kameron-Regular.ttf", 18.0f);
 
-        m_vault.Refresh();
-        const auto& notes = m_vault.GetNotes();
-        if (!notes.empty())
-        {
-            m_currentNote = notes.front();
-        }
-
         return true;
     }
 
@@ -110,14 +103,22 @@ namespace Kalamari
                 | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::PopStyleVar();
 
-            DrawSidebar();
-            ImGui::SameLine();
-            DrawMainArea();
+            if (m_vault.GetVaultName().empty())
+            {
+                DrawVaultPicker();
+            }
+            else
+            {
+                DrawSidebar();
+                ImGui::SameLine();
+                DrawMainArea();
+            }
 
             ImGui::End();
 
             DrawSettingsModal();
             DrawRenameModal();
+            DrawCreateVaultModal();
             ProcessDeferredOperations();
 
             Uint64 currentTicks = SDL_GetTicks();
@@ -157,7 +158,33 @@ namespace Kalamari
         }
 
         ImGui::Spacing();
-        ImGui::TextDisabled("Vault: %s", m_vault.GetVaultName().c_str());
+
+        // Vault selector dropdown
+        ImGui::TextDisabled("Vault");
+        if (ImGui::BeginCombo("##VaultSelect", m_vault.GetVaultName().c_str()))
+        {
+            for (const auto& vaultName : Vault::GetAvailableVaults())
+            {
+                bool isSelected = (vaultName == m_vault.GetVaultName());
+                if (ImGui::Selectable(vaultName.c_str(), isSelected))
+                {
+                    SwitchVault(vaultName);
+                }
+                if (isSelected)
+                {
+                    ImGui::SetItemDefaultFocus();
+                }
+            }
+
+            ImGui::Separator();
+            if (ImGui::Selectable("+ Create New Vault..."))
+            {
+                m_showCreateVault = true;
+                std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
+            }
+            ImGui::EndCombo();
+        }
+
         ImGui::Spacing();
         ImGui::TextDisabled("Notes");
         ImGui::Spacing();            ImGui::PushStyleColor(ImGuiCol_FrameBg, m_darkMode ? Theme::DARK_BG : Theme::LIGHT_BG);
@@ -247,26 +274,6 @@ namespace Kalamari
             }
 
             ImGui::Spacing();
-            ImGui::Text("Vault");
-            ImGui::Separator();
-
-            ImGui::InputText("Vault name", m_vaultSwitchBuffer, sizeof(m_vaultSwitchBuffer));
-            if (ImGui::Button("Switch Vault", ImVec2(120, 0)))
-            {
-                std::string newVaultName(m_vaultSwitchBuffer);
-                if (!newVaultName.empty() && newVaultName != m_vault.GetVaultName())
-                {
-                    if (m_currentNote && m_currentNote->dirty)
-                    {
-                        m_vault.SaveNote(m_currentNote);
-                    }
-
-                    m_vault.SetVault(newVaultName);
-                    m_currentNote.reset();
-                }
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
             if (ImGui::Button("Close", ImVec2(120, 0)))
             {
                 ImGui::CloseCurrentPopup();
@@ -317,6 +324,137 @@ namespace Kalamari
             m_noteToRename.reset();
             std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
         }
+    }
+
+    void KalamariApp::DrawVaultPicker()
+    {
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        ImGui::SetNextWindowSize(ImVec2(400.0f * m_renderer.GetScale(), 0), ImGuiCond_Appearing);
+
+        if (ImGui::Begin("Select Vault", nullptr,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
+                         | ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Choose an existing vault or create a new one.");
+            ImGui::Spacing();
+
+            ImGui::BeginChild("VaultList", ImVec2(0, 200.0f), ImGuiChildFlags_Borders);
+            for (const auto& vaultName : Vault::GetAvailableVaults())
+            {
+                if (ImGui::Selectable(vaultName.c_str(), false, ImGuiSelectableFlags_None, ImVec2(-1, 0)))
+                {
+                    SwitchVault(vaultName);
+                }
+            }
+            ImGui::EndChild();
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            ImGui::Text("Create new vault");
+            ImGui::InputTextWithHint("##NewVault", "vault name", m_newVaultBuffer, sizeof(m_newVaultBuffer));
+            ImGui::SameLine();
+            if (ImGui::Button("Create"))
+            {
+                std::string newVaultName(m_newVaultBuffer);
+                if (IsValidVaultName(newVaultName))
+                {
+                    SwitchVault(newVaultName);
+                    std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
+                }
+            }
+
+            ImGui::End();
+        }
+    }
+
+    void KalamariApp::DrawCreateVaultModal()
+    {
+        if (m_showCreateVault)
+        {
+            ImGui::OpenPopup("Create New Vault");
+            m_showCreateVault = false;
+        }
+
+        if (ImGui::BeginPopupModal("Create New Vault", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::InputTextWithHint("##NewVaultModal", "vault name", m_newVaultBuffer, sizeof(m_newVaultBuffer));
+            if (ImGui::Button("Create", ImVec2(120, 0)))
+            {
+                std::string newVaultName(m_newVaultBuffer);
+                if (IsValidVaultName(newVaultName))
+                {
+                    SwitchVault(newVaultName);
+                    std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
+                }
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            {
+                std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
+    void KalamariApp::SwitchVault(const std::string& vaultName)
+    {
+        if (vaultName == m_vault.GetVaultName())
+        {
+            return;
+        }
+
+        SaveCurrentNote();
+        m_vault.SetVault(vaultName);
+        m_currentNote.reset();
+        m_noteToRename.reset();
+        m_noteToDelete.reset();
+        std::memset(m_searchBuffer, 0, sizeof(m_searchBuffer));
+    }
+
+    void KalamariApp::SaveCurrentNote()
+    {
+        if (m_currentNote && m_currentNote->dirty)
+        {
+            m_vault.SaveNote(m_currentNote);
+        }
+    }
+
+    bool KalamariApp::IsValidVaultName(const std::string& name) const
+    {
+        if (name.empty())
+        {
+            return false;
+        }
+
+        // Trim leading/trailing whitespace
+        size_t start = name.find_first_not_of(" \t\r\n");
+        if (start == std::string::npos)
+        {
+            return false;
+        }
+        size_t end = name.find_last_not_of(" \t\r\n");
+        std::string trimmed = name.substr(start, end - start + 1);
+
+        if (trimmed.empty() || trimmed == "." || trimmed == "..")
+        {
+            return false;
+        }
+
+        // Disallow path separators and control characters
+        for (char c : trimmed)
+        {
+            if (c == '/' || c == '\\' || c == '\0')
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     void KalamariApp::ProcessDeferredOperations()
