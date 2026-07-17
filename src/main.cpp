@@ -15,6 +15,8 @@
 #include <cmath>
 #include <filesystem>
 #include <string>
+#include <fstream>
+#include <iterator>
 
 // ==========================================================================
 // Theme Colors (hex -> float RGBA)
@@ -57,6 +59,7 @@ static std::filesystem::path GetVaultPath(const char* vaultName)
 }
 
 static constexpr const char* DEFAULT_VAULT_NAME = "steven";
+static constexpr const char* NOTES_FILE_NAME = "notes.md";
 
 static std::filesystem::path EnsureVaultDirectory(const char* vaultName)
 {
@@ -68,6 +71,55 @@ static std::filesystem::path EnsureVaultDirectory(const char* vaultName)
         SDL_Log("Warning: Could not create vault directory at %s", path.string().c_str());
     }
     return path;
+}
+
+static std::filesystem::path GetNotesFilePath(const std::filesystem::path& vaultPath)
+{
+    return vaultPath / NOTES_FILE_NAME;
+}
+
+static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size_t bufferSize)
+{
+    if (bufferSize == 0) return;
+    buffer[0] = '\0';
+
+    if (!std::filesystem::exists(notesPath)) return;
+
+    try
+    {
+        std::ifstream file(notesPath, std::ios::binary);
+        if (!file) return;
+
+        std::string content((std::istreambuf_iterator<char>(file)),
+                             std::istreambuf_iterator<char>());
+
+        size_t copyLen = content.size();
+        if (copyLen >= bufferSize) copyLen = bufferSize - 1;
+        std::memcpy(buffer, content.data(), copyLen);
+        buffer[copyLen] = '\0';
+    }
+    catch (...)
+    {
+        SDL_Log("Warning: Failed to load notes from %s", notesPath.string().c_str());
+    }
+}
+
+static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer)
+{
+    try
+    {
+        std::ofstream file(notesPath, std::ios::binary | std::ios::trunc);
+        if (!file)
+        {
+            SDL_Log("Warning: Could not open notes file for writing: %s", notesPath.string().c_str());
+            return;
+        }
+        file.write(buffer, std::strlen(buffer));
+    }
+    catch (...)
+    {
+        SDL_Log("Warning: Failed to save notes to %s", notesPath.string().c_str());
+    }
 }
 
 // ==========================================================================
@@ -162,14 +214,6 @@ int main(int, char**)
             "Failed to initialize SDL3", nullptr);
         printf("Error: SDL_Init(): %s\n", SDL_GetError());
         return 1;
-    }
-
-    // ------------------------------------------------------------------
-    // Ensure default vault directory exists
-    // ------------------------------------------------------------------
-    {
-        std::filesystem::path vaultPath = EnsureVaultDirectory(DEFAULT_VAULT_NAME);
-        SDL_Log("Vault directory: %s", vaultPath.string().c_str());
     }
 
     // ------------------------------------------------------------------
@@ -291,6 +335,15 @@ int main(int, char**)
         "Welcome to Kalamari!\n\n"
         "Start writing your notes here.\n"
         "Use the markdown guide below to format your text.\n";
+
+    // ------------------------------------------------------------------
+    // Ensure default vault directory exists and load existing notes
+    // ------------------------------------------------------------------
+    std::filesystem::path vaultPath = EnsureVaultDirectory(DEFAULT_VAULT_NAME);
+    SDL_Log("Vault directory: %s", vaultPath.string().c_str());
+
+    std::filesystem::path notesFilePath = GetNotesFilePath(vaultPath);
+    LoadNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
 
     static bool showMarkdownTutorial = true;
     static float tutorialAlpha = 0.0f; // for fade-in animation
@@ -575,6 +628,11 @@ int main(int, char**)
         ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), renderer);
         SDL_RenderPresent(renderer);
     }
+
+    // ------------------------------------------------------------------
+    // Save notes before shutting down
+    // ------------------------------------------------------------------
+    SaveNotes(notesFilePath, notesBuffer);
 
     // ------------------------------------------------------------------
     // Cleanup
