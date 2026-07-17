@@ -51,10 +51,12 @@ static std::filesystem::path Utf8ToPath(const char* utf8)
 {
 #ifdef _WIN32
     if (!utf8) return {};
+    // len includes the null terminator; the wstring will hold len-1 chars.
     int len = ::MultiByteToWideChar(CP_UTF8, 0, utf8, -1, nullptr, 0);
-    if (len <= 0) return {};
+    if (len <= 1) return {};
     std::wstring wstr(len - 1, 0);
-    ::MultiByteToWideChar(CP_UTF8, 0, utf8, -1, wstr.data(), len);
+    int written = ::MultiByteToWideChar(CP_UTF8, 0, utf8, -1, wstr.data(), len - 1);
+    if (written <= 0) return {};
     return std::filesystem::path(wstr);
 #else
     return std::filesystem::path(utf8);
