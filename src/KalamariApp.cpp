@@ -22,6 +22,14 @@ namespace Kalamari
                            [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             return s;
         }
+
+        void AddBreadcrumb(const char* category, const char* message)
+        {
+            sentry_value_t crumb = sentry_value_new_breadcrumb(nullptr, message);
+            sentry_value_set_by_key(crumb, "category", sentry_value_new_string(category));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("info"));
+            sentry_add_breadcrumb(crumb);
+        }
     }
 
     bool KalamariApp::Init()
@@ -125,7 +133,7 @@ namespace Kalamari
             if (m_currentNote && m_currentNote->dirty &&
                 currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
             {
-                m_vault.SaveNote(m_currentNote);
+                SaveCurrentNote();
                 lastAutoSaveTicks = currentTicks;
             }
 
@@ -155,6 +163,10 @@ namespace Kalamari
                 m_vault.SaveNote(m_currentNote);
             }
             m_currentNote = m_vault.CreateNote();
+            if (m_currentNote)
+            {
+                AddBreadcrumb("note.create", m_currentNote->fileName.c_str());
+            }
         }
 
         ImGui::Spacing();
@@ -208,11 +220,15 @@ namespace Kalamari
 
             if (ImGui::Selectable(note->fileName.c_str(), isSelected))
             {
-                if (m_currentNote && m_currentNote->dirty)
+                if (note != m_currentNote)
                 {
-                    m_vault.SaveNote(m_currentNote);
+                    if (m_currentNote && m_currentNote->dirty)
+                    {
+                        m_vault.SaveNote(m_currentNote);
+                    }
+                    m_currentNote = note;
+                    AddBreadcrumb("note.open", note->fileName.c_str());
                 }
-                m_currentNote = note;
             }
 
             if (isSelected)
@@ -312,9 +328,12 @@ namespace Kalamari
                 {
                     if (m_currentNote == m_noteToRename && m_currentNote->dirty)
                     {
-                        m_vault.SaveNote(m_currentNote);
+                        SaveCurrentNote();
                     }
-                    m_vault.RenameNote(m_noteToRename, newFileName);
+                    if (m_vault.RenameNote(m_noteToRename, newFileName))
+                    {
+                        AddBreadcrumb("note.rename", newFileName.c_str());
+                    }
                 }
                 m_noteToRename.reset();
                 std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
@@ -421,6 +440,7 @@ namespace Kalamari
 
         SaveCurrentNote();
         m_vault.SetVault(vaultName);
+        AddBreadcrumb("vault.switch", vaultName.c_str());
         m_currentNote.reset();
         m_noteToRename.reset();
         m_noteToDelete.reset();
@@ -432,6 +452,7 @@ namespace Kalamari
         if (m_currentNote && m_currentNote->dirty)
         {
             m_vault.SaveNote(m_currentNote);
+            AddBreadcrumb("note.save", m_currentNote->fileName.c_str());
         }
     }
 
@@ -474,12 +495,16 @@ namespace Kalamari
         {
             if (m_currentNote == m_noteToDelete && m_currentNote->dirty)
             {
-                m_vault.SaveNote(m_currentNote);
+                SaveCurrentNote();
             }
-            m_vault.DeleteNote(m_noteToDelete);
-            if (m_currentNote == m_noteToDelete)
+            std::string deletedFileName = m_noteToDelete->fileName;
+            if (m_vault.DeleteNote(m_noteToDelete))
             {
-                m_currentNote.reset();
+                if (m_currentNote == m_noteToDelete)
+                {
+                    m_currentNote.reset();
+                }
+                AddBreadcrumb("note.delete", deletedFileName.c_str());
             }
             m_noteToDelete.reset();
         }
