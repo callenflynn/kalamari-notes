@@ -220,4 +220,7 @@ else()
     set(CPACK_STRIP_FILES TRUE)
 endif()
 
+# Keep the install directory name stable (no version suffix)
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "kalamari")
+
 include(CPack)

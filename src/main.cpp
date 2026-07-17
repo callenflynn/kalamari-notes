@@ -13,6 +13,8 @@
 #include <cstdio>
 #include <cstring>
 #include <cmath>
+#include <filesystem>
+#include <string>
 
 // ==========================================================================
 // Theme Colors (hex -> float RGBA)
@@ -35,6 +37,36 @@ static constexpr ImVec4 DARK_TEXT         = ImVec4(1.000f, 0.992f, 0.969f, 1.0f)
 static constexpr ImVec4 DARK_BORDER       = ImVec4(0.300f, 0.300f, 0.300f, 1.0f);
 static constexpr ImVec4 DARK_FRAME_BG     = ImVec4(0.180f, 0.180f, 0.180f, 1.0f);
 static constexpr ImVec4 DARK_SCROLLBAR    = ImVec4(0.250f, 0.250f, 0.250f, 1.0f);
+
+// ==========================================================================
+// Cross-platform vault path: <Documents>/kalimari/<vault>
+// ==========================================================================
+static std::filesystem::path GetVaultPath(const char* vaultName)
+{
+    char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
+    if (!docsPath)
+    {
+        // Fallback to the current working directory if SDL cannot determine
+        // the user's documents folder.
+        return std::filesystem::current_path() / "kalimari" / vaultName;
+    }
+
+    std::filesystem::path vaultPath = std::filesystem::path(docsPath) / "kalimari" / vaultName;
+    SDL_free(docsPath);
+    return vaultPath;
+}
+
+static std::filesystem::path EnsureVaultDirectory(const char* vaultName)
+{
+    std::filesystem::path path = GetVaultPath(vaultName);
+    std::error_code ec;
+    std::filesystem::create_directories(path, ec);
+    if (ec)
+    {
+        printf("Warning: Could not create vault directory at %s\n", path.string().c_str());
+    }
+    return path;
+}
 
 // ==========================================================================
 // Apply theme to ImGui style
@@ -128,6 +160,14 @@ int main(int, char**)
             "Failed to initialize SDL3", nullptr);
         printf("Error: SDL_Init(): %s\n", SDL_GetError());
         return 1;
+    }
+
+    // ------------------------------------------------------------------
+    // Ensure default vault directory exists
+    // ------------------------------------------------------------------
+    {
+        std::filesystem::path vaultPath = EnsureVaultDirectory("steven");
+        printf("Vault directory: %s\n", vaultPath.string().c_str());
     }
 
     // ------------------------------------------------------------------
