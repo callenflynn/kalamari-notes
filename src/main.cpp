@@ -83,7 +83,8 @@ static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size
     if (bufferSize == 0) return;
     buffer[0] = '\0';
 
-    if (!std::filesystem::exists(notesPath)) return;
+    std::error_code ec;
+    if (!std::filesystem::exists(notesPath, ec) || ec) return;
 
     try
     {
@@ -104,17 +105,31 @@ static void LoadNotes(const std::filesystem::path& notesPath, char* buffer, size
     }
 }
 
-static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer)
+static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer, size_t bufferSize)
 {
     try
     {
-        std::ofstream file(notesPath, std::ios::binary | std::ios::trunc);
-        if (!file)
+        std::filesystem::path tempPath = notesPath;
+        tempPath += ".tmp";
+
         {
-            SDL_Log("Warning: Could not open notes file for writing: %s", notesPath.string().c_str());
-            return;
+            std::ofstream file(tempPath, std::ios::binary | std::ios::trunc);
+            if (!file)
+            {
+                SDL_Log("Warning: Could not open notes file for writing: %s", tempPath.string().c_str());
+                return;
+            }
+            size_t writeLen = std::strnlen(buffer, bufferSize);
+            file.write(buffer, static_cast<std::streamsize>(writeLen));
         }
-        file.write(buffer, std::strlen(buffer));
+
+        std::error_code ec;
+        std::filesystem::rename(tempPath, notesPath, ec);
+        if (ec)
+        {
+            SDL_Log("Warning: Failed to replace notes file at %s", notesPath.string().c_str());
+            std::filesystem::remove(tempPath, ec);
+        }
     }
     catch (...)
     {
@@ -632,7 +647,7 @@ int main(int, char**)
     // ------------------------------------------------------------------
     // Save notes before shutting down
     // ------------------------------------------------------------------
-    SaveNotes(notesFilePath, notesBuffer);
+    SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
 
     // ------------------------------------------------------------------
     // Cleanup
