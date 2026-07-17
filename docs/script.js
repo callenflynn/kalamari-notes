@@ -130,7 +130,10 @@
     (function fetchLatestRelease() {
         const REPO = 'callenflynn/kalamari-notes';
         const API_URL = 'https://api.github.com/repos/' + REPO + '/releases/latest';
+        const RELEASES_URL = 'https://github.com/' + REPO + '/releases/latest';
         const TIMEOUT_MS = 5000;
+        const CACHE_KEY = 'kalamari-latest-release';
+        const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 
         function findAsset(assets, suffix) {
             return assets.find(function (asset) {
@@ -144,7 +147,41 @@
             if (link) link.href = asset.browser_download_url;
         }
 
-        function updateDownloadLinks() {
+        function applyAssets(assets) {
+            const windowsAsset = findAsset(assets, '-Windows.msi');
+            const macosAsset = findAsset(assets, '-Darwin.dmg');
+            const linuxAsset = findAsset(assets, '-Linux.deb');
+
+            setLink('windows', windowsAsset);
+            setLink('macos', macosAsset);
+            setLink('linux', linuxAsset);
+        }
+
+        function getCachedAssets() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (!parsed || !parsed.assets || !parsed.timestamp) return null;
+                if (Date.now() - parsed.timestamp > CACHE_TTL_MS) return null;
+                return parsed.assets;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function setCachedAssets(assets) {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    assets: assets,
+                    timestamp: Date.now()
+                }));
+            } catch (e) {
+                // Storage may be disabled; ignore.
+            }
+        }
+
+        function fetchLatestAssets() {
             const controller = new AbortController();
             const timeoutId = setTimeout(function () {
                 controller.abort();
@@ -157,14 +194,8 @@
                 })
                 .then(function (data) {
                     if (!data.assets || !data.assets.length) return;
-
-                    const windowsAsset = findAsset(data.assets, '-Windows.msi');
-                    const macosAsset = findAsset(data.assets, '-Darwin.dmg');
-                    const linuxAsset = findAsset(data.assets, '-Linux.deb');
-
-                    setLink('windows', windowsAsset);
-                    setLink('macos', macosAsset);
-                    setLink('linux', linuxAsset);
+                    setCachedAssets(data.assets);
+                    applyAssets(data.assets);
                 })
                 .catch(function () {
                     // Fallback: links already point to the releases page.
@@ -174,7 +205,20 @@
                 });
         }
 
-        updateDownloadLinks();
+        const cachedAssets = getCachedAssets();
+        if (cachedAssets) {
+            applyAssets(cachedAssets);
+        }
+
+        // Always fetch in the background to refresh the cache and update links
+        // if a newer release has been published since the cache was written.
+        fetchLatestAssets();
+
+        // Expose a manual refresh helper for debugging.
+        window.refreshKalamariDownloads = function () {
+            localStorage.removeItem(CACHE_KEY);
+            fetchLatestAssets();
+        };
     })();
 
 })();
