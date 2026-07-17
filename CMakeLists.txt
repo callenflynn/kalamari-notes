@@ -170,7 +170,7 @@ if(WIN32)
 elseif(APPLE)
     set(CPACK_GENERATOR "DragNDrop;ZIP")
     set(CPACK_DMG_VOLUME_NAME "Kalamari")
-    set(CPACK_DMG_FORMAT "UDBZ")
+    set(CPACK_DMG_FORMAT "UDZO")
 
 # ---------------------------------------------------------------------------
 # Linux: DEB + RPM + TAR.GZ
