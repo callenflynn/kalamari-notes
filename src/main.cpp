@@ -65,7 +65,7 @@ static std::filesystem::path Utf8ToPath(const char* utf8)
 
 static std::filesystem::path GetVaultPath(const char* vaultName)
 {
-    char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
+    const char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
     if (!docsPath)
     {
         // Fallback to the current working directory if SDL cannot determine
@@ -73,9 +73,7 @@ static std::filesystem::path GetVaultPath(const char* vaultName)
         return std::filesystem::current_path() / "kalimari" / vaultName;
     }
 
-    std::filesystem::path vaultPath = Utf8ToPath(docsPath) / "kalimari" / vaultName;
-    SDL_free(docsPath);
-    return vaultPath;
+    return Utf8ToPath(docsPath) / "kalimari" / vaultName;
 }
 
 static constexpr const char* DEFAULT_VAULT_NAME = "steven";
@@ -145,7 +143,7 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
             SDL_Log("Warning: Could not open notes file for writing: %s", tempPath.string().c_str());
             return;
         }
-        size_t writeLen = std::strnlen(buffer, bufferSize);
+        size_t writeLen = static_cast<size_t>(std::find(buffer, buffer + bufferSize, '\0') - buffer);
         file.write(buffer, static_cast<std::streamsize>(writeLen));
     }
 
