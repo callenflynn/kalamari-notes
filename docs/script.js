@@ -130,7 +130,6 @@
     (function fetchLatestRelease() {
         const REPO = 'callenflynn/kalamari-notes';
         const API_URL = 'https://api.github.com/repos/' + REPO + '/releases/latest';
-        const RELEASES_URL = 'https://github.com/' + REPO + '/releases/latest';
         const TIMEOUT_MS = 5000;
         const CACHE_KEY = 'kalamari-latest-release';
         const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
