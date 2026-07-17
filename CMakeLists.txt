@@ -203,6 +203,13 @@ endif()
 # Common CPack settings
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.txt")
 set(CPACK_PACKAGE_EXECUTABLES "Kalamari" "Kalamari")
-set(CPACK_STRIP_FILES TRUE)
+
+# Stripping breaks ad-hoc code signatures on Apple Silicon, which causes
+# hdiutil to report the DMG image as corrupt. Only strip on non-Apple.
+if(APPLE)
+    set(CPACK_STRIP_FILES FALSE)
+else()
+    set(CPACK_STRIP_FILES TRUE)
+endif()
 
 include(CPack)
