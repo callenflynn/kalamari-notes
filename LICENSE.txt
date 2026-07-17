@@ -9,9 +9,10 @@ personal, non-commercial reference purposes.
 The following restrictions apply:
 
 1. You may not copy, reproduce, distribute, publish, display, perform, or
-   transmit the Software or any portion thereof, except as required to view
-   the source code on GitHub or as expressly permitted by GitHub's Terms of
-   Service (including the fork functionality).
+   transmit the Software or any portion thereof, except as reasonably
+   necessary to interact with the repository through GitHub's user interface
+   as permitted by GitHub's Terms of Service (including, but not limited to,
+   the fork functionality).
 
 2. You may not modify, adapt, translate, reverse-engineer, decompile,
    disassemble, or create derivative works based on the Software.
@@ -24,6 +25,10 @@ The following restrictions apply:
 
 5. You may not remove, alter, or obscure any copyright, trademark, or other
    proprietary notices contained in the Software.
+
+This license applies to the source code of the Software. It does not restrict
+your right to download, install, or run compiled binaries of the Software
+that are made available by the copyright holder.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -38,9 +43,12 @@ other than viewing the source code. All other rights are reserved by the
 copyright holder.
 
 Termination: This license automatically terminates if you violate any of the
-above terms. Upon termination, you must destroy all copies of the Software in
-your possession.
+above terms. Upon termination, you must cease all use of the Software and, to
+the extent within your control, remove or destroy any copies in your possession.
+
+Severability: If any provision of this license is held to be invalid or
+unenforceable, the remaining provisions shall continue in full force and effect.
 
 Governing Law: This license shall be governed by and construed in accordance
-with the laws of the United States of America, without regard to conflict of
-law principles.
+with the laws of the State of California, United States of America, without
+regard to conflict of law principles.
