@@ -2,14 +2,16 @@ Kalamari Source-Available License
 
 Copyright (c) 2026 Kalamari. All rights reserved.
 
-Permission is hereby granted to any person obtaining a copy of this software and
-its associated documentation files (the "Software") to view and read the source
-code solely for personal, non-commercial reference purposes.
+Permission is hereby granted to any person viewing the source code of this
+software and its associated documentation files (the "Software") solely for
+personal, non-commercial reference purposes.
 
 The following restrictions apply:
 
 1. You may not copy, reproduce, distribute, publish, display, perform, or
-   transmit the Software or any portion thereof, in any form or by any means.
+   transmit the Software or any portion thereof, except as required to view
+   the source code on GitHub or as expressly permitted by GitHub's Terms of
+   Service (including the fork functionality).
 
 2. You may not modify, adapt, translate, reverse-engineer, decompile,
    disassemble, or create derivative works based on the Software.
@@ -34,3 +36,11 @@ SOFTWARE.
 This license does not grant you any rights to use the Software for any purpose
 other than viewing the source code. All other rights are reserved by the
 copyright holder.
+
+Termination: This license automatically terminates if you violate any of the
+above terms. Upon termination, you must destroy all copies of the Software in
+your possession.
+
+Governing Law: This license shall be governed by and construed in accordance
+with the laws of the United States of America, without regard to conflict of
+law principles.
