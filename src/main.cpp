@@ -326,10 +326,12 @@ static void ApplyTheme(bool darkMode)
 
     if (darkMode)
     {
+        ImGui::StyleColorsDark();
         c[ImGuiCol_WindowBg]           = DARK_BG;
         c[ImGuiCol_ChildBg]            = DARK_BG;
         c[ImGuiCol_PopupBg]            = DARK_BG;
         c[ImGuiCol_Text]               = DARK_TEXT;
+        c[ImGuiCol_TextDisabled]       = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
         c[ImGuiCol_Border]             = DARK_BORDER;
         c[ImGuiCol_FrameBg]            = DARK_FRAME_BG;
         c[ImGuiCol_FrameBgHovered]     = ImVec4(0.24f, 0.24f, 0.24f, 1.0f);
@@ -341,6 +343,8 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
         c[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.60f, 0.60f, 0.60f, 1.0f);
         c[ImGuiCol_Separator]          = DARK_BORDER;
+        c[ImGuiCol_SeparatorHovered]   = ImVec4(0.40f, 0.40f, 0.40f, 1.0f);
+        c[ImGuiCol_SeparatorActive]    = ACCENT_COLOR;
         c[ImGuiCol_Header]             = ImVec4(0.28f, 0.16f, 0.10f, 1.0f);
         c[ImGuiCol_HeaderHovered]      = ImVec4(0.36f, 0.22f, 0.13f, 1.0f);
         c[ImGuiCol_HeaderActive]       = ImVec4(0.44f, 0.28f, 0.16f, 1.0f);
@@ -357,13 +361,20 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_ResizeGrip]         = ImVec4(0.929f, 0.314f, 0.004f, 0.20f);
         c[ImGuiCol_ResizeGripHovered]  = ImVec4(0.929f, 0.314f, 0.004f, 0.50f);
         c[ImGuiCol_ResizeGripActive]   = ImVec4(0.929f, 0.314f, 0.004f, 0.80f);
+        c[ImGuiCol_MenuBarBg]          = DARK_FRAME_BG;
+        c[ImGuiCol_PlotLines]          = ACCENT_COLOR;
+        c[ImGuiCol_PlotLinesHovered]   = ACCENT_COLOR_HDR;
+        c[ImGuiCol_PlotHistogram]      = ACCENT_COLOR;
+        c[ImGuiCol_PlotHistogramHovered] = ACCENT_COLOR_HDR;
     }
     else
     {
+        ImGui::StyleColorsLight();
         c[ImGuiCol_WindowBg]           = LIGHT_BG;
         c[ImGuiCol_ChildBg]            = LIGHT_BG;
         c[ImGuiCol_PopupBg]            = ImVec4(1.0f, 0.96f, 0.91f, 1.0f);
         c[ImGuiCol_Text]               = LIGHT_TEXT;
+        c[ImGuiCol_TextDisabled]       = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
         c[ImGuiCol_Border]             = LIGHT_BORDER;
         c[ImGuiCol_FrameBg]            = LIGHT_FRAME_BG;
         c[ImGuiCol_FrameBgHovered]     = ImVec4(0.94f, 0.88f, 0.82f, 1.0f);
@@ -375,6 +386,8 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.72f, 0.68f, 0.62f, 1.0f);
         c[ImGuiCol_ScrollbarGrabActive]  = ImVec4(0.65f, 0.61f, 0.55f, 1.0f);
         c[ImGuiCol_Separator]          = LIGHT_BORDER;
+        c[ImGuiCol_SeparatorHovered]   = ImVec4(0.70f, 0.70f, 0.70f, 1.0f);
+        c[ImGuiCol_SeparatorActive]    = ACCENT_COLOR;
         c[ImGuiCol_Header]             = ImVec4(0.92f, 0.80f, 0.72f, 1.0f);
         c[ImGuiCol_HeaderHovered]      = ImVec4(0.90f, 0.75f, 0.65f, 1.0f);
         c[ImGuiCol_HeaderActive]       = ImVec4(0.88f, 0.72f, 0.60f, 1.0f);
@@ -391,6 +404,11 @@ static void ApplyTheme(bool darkMode)
         c[ImGuiCol_ResizeGrip]         = ImVec4(0.929f, 0.314f, 0.004f, 0.15f);
         c[ImGuiCol_ResizeGripHovered]  = ImVec4(0.929f, 0.314f, 0.004f, 0.40f);
         c[ImGuiCol_ResizeGripActive]   = ImVec4(0.929f, 0.314f, 0.004f, 0.65f);
+        c[ImGuiCol_MenuBarBg]          = LIGHT_FRAME_BG;
+        c[ImGuiCol_PlotLines]          = ACCENT_COLOR;
+        c[ImGuiCol_PlotLinesHovered]   = ACCENT_COLOR_HDR;
+        c[ImGuiCol_PlotHistogram]      = ACCENT_COLOR;
+        c[ImGuiCol_PlotHistogramHovered] = ACCENT_COLOR_HDR;
     }
 }
 
@@ -547,6 +565,11 @@ int main(int, char**)
     static char renameBuffer[256] = {};
     bool requestRenamePopup = false;
 
+    // Settings & vault switching
+    bool showSettings = false;
+    std::string currentVaultName = DEFAULT_VAULT_NAME;
+    static char vaultSwitchBuffer[256] = {};
+
     // ------------------------------------------------------------------
     // Main loop
     // ------------------------------------------------------------------
@@ -625,6 +648,8 @@ int main(int, char**)
             }
 
             ImGui::Spacing();
+            ImGui::TextDisabled("Vault: %s", currentVaultName.c_str());
+            ImGui::Spacing();
             ImGui::TextDisabled("Notes");
             ImGui::Spacing();
 
@@ -688,15 +713,11 @@ int main(int, char**)
             }
             ImGui::EndChild();
 
-            // Theme toggle at the bottom of the sidebar
-            if (ImGui::Button(darkMode ? "Light Mode" : "Dark Mode", ImVec2(-1, 0)))
+            // Settings button at the bottom of the sidebar
+            if (ImGui::Button("Settings", ImVec2(-1, 0)))
             {
-                darkMode = !darkMode;
-                if (darkMode)
-                    ImGui::StyleColorsDark();
-                else
-                    ImGui::StyleColorsLight();
-                ApplyTheme(darkMode);
+                showSettings = true;
+                std::snprintf(vaultSwitchBuffer, sizeof(vaultSwitchBuffer), "%s", currentVaultName.c_str());
             }
 
             ImGui::EndChild();
@@ -810,6 +831,66 @@ int main(int, char**)
 
         // Track focus changes for next frame
         previousFocusedLineIndex = focusedLineIndex;
+
+        // ==================================================
+        // Settings modal
+        // ==================================================
+        if (showSettings)
+        {
+            ImGui::OpenPopup("Settings");
+            showSettings = false;
+        }
+
+        if (ImGui::BeginPopupModal("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            ImGui::Text("Appearance");
+            ImGui::Separator();
+
+            if (ImGui::Button(darkMode ? "Switch to Light Mode" : "Switch to Dark Mode", ImVec2(-1, 0)))
+            {
+                darkMode = !darkMode;
+                if (darkMode)
+                    ImGui::StyleColorsDark();
+                else
+                    ImGui::StyleColorsLight();
+                ApplyTheme(darkMode);
+            }
+
+            ImGui::Spacing();
+            ImGui::Text("Vault");
+            ImGui::Separator();
+
+            ImGui::InputText("Vault name", vaultSwitchBuffer, sizeof(vaultSwitchBuffer));
+            if (ImGui::Button("Switch Vault", ImVec2(120, 0)))
+            {
+                std::string newVaultName(vaultSwitchBuffer);
+                if (!newVaultName.empty() && newVaultName != currentVaultName)
+                {
+                    // Save current note before switching
+                    if (notesDirty && !currentFile.empty())
+                    {
+                        SaveNotes(currentFile, noteLines);
+                        notesDirty = false;
+                    }
+
+                    // Switch vault
+                    currentVaultName = newVaultName;
+                    vaultPath = EnsureVaultDirectory(currentVaultName.c_str());
+                    RefreshVaultFiles(vaultPath, vaultFiles);
+                    currentFile.clear();
+                    noteLines.clear();
+                    focusedLineIndex = -1;
+                    previousFocusedLineIndex = -1;
+                }
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Close", ImVec2(120, 0)))
+            {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
 
         // ==================================================
         // Rename modal (at main window level to avoid clipping)
