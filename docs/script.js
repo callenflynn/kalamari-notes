@@ -152,7 +152,6 @@
 
             fetch(API_URL, { signal: controller.signal })
                 .then(function (response) {
-                    clearTimeout(timeoutId);
                     if (!response.ok) throw new Error('GitHub API response was not ok');
                     return response.json();
                 })
@@ -168,8 +167,10 @@
                     setLink('linux', linuxAsset);
                 })
                 .catch(function () {
-                    clearTimeout(timeoutId);
                     // Fallback: links already point to the releases page.
+                })
+                .finally(function () {
+                    clearTimeout(timeoutId);
                 });
         }
 
