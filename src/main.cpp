@@ -18,6 +18,8 @@
 #include <string>
 #include <fstream>
 #include <iterator>
+#include <vector>
+#include <chrono>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -154,6 +156,64 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
         std::error_code ec;
         std::filesystem::remove(tempPath, ec);
     }
+}
+
+static std::string GenerateNoteFilename()
+{
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    std::tm tm{};
+#ifdef _WIN32
+    localtime_s(&tm, &time);
+#else
+    localtime_r(&time, &tm);
+#endif
+    char buf[64];
+    std::snprintf(buf, sizeof(buf), "%04d-%02d-%02d-note.md",
+                  tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday);
+    return std::string(buf);
+}
+
+static void RefreshVaultFiles(const std::filesystem::path& vaultPath,
+                              std::vector<std::filesystem::path>& files)
+{
+    files.clear();
+    std::error_code ec;
+    if (!std::filesystem::exists(vaultPath, ec) || ec) return;
+
+    for (const auto& entry : std::filesystem::directory_iterator(vaultPath, ec))
+    {
+        if (entry.is_regular_file(ec) && entry.path().extension() == ".md")
+        {
+            files.push_back(entry.path());
+        }
+    }
+
+    std::sort(files.begin(), files.end(),
+              [](const std::filesystem::path& a, const std::filesystem::path& b) {
+                  return a.filename().string() < b.filename().string();
+              });
+}
+
+static std::filesystem::path CreateNewNote(const std::filesystem::path& vaultPath)
+{
+    std::filesystem::path path = vaultPath / GenerateNoteFilename();
+    int suffix = 1;
+    while (std::filesystem::exists(path))
+    {
+        std::string name = GenerateNoteFilename();
+        name.insert(name.size() - 3, "-" + std::to_string(suffix));
+        path = vaultPath / name;
+        ++suffix;
+    }
+
+    std::ofstream file(path, std::ios::binary | std::ios::trunc);
+    if (file)
+    {
+        const char* welcome = "# New Note\n\nStart writing here...\n";
+        file.write(welcome, std::strlen(welcome));
+    }
+    return path;
 }
 
 // ==========================================================================
@@ -365,28 +425,27 @@ int main(int, char**)
     // ------------------------------------------------------------------
     // Application state
     // ------------------------------------------------------------------
-    static char notesBuffer[8192] =
-        "Welcome to Kalamari!\n\n"
-        "Start writing your notes here.\n"
-        "Use the markdown guide below to format your text.\n";
+    static char notesBuffer[8192] = {};
 
-    // ------------------------------------------------------------------
     // Ensure default vault directory exists and load existing notes
-    // ------------------------------------------------------------------
     std::filesystem::path vaultPath = EnsureVaultDirectory(DEFAULT_VAULT_NAME);
     SDL_Log("Vault directory: %s", vaultPath.string().c_str());
 
-    std::filesystem::path notesFilePath = GetNotesFilePath(vaultPath);
-    LoadNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+    std::vector<std::filesystem::path> vaultFiles;
+    RefreshVaultFiles(vaultPath, vaultFiles);
 
-    static bool showMarkdownTutorial = true;
-    static float tutorialAlpha = 0.0f; // for fade-in animation
-    static float tutorialTimer  = 0.0f;
+    std::filesystem::path currentFile;
+    if (!vaultFiles.empty())
+    {
+        currentFile = vaultFiles.front();
+        LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+    }
 
     // Auto-save every 30 seconds when dirty
     constexpr Uint32 AUTO_SAVE_INTERVAL_MS = 30000;
     Uint64 lastAutoSaveTicks = SDL_GetTicks();
     bool notesDirty = false;
+    static char searchBuffer[256] = {};
 
     auto MarkNotesDirty = [](ImGuiInputTextCallbackData* data) -> int {
         bool* dirty = static_cast<bool*>(data->UserData);
@@ -424,71 +483,99 @@ int main(int, char**)
         ImGui_ImplSDL3_NewFrame();
         ImGui::NewFrame();
 
-        // ---- Fade-in animation for the tutorial overlay ----
-        if (showMarkdownTutorial && tutorialAlpha < 1.0f)
-        {
-            tutorialTimer += io.DeltaTime;
-            tutorialAlpha = tutorialTimer / 0.6f;
-            if (tutorialAlpha < 0.0f) tutorialAlpha = 0.0f;
-            if (tutorialAlpha > 1.0f) tutorialAlpha = 1.0f;
-        }
-
         // ==================================================
         // Fullscreen ImGui window (the app "desktop")
         // ==================================================
         ImGui::SetNextWindowPos(ImVec2(0, 0));
         ImGui::SetNextWindowSize(io.DisplaySize);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
         ImGui::Begin("##KalamariApp", nullptr,
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
             | ImGuiWindowFlags_NoMove     | ImGuiWindowFlags_NoCollapse
             | ImGuiWindowFlags_NoBringToFrontOnFocus
             | ImGuiWindowFlags_NoScrollWithMouse);
+        ImGui::PopStyleVar();
+
+        ImGuiStyle& style = ImGui::GetStyle();
+        float sidebarWidth = 260.0f * main_scale;
 
         // ==================================================
-        // 1. HEADER - Centered title bar
+        // LEFT SIDEBAR
         // ==================================================
         {
-            float windowW = ImGui::GetContentRegionAvail().x;
-            float fullW = ImGui::GetWindowWidth();
-            float padX  = ImGui::GetStyle().WindowPadding.x;
+            ImGui::PushStyleColor(ImGuiCol_ChildBg, darkMode ? DARK_FRAME_BG : LIGHT_FRAME_BG);
+            ImGui::BeginChild("Sidebar", ImVec2(sidebarWidth, 0), ImGuiChildFlags_Borders);
 
-            // --- "Kalamari" in Amatic SC, orange accent, centered ---
-            ImGui::PushFont(amaticFont);
-            ImVec2 titleSize = ImGui::CalcTextSize("Kalamari");
-            float titleX = padX + (fullW - 2.0f * padX - titleSize.x) * 0.5f;
-            ImGui::SetCursorPosX(titleX);
-            ImGui::TextColored(ACCENT_COLOR, "Kalamari");
-            ImGui::PopFont();
-
-            // --- "Ink your ideas" in Kameron, centered ---
-            const char* slogan = "Ink your ideas";
             ImGui::PushFont(kameronFont);
-            ImVec2 sloganSize = ImGui::CalcTextSize(slogan);
-            float sloganX = padX + (fullW - 2.0f * padX - sloganSize.x) * 0.5f;
-            ImGui::SetCursorPosX(sloganX);
-            ImGui::TextDisabled("%s", slogan);
+            ImGui::SetCursorPosX((sidebarWidth - ImGui::CalcTextSize("Kalamari").x) * 0.5f);
+            ImGui::TextColored(ACCENT_COLOR, "Kalamari");
             ImGui::PopFont();
 
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();
-        }
 
-        // ==================================================
-        // Theme toggle button (top-right corner)
-        // ==================================================
-        {
-            const char* label = darkMode ? "Light Mode" : "Dark Mode";
-            ImVec2 btnSize = ImGui::CalcTextSize(label);
-            btnSize.x += ImGui::GetStyle().FramePadding.x * 2.0f + 16.0f;
-            btnSize.y += ImGui::GetStyle().FramePadding.y * 2.0f;
+            if (ImGui::Button("+ New Note", ImVec2(-1, 0)))
+            {
+                if (notesDirty && !currentFile.empty())
+                {
+                    SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                    notesDirty = false;
+                }
 
-            float fullW = ImGui::GetWindowWidth();
-            float padX  = ImGui::GetStyle().WindowPadding.x;
-            ImGui::SetCursorPos(ImVec2(fullW - padX - btnSize.x,
-                ImGui::GetCursorPosY() - btnSize.y - ImGui::GetStyle().ItemSpacing.y));
+                currentFile = CreateNewNote(vaultPath);
+                RefreshVaultFiles(vaultPath, vaultFiles);
+                LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+            }
 
-            if (ImGui::Button(label, btnSize))
+            ImGui::Spacing();
+            ImGui::TextDisabled("Notes");
+            ImGui::Spacing();
+
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, darkMode ? DARK_BG : LIGHT_BG);
+            ImGui::InputTextWithHint("##Search", "Search notes...", searchBuffer, sizeof(searchBuffer));
+            ImGui::PopStyleColor();
+            ImGui::Spacing();
+
+            ImGui::BeginChild("FileList", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8.0f));
+            for (const auto& filePath : vaultFiles)
+            {
+                std::string filename = filePath.filename().string();
+                if (std::search(filename.begin(), filename.end(), searchBuffer, searchBuffer + std::strlen(searchBuffer),
+                                [](char a, char b) { return std::tolower(a) == std::tolower(b); }) == filename.end())
+                {
+                    continue;
+                }
+
+                bool isSelected = (filePath == currentFile);
+                if (isSelected)
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Header, ACCENT_COLOR);
+                    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ACCENT_COLOR_HDR);
+                }
+
+                if (ImGui::Selectable(filename.c_str(), isSelected))
+                {
+                    if (notesDirty && !currentFile.empty())
+                    {
+                        SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                        notesDirty = false;
+                    }
+
+                    currentFile = filePath;
+                    LoadNotes(currentFile, notesBuffer, sizeof(notesBuffer));
+                }
+
+                if (isSelected)
+                {
+                    ImGui::PopStyleColor();
+                    ImGui::PopStyleColor();
+                }
+            }
+            ImGui::EndChild();
+
+            // Theme toggle at the bottom of the sidebar
+            if (ImGui::Button(darkMode ? "Light Mode" : "Dark Mode", ImVec2(-1, 0)))
             {
                 darkMode = !darkMode;
                 if (darkMode)
@@ -497,164 +584,61 @@ int main(int, char**)
                     ImGui::StyleColorsLight();
                 ApplyTheme(darkMode);
             }
+
+            ImGui::EndChild();
+            ImGui::PopStyleColor();
         }
 
-        ImGui::Spacing();
+        ImGui::SameLine();
 
         // ==================================================
-        // 2. MAIN CONTENT AREA
+        // RIGHT EDITOR
         // ==================================================
-        float totalH = ImGui::GetContentRegionAvail().y;
-        float tutorialH = showMarkdownTutorial ? totalH * 0.38f : 0.0f;
-        float notesH = totalH - tutorialH - ImGui::GetStyle().ItemSpacing.y;
-
-        // --- Notes editor (resizable input area) ---
-        ImGui::PushFont(kameronFont);
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0, 0, 0, 0));
-        ImGuiChildFlags notesChildFlags = static_cast<ImGuiChildFlags>(
-            ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY);
-        ImGui::BeginChild("NotesArea", ImVec2(0, notesH), notesChildFlags,
-            ImGuiWindowFlags_HorizontalScrollbar);
-        ImGui::PopStyleColor();
-
         {
-            ImVec2 childSize = ImGui::GetContentRegionAvail();
-            ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput
-                                      | ImGuiInputTextFlags_EnterReturnsTrue
-                                      | ImGuiInputTextFlags_CallbackEdit;
-            ImGui::InputTextMultiline("##Notes", notesBuffer, sizeof(notesBuffer),
-                childSize, flags, MarkNotesDirty, &notesDirty);
-        }
+            ImGui::BeginChild("Editor", ImVec2(0, 0), ImGuiChildFlags_None);
 
-        ImGui::EndChild();
-        ImGui::PopFont();
-
-        // --- 3. MARKDOWN TUTORIAL (collapsible child window with fade-in) ---
-        if (showMarkdownTutorial)
-        {
-            ImGui::Spacing();
-            ImGui::PushStyleVar(ImGuiStyleVar_Alpha, tutorialAlpha);
-
-            if (ImGui::CollapsingHeader("Markdown Quick Reference", ImGuiTreeNodeFlags_DefaultOpen))
+            if (currentFile.empty())
             {
-                ImGui::BeginChild("MarkdownTutorial", ImVec2(0, tutorialH - 30.0f),
-                    ImGuiChildFlags_Borders, ImGuiWindowFlags_None);
+                ImVec2 region = ImGui::GetContentRegionAvail();
+                ImGui::SetCursorPos(ImVec2((region.x - ImGui::CalcTextSize("Select or create a note to begin.").x) * 0.5f,
+                                            region.y * 0.35f));
+                ImGui::TextDisabled("Select or create a note to begin.");
 
+                ImGui::Spacing();
+                ImGui::Spacing();
+
+                ImGui::TextWrapped("Markdown basics:");
+                ImGui::BulletText("# Heading");
+                ImGui::BulletText("**bold**");
+                ImGui::BulletText("*italic*");
+                ImGui::BulletText("- list item");
+                ImGui::BulletText("[link](url)");
+            }
+            else
+            {
+                std::string title = currentFile.stem().string();
                 ImGui::PushFont(kameronFont);
-                ImGui::PushStyleColor(ImGuiCol_Text, DARK_TEXT);
-
-                ImGui::TextWrapped("Headers");
-                ImGui::Indent();
-                ImGui::TextColored(ACCENT_COLOR, "# "); ImGui::SameLine();
-                ImGui::Text("Header 1");
-                ImGui::TextColored(ACCENT_COLOR, "## "); ImGui::SameLine();
-                ImGui::Text("Header 2");
-                ImGui::TextColored(ACCENT_COLOR, "### "); ImGui::SameLine();
-                ImGui::Text("Header 3");
-                ImGui::Unindent();
-
-                ImGui::Spacing();
-
-                ImGui::TextWrapped("Bold & Italic");
-                ImGui::Indent();
-                ImGui::TextColored(ACCENT_COLOR, "**bold** "); ImGui::SameLine();
-                ImGui::Text("-> bold");
-                ImGui::TextColored(ACCENT_COLOR, "*italic* "); ImGui::SameLine();
-                ImGui::Text("-> italic");
-                ImGui::Unindent();
-
-                ImGui::Spacing();
-
-                ImGui::TextWrapped("Lists");
-                ImGui::Indent();
-                ImGui::TextColored(ACCENT_COLOR, "- item one");
-                ImGui::TextColored(ACCENT_COLOR, "- item two");
-                ImGui::TextColored(ACCENT_COLOR, "1. numbered");
-                ImGui::Unindent();
-
-                ImGui::Spacing();
-
-                ImGui::TextWrapped("Links & Code");
-                ImGui::Indent();
-                ImGui::TextColored(ACCENT_COLOR, "[text](url) "); ImGui::SameLine();
-                ImGui::Text("-> hyperlink");
-                ImGui::TextColored(ACCENT_COLOR, "`code` "); ImGui::SameLine();
-                ImGui::Text("-> inline code");
-                ImGui::Unindent();
+                ImGui::SetWindowFontScale(1.35f);
+                ImGui::Text("%s", title.c_str());
+                ImGui::SetWindowFontScale(1.0f);
+                ImGui::PopFont();
 
                 ImGui::Spacing();
                 ImGui::Separator();
                 ImGui::Spacing();
 
-                // Clickable link to the Markdown Guide
-                ImGui::Text("Learn more at:");
-                ImGui::SameLine();
-                ImGui::PushStyleColor(ImGuiCol_Text, ACCENT_COLOR);
-                ImGui::Text("[Markdown Guide](https://www.markdownguide.org/)");
-                ImGui::PopStyleColor();
-
-                if (ImGui::IsItemClicked())
-                {
-                    SDL_OpenURL("https://www.markdownguide.org/");
-                }
-
-                // Hover underline effect
-                if (ImGui::IsItemHovered())
-                {
-                    ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-                }
-
+                ImGui::PushFont(kameronFont);
+                ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0, 0, 0, 0));
+                ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput
+                                          | ImGuiInputTextFlags_CallbackEdit;
+                ImVec2 avail = ImGui::GetContentRegionAvail();
+                ImGui::InputTextMultiline("##Notes", notesBuffer, sizeof(notesBuffer),
+                    avail, flags, MarkNotesDirty, &notesDirty);
                 ImGui::PopStyleColor();
                 ImGui::PopFont();
-                ImGui::EndChild();
             }
 
-            ImGui::PopStyleVar(); // Alpha
-        }
-
-        // ==================================================
-        // 4. FOOTER - Privacy Policy & Terms of Service
-        // ==================================================
-        {
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            ImGui::PushFont(kameronFont);
-            float fullW = ImGui::GetWindowWidth();
-            float padX  = ImGui::GetStyle().WindowPadding.x;
-
-            // Layout: [Privacy Policy] centered [Terms of Service]
-            const char* privacy = "Privacy Policy";
-            const char* tos     = "Terms of Service";
-            ImVec2 privSize = ImGui::CalcTextSize(privacy);
-            ImVec2 tosSize  = ImGui::CalcTextSize(tos);
-            float gap = 30.0f;
-            float totalLinkW = privSize.x + gap + tosSize.x;
-            float startX = padX + (fullW - 2.0f * padX - totalLinkW) * 0.5f;
-
-            // Privacy Policy link
-            ImGui::SetCursorPosX(startX);
-            ImGui::PushStyleColor(ImGuiCol_Text, ACCENT_COLOR);
-            ImGui::Text("%s", privacy);
-            if (ImGui::IsItemClicked())
-                SDL_OpenURL("https://callen.page/projects/kalamari/privacy.md");
-            if (ImGui::IsItemHovered())
-                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            ImGui::PopStyleColor();
-
-            ImGui::SameLine(startX + privSize.x + gap);
-
-            // Terms of Service link
-            ImGui::PushStyleColor(ImGuiCol_Text, ACCENT_COLOR);
-            ImGui::Text("%s", tos);
-            if (ImGui::IsItemClicked())
-                SDL_OpenURL("https://callen.page/projects/kalamari/tos.md");
-            if (ImGui::IsItemHovered())
-                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            ImGui::PopStyleColor();
-
-            ImGui::PopFont();
+            ImGui::EndChild();
         }
 
         ImGui::End(); // ##KalamariApp
@@ -664,9 +648,9 @@ int main(int, char**)
         // ==================================================
         // ---- Auto-save notes periodically ----
         Uint64 currentTicks = SDL_GetTicks();
-        if (notesDirty && currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
+        if (notesDirty && !currentFile.empty() && currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
         {
-            SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+            SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
             notesDirty = false;
             lastAutoSaveTicks = currentTicks;
         }
@@ -688,9 +672,9 @@ int main(int, char**)
     // ------------------------------------------------------------------
     // Save notes before shutting down
     // ------------------------------------------------------------------
-    if (notesDirty)
+    if (notesDirty && !currentFile.empty())
     {
-        SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+        SaveNotes(currentFile, notesBuffer, sizeof(notesBuffer));
         notesDirty = false;
     }
 
