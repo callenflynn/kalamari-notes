@@ -177,7 +177,7 @@ if(WIN32)
 
     set(CPACK_WIX_UPGRADE_GUID "A1B2C3D4-E5F6-7890-ABCD-EF1234567890")
     set(CPACK_WIX_PROGRAM_MENU_FOLDER "Kalamari")
-    set(CPACK_WIX_INSTALL_DIR "Kalamari")
+    set(CPACK_WIX_INSTALL_DIR "kalamari")
 
     # Add SDL3 DLL as a component
     set(CPACK_COMPONENT_KALAMARI_DESCRIPTION "Kalamari Notes Application")
