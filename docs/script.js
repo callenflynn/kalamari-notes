@@ -126,4 +126,46 @@
         lastScroll = scrollY;
     }, { passive: true });
 
+    /* ============== LATEST RELEASE DOWNLOADS ============== */
+    (function fetchLatestRelease() {
+        const REPO = 'callenflynn/kalamari-notes';
+        const API_URL = 'https://api.github.com/repos/' + REPO + '/releases/latest';
+
+        function findAsset(assets, suffix) {
+            return assets.find(function (asset) {
+                return asset.name.endsWith(suffix);
+            });
+        }
+
+        function updateDownloadLinks() {
+            fetch(API_URL)
+                .then(function (response) {
+                    if (!response.ok) throw new Error('GitHub API response was not ok');
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (!data.assets || !data.assets.length) return;
+
+                    var windowsAsset = findAsset(data.assets, '-Windows.msi');
+                    var macosAsset = findAsset(data.assets, '-Darwin.dmg');
+                    var linuxAsset = findAsset(data.assets, '-Linux.deb');
+
+                    function setLink(platform, asset) {
+                        if (!asset) return;
+                        var link = document.querySelector('.download-card[data-platform="' + platform + '"]');
+                        if (link) link.href = asset.browser_download_url;
+                    }
+
+                    setLink('windows', windowsAsset);
+                    setLink('macos', macosAsset);
+                    setLink('linux', linuxAsset);
+                })
+                .catch(function () {
+                    // Fallback: links already point to the releases page.
+                });
+        }
+
+        updateDownloadLinks();
+    })();
+
 })();

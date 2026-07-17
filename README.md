@@ -1,5 +1,7 @@
 # Kalamari Notes
 
+![Kalamari Banner](src/assets/kalamari_banner.png)
+
 A fast, cross-platform markdown notebook built with C++, SDL3, and Dear ImGui.
 
 ## Prerequisites
