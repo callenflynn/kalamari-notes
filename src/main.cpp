@@ -56,6 +56,8 @@ static std::filesystem::path GetVaultPath(const char* vaultName)
     return vaultPath;
 }
 
+static constexpr const char* DEFAULT_VAULT_NAME = "steven";
+
 static std::filesystem::path EnsureVaultDirectory(const char* vaultName)
 {
     std::filesystem::path path = GetVaultPath(vaultName);
@@ -63,7 +65,7 @@ static std::filesystem::path EnsureVaultDirectory(const char* vaultName)
     std::filesystem::create_directories(path, ec);
     if (ec)
     {
-        printf("Warning: Could not create vault directory at %s\n", path.string().c_str());
+        SDL_Log("Warning: Could not create vault directory at %s", path.string().c_str());
     }
     return path;
 }
@@ -166,8 +168,8 @@ int main(int, char**)
     // Ensure default vault directory exists
     // ------------------------------------------------------------------
     {
-        std::filesystem::path vaultPath = EnsureVaultDirectory("steven");
-        printf("Vault directory: %s\n", vaultPath.string().c_str());
+        std::filesystem::path vaultPath = EnsureVaultDirectory(DEFAULT_VAULT_NAME);
+        SDL_Log("Vault directory: %s", vaultPath.string().c_str());
     }
 
     // ------------------------------------------------------------------
