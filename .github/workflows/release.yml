@@ -26,6 +26,7 @@ jobs:
 
       - name: Compute version
         id: version
+        shell: bash
         run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Configure
