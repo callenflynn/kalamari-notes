@@ -274,6 +274,17 @@ namespace Kalamari
             }
 
             ImGui::Spacing();
+            ImGui::Text("Diagnostics");
+            ImGui::Separator();
+            if (ImGui::Button("Send Sentry Test Event", ImVec2(-1, 0)))
+            {
+                sentry_capture_event(sentry_value_new_message_event(
+                    SENTRY_LEVEL_INFO,
+                    "kalamari",
+                    "Sentry monitoring test event from Kalamari"));
+            }
+
+            ImGui::Spacing();
             if (ImGui::Button("Close", ImVec2(120, 0)))
             {
                 ImGui::CloseCurrentPopup();
