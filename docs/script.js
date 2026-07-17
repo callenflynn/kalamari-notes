@@ -130,6 +130,7 @@
     (function fetchLatestRelease() {
         const REPO = 'callenflynn/kalamari-notes';
         const API_URL = 'https://api.github.com/repos/' + REPO + '/releases/latest';
+        const TIMEOUT_MS = 5000;
 
         function findAsset(assets, suffix) {
             return assets.find(function (asset) {
@@ -137,30 +138,37 @@
             });
         }
 
+        function setLink(platform, asset) {
+            if (!asset) return;
+            const link = document.querySelector('.download-card[data-platform="' + platform + '"]');
+            if (link) link.href = asset.browser_download_url;
+        }
+
         function updateDownloadLinks() {
-            fetch(API_URL)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(function () {
+                controller.abort();
+            }, TIMEOUT_MS);
+
+            fetch(API_URL, { signal: controller.signal })
                 .then(function (response) {
+                    clearTimeout(timeoutId);
                     if (!response.ok) throw new Error('GitHub API response was not ok');
                     return response.json();
                 })
                 .then(function (data) {
                     if (!data.assets || !data.assets.length) return;
 
-                    var windowsAsset = findAsset(data.assets, '-Windows.msi');
-                    var macosAsset = findAsset(data.assets, '-Darwin.dmg');
-                    var linuxAsset = findAsset(data.assets, '-Linux.deb');
-
-                    function setLink(platform, asset) {
-                        if (!asset) return;
-                        var link = document.querySelector('.download-card[data-platform="' + platform + '"]');
-                        if (link) link.href = asset.browser_download_url;
-                    }
+                    const windowsAsset = findAsset(data.assets, '-Windows.msi');
+                    const macosAsset = findAsset(data.assets, '-Darwin.dmg');
+                    const linuxAsset = findAsset(data.assets, '-Linux.deb');
 
                     setLink('windows', windowsAsset);
                     setLink('macos', macosAsset);
                     setLink('linux', linuxAsset);
                 })
                 .catch(function () {
+                    clearTimeout(timeoutId);
                     // Fallback: links already point to the releases page.
                 });
         }
