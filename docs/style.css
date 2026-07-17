@@ -11,8 +11,9 @@
     box-sizing: border-box;
 }
 ::selection {
-    background: rgba(237, 80, 1, 0.2);
-    color: #242424;
+    background: rgba(237, 80, 1, 0.3);
+    color: var(--text-primary);
+}
 html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
