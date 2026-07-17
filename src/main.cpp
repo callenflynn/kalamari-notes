@@ -124,6 +124,12 @@ static void SaveNotes(const std::filesystem::path& notesPath, const char* buffer
         }
 
         std::error_code ec;
+        // On some platforms (notably Windows) rename may refuse to overwrite
+        // an existing file. Remove the old file first, then rename.
+        if (std::filesystem::exists(notesPath, ec) && !ec)
+        {
+            std::filesystem::remove(notesPath, ec);
+        }
         std::filesystem::rename(tempPath, notesPath, ec);
         if (ec)
         {
@@ -363,6 +369,10 @@ int main(int, char**)
     static bool showMarkdownTutorial = true;
     static float tutorialAlpha = 0.0f; // for fade-in animation
     static float tutorialTimer  = 0.0f;
+
+    // Auto-save every 30 seconds
+    constexpr Uint32 AUTO_SAVE_INTERVAL_MS = 30000;
+    Uint64 lastAutoSaveTicks = SDL_GetTicks();
 
     // ------------------------------------------------------------------
     // Main loop
@@ -630,6 +640,14 @@ int main(int, char**)
         // ==================================================
         // Rendering
         // ==================================================
+        // ---- Auto-save notes periodically ----
+        Uint64 currentTicks = SDL_GetTicks();
+        if (currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
+        {
+            SaveNotes(notesFilePath, notesBuffer, sizeof(notesBuffer));
+            lastAutoSaveTicks = currentTicks;
+        }
+
         ImGui::Render();
         SDL_SetRenderScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
 
