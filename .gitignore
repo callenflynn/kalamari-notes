@@ -2,6 +2,7 @@
 # Build directories
 # ===========================
 build/
+build-*/
 out/
 cmake-build-*/
 .cmake/
@@ -83,3 +84,8 @@ imgui.ini
 # Sentry Native SDK runtime data
 # ===========================
 .sentry-native/
+
+# ===========================
+# External vendored dependencies (managed by FetchContent)
+# ===========================
+external/
