@@ -70,6 +70,7 @@ FetchContent_MakeAvailable(sentry)
 # ---------------------------------------------------------------------------
 add_executable(Kalamari WIN32 MACOSX_BUNDLE
     src/main.cpp
+    src/kalamari.rc
 )
 target_link_libraries(Kalamari PRIVATE SDL3::SDL3 imgui_lib sentry::sentry)
 
@@ -93,15 +94,22 @@ add_custom_command(TARGET Kalamari POST_BUILD
 # Platform-specific flags
 # ---------------------------------------------------------------------------
 if(WIN32)
-    # Copy SDL3.dll and crashpad_handler.exe next to the executable
+    # Copy runtime dependencies next to the executable
     add_custom_command(TARGET Kalamari POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
             $<TARGET_FILE:SDL3::SDL3>
             $<TARGET_FILE_DIR:Kalamari>
         COMMAND ${CMAKE_COMMAND} -E copy
-            $<TARGET_FILE:sentry::sentry>
+            $<TARGET_FILE:crashpad::handler>
             $<TARGET_FILE_DIR:Kalamari>
-        COMMENT "Copying DLLs to output directory"
+        COMMENT "Copying runtime dependencies to output directory"
+    )
+
+    # Install runtime dependencies alongside the executable so CPack includes them
+    install(FILES
+        $<TARGET_FILE:SDL3::SDL3>
+        $<TARGET_FILE:crashpad::handler>
+        DESTINATION ${CMAKE_INSTALL_BINDIR}
     )
 endif()
 
