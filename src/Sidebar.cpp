@@ -186,24 +186,21 @@ namespace Kalamari
 
                 if (ImGui::IsItemClicked())
                 {
-                    for (const auto& n : vault.GetNotes())
-                    {
-                        if (n->relativePath == entry->relativePath)
-                        { cbs.onSelectNote(n); break; }
-                    }
+                    auto note = vault.FindNoteByPath(entry->relativePath);
+                    if (note) cbs.onSelectNote(note);
                 }
 
                 if (ImGui::BeginPopupContextItem())
                 {
                     if (ImGui::Selectable("Rename"))
                     {
-                        for (const auto& n : vault.GetNotes())
-                        { if (n->relativePath == entry->relativePath) { cbs.onRenameNote(n); break; } }
+                        auto note = vault.FindNoteByPath(entry->relativePath);
+                        if (note) cbs.onRenameNote(note);
                     }
                     if (ImGui::Selectable("Delete"))
                     {
-                        for (const auto& n : vault.GetNotes())
-                        { if (n->relativePath == entry->relativePath) { cbs.onDeleteNote(n); break; } }
+                        auto note = vault.FindNoteByPath(entry->relativePath);
+                        if (note) cbs.onDeleteNote(note);
                     }
                     ImGui::EndPopup();
                 }

@@ -25,6 +25,7 @@ namespace Kalamari
     private:
         const Note* m_lastNote = nullptr;
         bool m_editMode = false;
+        bool m_wasEditingLastFrame = false;
         std::string m_wikiLinkTarget;
         int m_inlineEditLine = -1;   // Line index being edited inline (-1 = none)
         bool m_inlineFocusSet = false; // Whether focus has been set for inline edit
@@ -39,9 +40,7 @@ namespace Kalamari
         void DrawReadingMode(const std::vector<std::string>& lines, Note& note);
         void DrawEditMode(Note& note);
         void DrawInlineEdit(int lineIndex, Note& note);
-        void DrawToolbar(Note& note);
-        void DrawFindBar();
-        void InsertMarkdownWrap(Note& note, const char* before, const char* after);
+        void DrawFindBar(const std::string& content);
         static int CountWords(const std::string& text);
     };
 }

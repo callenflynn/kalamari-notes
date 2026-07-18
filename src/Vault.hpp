@@ -60,6 +60,7 @@ namespace Kalamari
 
         // Wiki-link support
         std::shared_ptr<Note> FindNote(const std::string& name) const;
+        std::shared_ptr<Note> FindNoteByPath(const std::string& relativePath) const;
         std::shared_ptr<Note> FindOrCreateNote(const std::string& name);
 
         // Config directory

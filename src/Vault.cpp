@@ -383,6 +383,16 @@ namespace Kalamari
         return nullptr;
     }
 
+    std::shared_ptr<Note> Vault::FindNoteByPath(const std::string& relativePath) const
+    {
+        for (const auto& note : m_notes)
+        {
+            if (note->relativePath == relativePath)
+                return note;
+        }
+        return nullptr;
+    }
+
     std::shared_ptr<Note> Vault::FindOrCreateNote(const std::string& name)
     {
         auto existing = FindNote(name);

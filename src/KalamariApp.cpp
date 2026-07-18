@@ -603,25 +603,37 @@ namespace Kalamari
             ImGui::TextColored(Theme::ACCENT_COLOR, "Welcome to Kalamari");
             ImGui::SetWindowFontScale(1.0f);
             ImGui::Spacing();
-            ImGui::TextWrapped("Enter a path to open an existing vault or create a new one.");
+            ImGui::TextWrapped("Enter a name for your vault. It will be created in your Documents folder.");
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();
 
             ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##VaultPath", "e.g. C:\\Users\\Me\\Documents\\MyVault",
+            ImGui::InputTextWithHint("##VaultName", "My Vault",
                                       m_newVaultBuffer, sizeof(m_newVaultBuffer));
+
+            // Warn if vault already exists
+            if (std::strlen(m_newVaultBuffer) > 0)
+            {
+                const char* docs = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
+                std::string checkPath = (docs ? docs : ".") + std::string("/kalamari/") + m_newVaultBuffer;
+                if (std::filesystem::exists(checkPath))
+                    ImGui::TextDisabled("Vault already exists — will open it");
+            }
 
             ImGui::Spacing();
 
-            if (ImGui::Button("Open", ImVec2(-1, 0)))
+            if (ImGui::Button("Create & Open", ImVec2(-1, 0)))
             {
-                std::string path(m_newVaultBuffer);
-                if (!path.empty())
+                std::string name(m_newVaultBuffer);
+                if (!name.empty())
                 {
-                    if (m_vault.OpenVault(path))
+                    const char* docs = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
+                    std::string fullPath = (docs ? docs : ".") + std::string("/kalamari/") + name;
+
+                    if (m_vault.OpenVault(fullPath))
                     {
-                        m_config.lastVaultPath = path;
+                        m_config.lastVaultPath = fullPath;
                         LoadConfig();
                         m_darkMode = m_config.darkMode;
                         m_sidebarWidth = m_config.sidebarWidth;
@@ -630,7 +642,7 @@ namespace Kalamari
                 }
             }
 
-            // Show last vault if available
+            // Show recent vaults
             if (!m_config.lastVaultPath.empty())
             {
                 ImGui::Spacing();

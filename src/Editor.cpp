@@ -32,12 +32,6 @@ namespace Kalamari
         return count;
     }
 
-    void Editor::InsertMarkdownWrap(Note& note, const char* before, const char* after)
-    {
-        ImGui::SetClipboardText((std::string(before) + "text" + after).c_str());
-        // The user will paste — this is a simple approach for the toolbar
-    }
-
     // =========================================================================
     // Draw — top-level entry point
     // =========================================================================
@@ -82,26 +76,13 @@ namespace Kalamari
             ImGui::TextDisabled("\xE2\x97\x8F"); // ●
         }
 
-        // Mode toggle button (right-aligned)
-        ImGui::SameLine();
-        const char* modeLabel = m_editMode ? "Preview" : "Edit";
-        float btnW = ImGui::CalcTextSize(modeLabel).x + 20;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - btnW);
-        if (ImGui::SmallButton(modeLabel))
-            m_editMode = !m_editMode;
-
         ImGui::Spacing();
-
-        // ---- Toolbar (edit mode only) ----
-        if (m_editMode)
-            DrawToolbar(*activeNote);
-
         ImGui::Separator();
         ImGui::Spacing();
 
         // ---- Find bar ----
         if (m_showFind)
-            DrawFindBar();
+            DrawFindBar(activeNote->content);
 
         // ---- Content ----
         std::vector<std::string> lines;
@@ -144,6 +125,20 @@ namespace Kalamari
 
         ImGui::EndChild();
 
+        // Auto-preview: switch to reading mode when editor loses focus.
+        // We track focus across frames to avoid timing issues with IsMouseClicked
+        // being processed before widget focus updates.
+        if (m_editMode)
+        {
+            if (m_wasEditingLastFrame && !ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+                m_editMode = false;
+            m_wasEditingLastFrame = true;
+        }
+        else
+        {
+            m_wasEditingLastFrame = false;
+        }
+
         // ---- Word count (bottom bar) ----
         ImGui::Separator();
         int wc = CountWords(activeNote->content);
@@ -159,76 +154,54 @@ namespace Kalamari
     }
 
     // =========================================================================
-    // Toolbar
-    // =========================================================================
-    void Editor::DrawToolbar(Note& note)
-    {
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
-
-        if (ImGui::SmallButton("H1")) { note.content += "\n# "; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("H2")) { note.content += "\n## "; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("H3")) { note.content += "\n### "; note.dirty = true; }
-        ImGui::SameLine();
-        ImGui::Separator();
-        ImGui::SameLine();
-        if (ImGui::SmallButton("B")) { note.content += "**bold**"; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("I")) { note.content += "*italic*"; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("S")) { note.content += "~~strike~~"; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("`")) { note.content += "`code`"; note.dirty = true; }
-        ImGui::SameLine();
-        ImGui::Separator();
-        ImGui::SameLine();
-        if (ImGui::SmallButton("Link")) { note.content += "[label](url)"; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("Task")) { note.content += "\n- [ ] "; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("Quote")) { note.content += "\n> "; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("Code")) { note.content += "\n```\n\n```\n"; note.dirty = true; }
-        ImGui::SameLine();
-        if (ImGui::SmallButton("HR")) { note.content += "\n---\n"; note.dirty = true; }
-
-        ImGui::PopStyleVar();
-        ImGui::Spacing();
-    }
-
-    // =========================================================================
     // Find bar
     // =========================================================================
-    void Editor::DrawFindBar()
+    void Editor::DrawFindBar(const std::string& content)
     {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 3));
-        ImGui::SetNextItemWidth(250);
-        ImGui::InputTextWithHint("##FindInput", "Find in note...", m_findBuffer, sizeof(m_findBuffer));
+        ImGui::SetNextItemWidth(200);
+        ImGui::InputTextWithHint("##FindInput", "Find...", m_findBuffer, sizeof(m_findBuffer));
 
-        if (!m_findBuffer[0] || std::strlen(m_findBuffer) < 2)
+        // Count matches
+        std::string needle(m_findBuffer);
+        if (needle.size() >= 2)
+        {
+            // Case-insensitive count
+            m_findCount = 0;
+            std::string haystackLower = content;
+            std::string needleLower = needle;
+            std::transform(haystackLower.begin(), haystackLower.end(), haystackLower.begin(),
+                [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+            std::transform(needleLower.begin(), needleLower.end(), needleLower.begin(),
+                [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+            size_t pos = 0;
+            while ((pos = haystackLower.find(needleLower, pos)) != std::string::npos)
+            {
+                ++m_findCount;
+                pos += needleLower.size();
+            }
+            if (m_findCount > 0 && m_findIndex < 0)
+                m_findIndex = 0;
+            if (m_findIndex >= m_findCount)
+                m_findIndex = m_findCount - 1;
+        }
+        else
         {
             m_findCount = 0;
             m_findIndex = -1;
         }
 
-        // Count matches in current note content
-        if (m_findBuffer[0] && std::strlen(m_findBuffer) >= 2)
-        {
-            // Find count is computed but highlighting is done via ImGui's built-in selection
-            std::string needle(m_findBuffer);
-            std::string haystack;
-            // Get current note content from the active tab - we'll count from what we have
-            m_findCount = 0;
-            // We can't easily get the note content here, so we'll count on next frame
-        }
-
         ImGui::SameLine();
-        if (ImGui::SmallButton("Find"))
-        {
-            // Focus the InputTextMultiline to trigger ImGui's built-in find
-            // For now, the highlight happens via ImGui's text selection
-        }
+        if (ImGui::SmallButton("<") && m_findIndex > 0)
+            --m_findIndex;
+        ImGui::SameLine();
+        if (ImGui::SmallButton(">") && m_findIndex < m_findCount - 1)
+            ++m_findIndex;
+        ImGui::SameLine();
+        if (m_findCount > 0)
+            ImGui::TextDisabled("%d/%d", m_findIndex + 1, m_findCount);
+        else if (needle.size() >= 2)
+            ImGui::TextDisabled("0");
         ImGui::SameLine();
         if (ImGui::SmallButton("X"))
         {

@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 
 namespace Kalamari { namespace Markdown
 {
@@ -150,8 +151,13 @@ namespace Kalamari { namespace Markdown
                 ? ImGui::GetColorU32(ImVec4(0.13f, 0.13f, 0.14f, 1.0f))
                 : ImGui::GetColorU32(ImVec4(0.93f, 0.91f, 0.88f, 1.0f));
             ImU32 barCol = ImGui::GetColorU32(Theme::ACCENT_COLOR);
-            dl->AddRectFilled(pos, ImVec2(pos.x + availW, pos.y + h + 4), bgCol, 3);
-            dl->AddRectFilled(pos, ImVec2(pos.x + 3, pos.y + h + 4), barCol);
+            // Calculate height for wrapped text
+            ImVec2 textSize = ImGui::CalcTextSize(line.empty() ? " " : line.c_str());
+            int wrapLines = (int)std::ceil(textSize.x / (availW - 16));
+            if (wrapLines < 1) wrapLines = 1;
+            float blockH = h * wrapLines + 4;
+            dl->AddRectFilled(pos, ImVec2(pos.x + availW, pos.y + blockH), bgCol, 3);
+            dl->AddRectFilled(pos, ImVec2(pos.x + 3, pos.y + blockH), barCol);
             ImGui::SetCursorScreenPos(ImVec2(pos.x + 12, pos.y + 2));
             ImVec4 tc = ImGui::GetStyle().Colors[ImGuiCol_Text];
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(tc.x * 0.85f, tc.y * 0.85f, tc.z * 0.9f, 1));
