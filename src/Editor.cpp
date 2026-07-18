@@ -6,6 +6,7 @@
 #include "misc/cpp/imgui_stdlib.h"
 #include <algorithm>
 #include <cctype>
+#include <cstring>
 
 namespace Kalamari
 {
@@ -170,7 +171,7 @@ namespace Kalamari
         ImGui::SameLine();
         if (ImGui::SmallButton("H3")) { note.content += "\n### "; note.dirty = true; }
         ImGui::SameLine();
-        ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+        ImGui::Separator();
         ImGui::SameLine();
         if (ImGui::SmallButton("B")) { note.content += "**bold**"; note.dirty = true; }
         ImGui::SameLine();
@@ -180,7 +181,7 @@ namespace Kalamari
         ImGui::SameLine();
         if (ImGui::SmallButton("`")) { note.content += "`code`"; note.dirty = true; }
         ImGui::SameLine();
-        ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+        ImGui::Separator();
         ImGui::SameLine();
         if (ImGui::SmallButton("Link")) { note.content += "[label](url)"; note.dirty = true; }
         ImGui::SameLine();
