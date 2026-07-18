@@ -67,7 +67,7 @@ namespace Kalamari
         const char* docsPath = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
         if (!docsPath)
         {
-            return std::filesystem::current_path() / "kalimari";
+            return std::filesystem::current_path() / "kalamari";
         }
 
 #ifdef _WIN32
@@ -76,11 +76,11 @@ namespace Kalamari
         {
             std::wstring wstr(len - 1, 0);
             ::MultiByteToWideChar(CP_UTF8, 0, docsPath, -1, wstr.data(), len - 1);
-            return std::filesystem::path(wstr) / "kalimari";
+            return std::filesystem::path(wstr) / "kalamari";
         }
-        return std::filesystem::current_path() / "kalimari";
+        return std::filesystem::current_path() / "kalamari";
 #else
-        return std::filesystem::path(docsPath) / "kalimari";
+        return std::filesystem::path(docsPath) / "kalamari";
 #endif
     }
 
@@ -257,6 +257,70 @@ namespace Kalamari
             }
         }
         return results;
+    }
+
+    std::shared_ptr<Note> Vault::FindNote(const std::string& name) const
+    {
+        // Try exact match first (with and without .md)
+        std::string target = name;
+        if (target.size() <= 3 || target.substr(target.size() - 3) != ".md")
+            target += ".md";
+
+        for (const auto& note : m_notes)
+        {
+            if (note->fileName == target || note->fileName == name)
+                return note;
+        }
+        return nullptr;
+    }
+
+    std::shared_ptr<Note> Vault::FindOrCreateNote(const std::string& name)
+    {
+        auto existing = FindNote(name);
+        if (existing)
+            return existing;
+
+        // Create new note with the given name
+        std::string safeName = name;
+        // Remove .md if present, we'll add it back safely
+        if (safeName.size() > 3 && safeName.substr(safeName.size() - 3) == ".md")
+            safeName = safeName.substr(0, safeName.size() - 3);
+
+        // Sanitize: replace path separators and other dangerous chars
+        for (char& c : safeName)
+        {
+            if (c == '/' || c == '\\' || c == ':' || c == '*' || c == '?' ||
+                c == '"' || c == '<' || c == '>' || c == '|' || c == '\0' ||
+                c == '\r' || c == '\n' || c == '\t')
+            {
+                c = '-';
+            }
+        }
+
+        if (safeName.empty())
+            safeName = "untitled";
+
+        std::filesystem::path newPath = GetVaultPath() / (safeName + ".md");
+        int suffix = 1;
+        while (std::filesystem::exists(newPath))
+        {
+            newPath = GetVaultPath() / (safeName + "-" + std::to_string(suffix) + ".md");
+            ++suffix;
+        }
+
+        std::ofstream file(newPath, std::ios::binary | std::ios::trunc);
+        if (file)
+        {
+            std::string welcome = "# " + safeName + "\n\n";
+            file.write(welcome.data(), static_cast<std::streamsize>(welcome.size()));
+        }
+
+        Refresh();
+        for (const auto& note : m_notes)
+        {
+            if (note->path == newPath) return note;
+        }
+        return nullptr;
     }
 
     bool Vault::AtomicReplaceFile(const std::filesystem::path& from, const std::filesystem::path& to)

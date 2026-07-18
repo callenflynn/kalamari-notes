@@ -26,6 +26,7 @@ namespace Kalamari
         std::shared_ptr<Note> m_currentNote;
         bool m_darkMode = true;
         bool m_showSettings = false;
+        float m_sidebarWidth = 260.0f;
 
         char m_searchBuffer[256] = {};
         char m_renameBuffer[256] = {};
@@ -37,6 +38,7 @@ namespace Kalamari
 
         void DrawSidebar();
         void DrawMainArea();
+        void HandleWikiLinkNavigation();
         void DrawSettingsModal();
         void DrawRenameModal();
         void DrawVaultPicker();

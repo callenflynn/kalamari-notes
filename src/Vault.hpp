@@ -38,6 +38,11 @@ namespace Kalamari
 
         std::vector<std::shared_ptr<Note>> Search(const std::string& query) const;
 
+        // Find a note by filename (with or without .md extension), returns nullptr if not found
+        std::shared_ptr<Note> FindNote(const std::string& name) const;
+        // Find existing note or create a new one with the given name
+        std::shared_ptr<Note> FindOrCreateNote(const std::string& name);
+
         static std::filesystem::path GetVaultPathFor(const std::string& vaultName);
 
     private:
