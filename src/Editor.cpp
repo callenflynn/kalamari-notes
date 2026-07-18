@@ -509,8 +509,8 @@ namespace Kalamari
 
                     std::string bold = text.substr(pos + 2, end - pos - 2);
                     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(
-                        std::min(textColor.x * 1.15f, 1.0f),
-                        std::min(textColor.y * 1.05f, 1.0f),
+                        (std::min)(textColor.x * 1.15f, 1.0f),
+                        (std::min)(textColor.y * 1.05f, 1.0f),
                         textColor.z * 0.9f,
                         1.0f));
                     RenderInlineFormatted(bold);  // recursive: wiki-links inside bold work

@@ -2,6 +2,8 @@ name: Build and Release
 
 on:
   push:
+    branches:
+      - '**'
     paths:
       - 'src/**'
       - 'CMakeLists.txt'
@@ -136,6 +138,7 @@ jobs:
   # Create GitHub Release
   # ---------------------------------------------------------------------------
   release:
+    if: startsWith(github.ref, 'refs/tags/')
     needs: [build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
     steps:

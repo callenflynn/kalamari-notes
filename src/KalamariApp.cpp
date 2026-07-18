@@ -150,8 +150,8 @@ namespace Kalamari
                 if (ImGui::IsItemActive())
                 {
                     m_sidebarWidth += io.MouseDelta.x;
-                    m_sidebarWidth = std::max(SIDEBAR_MIN_WIDTH * m_renderer.GetScale(),
-                                           std::min(m_sidebarWidth, SIDEBAR_MAX_WIDTH * m_renderer.GetScale()));
+                    m_sidebarWidth = (std::max)(SIDEBAR_MIN_WIDTH * m_renderer.GetScale(),
+                                           (std::min)(m_sidebarWidth, SIDEBAR_MAX_WIDTH * m_renderer.GetScale()));
                 }
                 if (ImGui::IsItemHovered() || ImGui::IsItemActive())
                     ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
