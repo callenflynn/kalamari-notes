@@ -166,7 +166,9 @@ jobs:
       - name: Delete old dev release (for rolling update)
         if: steps.meta.outputs.prerelease == 'true'
         continue-on-error: true
-        run: gh release delete dev-latest --yes --cleanup-tag 2>/dev/null || true
+        run: |
+          git push origin :refs/tags/dev-latest 2>/dev/null || true
+          gh release delete dev-latest --yes 2>/dev/null || true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
