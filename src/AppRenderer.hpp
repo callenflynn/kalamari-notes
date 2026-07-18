@@ -12,7 +12,7 @@ namespace Kalamari
         AppRenderer() = default;
         ~AppRenderer() = default;
 
-        bool Init();
+        bool Init(int windowW, int windowH);
         void Shutdown();
 
         SDL_Window* GetWindow() const { return m_window; }

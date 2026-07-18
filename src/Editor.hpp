@@ -11,25 +11,37 @@ namespace Kalamari
     {
     public:
         Editor() = default;
-        ~Editor() = default;
 
-        void Draw(const std::shared_ptr<Note>& activeNote);
+        // Draw the editor for the given note. Returns true if content changed.
+        bool Draw(const std::shared_ptr<Note>& activeNote);
 
-        // Wiki-link navigation: returns non-empty if a link was clicked this frame
+        // Wiki-link navigation
         const std::string& GetWikiLinkTarget() const { return m_wikiLinkTarget; }
         void ClearWikiLinkTarget() { m_wikiLinkTarget.clear(); }
+
+        bool IsEditing() const { return m_editMode; }
+        void SetEditMode(bool edit) { m_editMode = edit; }
 
     private:
         const Note* m_lastNote = nullptr;
         bool m_editMode = false;
         std::string m_wikiLinkTarget;
+        int m_inlineEditLine = -1;   // Line index being edited inline (-1 = none)
+        bool m_inlineFocusSet = false; // Whether focus has been set for inline edit
+        std::string m_inlineBuffer;   // Buffer for inline line editing
 
-        void DrawReadingMode(const std::vector<std::string>& lines);
+        // Find in page
+        bool m_showFind = false;
+        char m_findBuffer[256] = {};
+        int m_findIndex = -1;
+        int m_findCount = 0;
+
+        void DrawReadingMode(const std::vector<std::string>& lines, Note& note);
         void DrawEditMode(Note& note);
-        void SplitLines(const std::string& content, std::vector<std::string>& lines) const;
-        void RenderMarkdownLine(const std::string& line, int lineIndex);
-        void RenderCodeLine(const std::string& line, int lineIndex);
-        void RenderFenceLine(const std::string& line, int lineIndex);
-        void RenderInlineFormatted(const std::string& text);
+        void DrawInlineEdit(int lineIndex, Note& note);
+        void DrawToolbar(Note& note);
+        void DrawFindBar();
+        void InsertMarkdownWrap(Note& note, const char* before, const char* after);
+        static int CountWords(const std::string& text);
     };
 }

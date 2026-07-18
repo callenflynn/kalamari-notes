@@ -6,7 +6,7 @@
 
 namespace Kalamari
 {
-    bool AppRenderer::Init()
+    bool AppRenderer::Init(int windowW, int windowH)
     {
         if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD))
         {
@@ -17,10 +17,14 @@ namespace Kalamari
         }
 
         m_scale = SDL_GetDisplayContentScale(SDL_GetPrimaryDisplay());
-        SDL_WindowFlags window_flags = static_cast<SDL_WindowFlags>(
+
+        // Clamp window size to reasonable bounds
+        int w = (std::max)(800, (std::min)(windowW, 3840));
+        int h = (std::max)(600, (std::min)(windowH, 2160));
+
+        SDL_WindowFlags wflags = static_cast<SDL_WindowFlags>(
             SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIDDEN | SDL_WINDOW_HIGH_PIXEL_DENSITY);
-        m_window = SDL_CreateWindow(
-            "Kalamari", (int)(1280 * m_scale), (int)(800 * m_scale), window_flags);
+        m_window = SDL_CreateWindow("Kalamari", w, h, wflags);
         if (!m_window)
         {
             SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Kalamari",
@@ -46,20 +50,22 @@ namespace Kalamari
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.IniFilename = nullptr; // We handle config ourselves via Config
 
         ImGui::StyleColorsDark();
         ImGuiStyle& style = ImGui::GetStyle();
         style.ScaleAllSizes(m_scale);
         style.FontScaleDpi = m_scale;
-        style.WindowRounding   = 8.0f;
-        style.ChildRounding    = 6.0f;
-        style.FrameRounding    = 4.0f;
-        style.PopupRounding    = 4.0f;
+        style.WindowRounding = 8.0f;
+        style.ChildRounding = 6.0f;
+        style.FrameRounding = 4.0f;
+        style.PopupRounding = 4.0f;
         style.ScrollbarRounding = 6.0f;
-        style.GrabRounding     = 4.0f;
-        style.TabRounding      = 4.0f;
-        style.FramePadding     = ImVec2(8.0f, 4.0f);
-        style.ItemSpacing      = ImVec2(8.0f, 6.0f);
+        style.GrabRounding = 4.0f;
+        style.TabRounding = 4.0f;
+        style.FramePadding = ImVec2(8, 4);
+        style.ItemSpacing = ImVec2(8, 6);
+        style.WindowPadding = ImVec2(8, 8);
 
         ImGui_ImplSDL3_InitForSDLRenderer(m_window, m_renderer);
         ImGui_ImplSDLRenderer3_Init(m_renderer);
@@ -101,10 +107,7 @@ namespace Kalamari
     {
         const char* base = SDL_GetBasePath();
         if (base)
-        {
-            std::string result = std::string(base) + relativePath;
-            return result;
-        }
+            return std::string(base) + relativePath;
         return std::string(relativePath);
     }
 
@@ -114,12 +117,8 @@ namespace Kalamari
         ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(path.c_str(), size);
         if (!font)
         {
-            printf("Warning: Could not load font %s, using ImGui default.\n", path.c_str());
+            printf("Warning: Could not load font %s, using default.\n", path.c_str());
             font = ImGui::GetIO().Fonts->AddFontDefault();
-            if (!font)
-            {
-                printf("Error: Could not load default ImGui font.\n");
-            }
         }
         return font;
     }

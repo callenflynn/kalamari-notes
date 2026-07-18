@@ -1,5 +1,6 @@
 #include "KalamariApp.hpp"
 
+#include "Markdown.hpp"
 #include "Theme.hpp"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
@@ -14,415 +15,386 @@ namespace Kalamari
 {
     namespace
     {
-        constexpr Uint32 AUTO_SAVE_INTERVAL_MS = 30000;
-        constexpr Sint32 EVENT_WAIT_TIMEOUT_MS = 100;  // idle timeout for battery saving
-        constexpr float  SIDEBAR_MIN_WIDTH    = 160.0f;
-        constexpr float  SIDEBAR_MAX_WIDTH    = 500.0f;
-        constexpr float  SPLITTER_WIDTH       = 6.0f;
+        constexpr Uint32 AUTO_SAVE_MS = 30000;
+        constexpr Sint32 EVENT_TIMEOUT_MS = 100;
+        constexpr float SIDEBAR_MIN = 160;
+        constexpr float SIDEBAR_MAX = 500;
+        constexpr float SPLITTER_W = 6;
 
-        std::string ToLower(std::string s)
+        void AddBreadcrumb(const char* cat, const char* msg)
         {
-            std::transform(s.begin(), s.end(), s.begin(),
-                           [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-            return s;
-        }
-
-        void AddBreadcrumb(const char* category, const char* message)
-        {
-            sentry_value_t crumb = sentry_value_new_breadcrumb(nullptr, message);
-            sentry_value_set_by_key(crumb, "category", sentry_value_new_string(category));
-            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("info"));
-            sentry_add_breadcrumb(crumb);
+            sentry_value_t c = sentry_value_new_breadcrumb(nullptr, msg);
+            sentry_value_set_by_key(c, "category", sentry_value_new_string(cat));
+            sentry_value_set_by_key(c, "level", sentry_value_new_string("info"));
+            sentry_add_breadcrumb(c);
         }
     }
 
+    // =========================================================================
+    // Init / Shutdown
+    // =========================================================================
     bool KalamariApp::Init()
     {
-        // Sentry crash monitoring
-        {
-            sentry_options_t* options = sentry_options_new();
-            sentry_options_set_dsn(options,
-                "https://d93df2fd5b1f23837e7fde7246198213@o4511748121886720.ingest.us.sentry.io/4511748130078720");
-            sentry_options_set_database_path(options, ".sentry-native");
+        // Sentry
+        sentry_options_t* opts = sentry_options_new();
+        sentry_options_set_dsn(opts,
+            "https://d93df2fd5b1f23837e7fde7246198213@o4511748121886720.ingest.us.sentry.io/4511748130078720");
+        sentry_options_set_database_path(opts, ".sentry-native");
 #ifdef KALAMARI_VERSION_SHA
-            sentry_options_set_release(options, "kalamari@" KALAMARI_VERSION_SHA);
+        sentry_options_set_release(opts, "kalamari@" KALAMARI_VERSION_SHA);
 #else
-            sentry_options_set_release(options, "kalamari@1.0.0");
+        sentry_options_set_release(opts, "kalamari@1.0.0");
 #endif
-            sentry_options_set_debug(options, 0);
-            sentry_options_set_enable_logs(options, 1);
-            sentry_init(options);
-        }
+        sentry_options_set_debug(opts, 0);
+        sentry_options_set_enable_logs(opts, 1);
+        sentry_init(opts);
 
-        if (!m_renderer.Init())
+        // Config — load from global config file in Documents/kalamari
         {
-            return false;
+            const char* docs = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
+            std::string configDir = std::string(docs ? docs : ".") + "/kalamari";
+            m_globalConfigPath = configDir + "/.config.ini";
+            m_config = Config::LoadFromPath(m_globalConfigPath);
         }
+        m_darkMode = m_config.darkMode;
+        m_sidebarWidth = m_config.sidebarWidth;
+
+        // Renderer
+        if (!m_renderer.Init(m_config.windowW, m_config.windowH))
+            return false;
 
         Theme::Apply(m_darkMode);
-
-        // Load font from executable-relative path
         m_renderer.LoadFont("assets/Kameron/static/Kameron-Regular.ttf", 18.0f);
 
-        // Scale sidebar width for DPI
-        m_sidebarWidth = 260.0f * m_renderer.GetScale();
+        // Try loading last vault
+        if (!m_config.lastVaultPath.empty())
+        {
+            if (std::filesystem::exists(m_config.lastVaultPath))
+            {
+                m_vault.OpenVault(m_config.lastVaultPath);
+                m_config = Config::Load(m_config.lastVaultPath);
+                m_darkMode = m_config.darkMode;
+                Theme::Apply(m_darkMode);
+            }
+        }
 
         return true;
     }
 
     void KalamariApp::Shutdown()
     {
-        if (m_currentNote && m_currentNote->dirty)
-        {
-            m_vault.SaveNote(m_currentNote);
-        }
-
+        SaveAllNotes();
+        SaveConfig();
         m_renderer.Shutdown();
         sentry_close();
     }
 
+    void KalamariApp::SaveAllNotes()
+    {
+        if (m_vault.IsOpen())
+        {
+            for (auto& tab : m_tabs)
+            {
+                if (tab->note && tab->note->dirty)
+                    m_vault.SaveNote(tab->note);
+            }
+        }
+    }
+
+    void KalamariApp::SaveConfig()
+    {
+        m_config.darkMode = m_darkMode;
+        m_config.sidebarWidth = m_sidebarWidth;
+        m_config.lastVaultPath = m_vault.IsOpen() ? m_vault.GetVaultPath().string() : "";
+
+        int w, h;
+        SDL_GetWindowSize(m_renderer.GetWindow(), &w, &h);
+        m_config.windowW = w;
+        m_config.windowH = h;
+
+        // Always save to global config
+        m_config.SaveToPath(m_globalConfigPath);
+
+        // Also save to vault-specific config if a vault is open
+        if (m_vault.IsOpen())
+            m_config.Save(m_vault.GetVaultPath().string());
+    }
+
+    void KalamariApp::LoadConfig()
+    {
+        if (m_vault.IsOpen())
+            m_config = Config::Load(m_vault.GetVaultPath().string());
+    }
+
+    // =========================================================================
+    // Run loop
+    // =========================================================================
     void KalamariApp::Run()
     {
         bool done = false;
-        Uint64 lastAutoSaveTicks = SDL_GetTicks();
+        Uint64 lastSave = SDL_GetTicks();
 
         while (!done)
         {
-            // ---- Battery-friendly event wait ----
-            // Use SDL_WaitEventTimeout to let the CPU sleep when idle,
-            // waking up at most every EVENT_WAIT_TIMEOUT_MS for auto-save checks.
-            // VSync (SDL_RenderPresent) also blocks, keeping CPU usage low.
-            SDL_Event event;
-            bool hasEvent = SDL_WaitEventTimeout(&event, EVENT_WAIT_TIMEOUT_MS);
+            SDL_Event evt;
+            bool hasEvent = SDL_WaitEventTimeout(&evt, EVENT_TIMEOUT_MS);
 
             if (hasEvent)
             {
-                // Drain all queued events
                 do {
-                    ImGui_ImplSDL3_ProcessEvent(&event);
-                    if (event.type == SDL_EVENT_QUIT)
+                    ImGui_ImplSDL3_ProcessEvent(&evt);
+                    if (evt.type == SDL_EVENT_QUIT) done = true;
+                    if (evt.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED &&
+                        evt.window.windowID == SDL_GetWindowID(m_renderer.GetWindow()))
                         done = true;
-                    if (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED
-                        && event.window.windowID == SDL_GetWindowID(m_renderer.GetWindow()))
-                        done = true;
-                } while (SDL_PollEvent(&event));
+                } while (SDL_PollEvent(&evt));
             }
 
-            if (done)
-                break;
+            if (done) break;
 
-            // Skip rendering while minimized
             if (SDL_GetWindowFlags(m_renderer.GetWindow()) & SDL_WINDOW_MINIMIZED)
-            {
                 continue;
-            }
 
-            // ---- Frame rendering ----
+            // ---- Render ----
             m_renderer.NewFrame();
 
             ImGuiIO& io = ImGui::GetIO();
             ImGui::SetNextWindowPos(ImVec2(0, 0));
             ImGui::SetNextWindowSize(io.DisplaySize);
             ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-            ImGui::Begin("##KalamariApp", nullptr,
-                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
-                | ImGuiWindowFlags_NoMove     | ImGuiWindowFlags_NoCollapse
-                | ImGuiWindowFlags_NoBringToFrontOnFocus
-                | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+            ImGui::Begin("##App", nullptr,
+                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse |
+                ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::PopStyleVar(2);
 
-            if (m_vault.GetVaultName().empty())
+            if (!m_vault.IsOpen())
             {
-                DrawVaultPicker();
+                DrawOpenVaultModal();
             }
             else
             {
-                // ---- Sidebar + splitter + main area layout ----
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-
-                // Sidebar
-                DrawSidebar();
-
-                // Resizable splitter
-                ImGui::SameLine(0.0f, 0.0f);
-                ImGui::InvisibleButton("##Splitter", ImVec2(SPLITTER_WIDTH, -1.0f));
-                if (ImGui::IsItemActive())
-                {
-                    m_sidebarWidth += io.MouseDelta.x;
-                    m_sidebarWidth = (std::max)(SIDEBAR_MIN_WIDTH * m_renderer.GetScale(),
-                                           (std::min)(m_sidebarWidth, SIDEBAR_MAX_WIDTH * m_renderer.GetScale()));
-                }
-                if (ImGui::IsItemHovered() || ImGui::IsItemActive())
-                    ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
-
-                // Main area
-                ImGui::SameLine(0.0f, 0.0f);
-                DrawMainArea();
-
-                ImGui::PopStyleVar();
+                DrawAppLayout();
             }
 
             ImGui::End();
 
             // ---- Keyboard shortcuts ----
-            if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_N) && !m_vault.GetVaultName().empty())
+            // Ctrl+P: command palette
+            if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_P) && m_vault.IsOpen())
+                m_showCommandPalette = true;
+
+            // Ctrl+N: new note
+            if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_N) && m_vault.IsOpen())
             {
-                if (m_currentNote && m_currentNote->dirty)
-                    m_vault.SaveNote(m_currentNote);
-                m_currentNote = m_vault.CreateNote();
-                if (m_currentNote)
-                    AddBreadcrumb("note.create", m_currentNote->fileName.c_str());
+                auto n = m_vault.CreateNote();
+                if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
             }
 
-            // ---- Modals and deferred ops ----
+            // Ctrl+W: close tab
+            if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_W) && m_vault.IsOpen())
+            {
+                if (m_activeTab >= 0 && m_activeTab < static_cast<int>(m_tabs.size()))
+                    CloseTab(m_activeTab);
+            }
+
+            // Ctrl+Tab / Ctrl+Shift+Tab: cycle tabs
+            if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Tab) && m_tabs.size() > 1)
+            {
+                if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
+                    m_activeTab = (m_activeTab - 1 + static_cast<int>(m_tabs.size())) % static_cast<int>(m_tabs.size());
+                else
+                    m_activeTab = (m_activeTab + 1) % static_cast<int>(m_tabs.size());
+            }
+
+            // ---- Modals ----
             DrawSettingsModal();
             DrawRenameModal();
-            DrawCreateVaultModal();
-            ProcessDeferredOperations();
+            DrawCommandPalette();
+
+            // ---- Deferred delete ----
+            if (m_noteToDelete)
+            {
+                // Close any tabs with this note
+                for (int i = static_cast<int>(m_tabs.size()) - 1; i >= 0; --i)
+                {
+                    if (m_tabs[i]->note == m_noteToDelete)
+                        CloseTab(i);
+                }
+                if (m_vault.DeleteNote(m_noteToDelete))
+                    AddBreadcrumb("note.delete", m_noteToDelete->fileName.c_str());
+                m_noteToDelete.reset();
+            }
 
             // ---- Auto-save ----
-            Uint64 currentTicks = SDL_GetTicks();
-            if (m_currentNote && m_currentNote->dirty &&
-                currentTicks - lastAutoSaveTicks >= AUTO_SAVE_INTERVAL_MS)
+            Uint64 now = SDL_GetTicks();
+            if (now - lastSave >= AUTO_SAVE_MS)
             {
-                SaveCurrentNote();
-                lastAutoSaveTicks = currentTicks;
+                SaveAllNotes();
+                lastSave = now;
             }
 
             m_renderer.Render(Theme::GetClearColor(m_darkMode));
         }
     }
 
-    void KalamariApp::DrawSidebar()
+    // =========================================================================
+    // App layout
+    // =========================================================================
+    void KalamariApp::DrawAppLayout()
     {
-        ImGuiStyle& style = ImGui::GetStyle();
+        ImGuiIO& io = ImGui::GetIO();
 
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, m_darkMode ? Theme::DARK_FRAME_BG : Theme::LIGHT_FRAME_BG);
-        ImGui::BeginChild("Sidebar", ImVec2(m_sidebarWidth, 0), ImGuiChildFlags_Borders);
+        // ---- Sidebar ----
+        SidebarCallbacks cbs = MakeSidebarCallbacks();
+        m_sidebar.Draw(m_sidebarWidth, m_vault,
+                       m_activeTab >= 0 ? m_tabs[m_activeTab]->note : nullptr,
+                       cbs, m_searchBuffer, sizeof(m_searchBuffer));
 
-        float availWidth = ImGui::GetContentRegionAvail().x;
-
-        // App title
-        ImGui::SetCursorPosX((availWidth - ImGui::CalcTextSize("Kalamari").x) * 0.5f);
-        ImGui::TextColored(Theme::ACCENT_COLOR, "Kalamari");
-
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-
-        // New note button
-        if (ImGui::Button("+ New Note", ImVec2(-1, 0)))
+        // ---- Splitter ----
+        ImGui::SameLine(0, 0);
+        ImGui::InvisibleButton("##Splitter", ImVec2(SPLITTER_W, -1));
+        if (ImGui::IsItemActive())
         {
-            if (m_currentNote && m_currentNote->dirty)
-                m_vault.SaveNote(m_currentNote);
-            m_currentNote = m_vault.CreateNote();
-            if (m_currentNote)
-                AddBreadcrumb("note.create", m_currentNote->fileName.c_str());
+            m_sidebarWidth += io.MouseDelta.x;
+            m_sidebarWidth = (std::max)(SIDEBAR_MIN, (std::min)(m_sidebarWidth, SIDEBAR_MAX));
         }
+        if (ImGui::IsItemHovered() || ImGui::IsItemActive())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 
-        ImGui::Spacing();
-
-        // Vault selector dropdown
-        ImGui::TextDisabled("Vault");
-        if (ImGui::BeginCombo("##VaultSelect", m_vault.GetVaultName().c_str()))
+        // Draw splitter line
         {
-            for (const auto& vaultName : Vault::GetAvailableVaults())
-            {
-                bool isSelected = (vaultName == m_vault.GetVaultName());
-                if (ImGui::Selectable(vaultName.c_str(), isSelected))
-                    SwitchVault(vaultName);
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            ImGui::Separator();
-            if (ImGui::Selectable("+ Create New Vault..."))
-            {
-                m_showCreateVault = true;
-                std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
-            }
-            ImGui::EndCombo();
-        }
-
-        ImGui::Spacing();
-
-        // Notes section header with count
-        auto allNotes = m_vault.GetNotes();
-        ImGui::TextDisabled("Notes");
-        ImGui::SameLine();
-        ImGui::TextDisabled("(%zu)", allNotes.size());
-
-        ImGui::Spacing();
-
-        // Search bar
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, m_darkMode ? Theme::DARK_BG : Theme::LIGHT_BG);
-        ImGui::InputTextWithHint("##Search", "Search notes...", m_searchBuffer, sizeof(m_searchBuffer));
-        ImGui::PopStyleColor();
-        ImGui::Spacing();
-
-        // File list
-        ImGui::BeginChild("FileList", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8.0f));
-
-        std::string query(m_searchBuffer);
-        auto notes = query.empty() ? allNotes : m_vault.Search(query);
-
-        if (notes.empty())
-        {
-            ImVec2 region = ImGui::GetContentRegionAvail();
-            ImGui::SetCursorPosY(region.y * 0.3f);
-            ImGui::TextDisabled("  No notes found");
-            if (allNotes.empty())
-            {
-                ImGui::Spacing();
-                ImGui::TextDisabled("  Ctrl+N to create one");
-            }
-        }
-
-        float itemHeight = ImGui::GetTextLineHeight() * 2.4f;
-
-        for (const auto& note : notes)
-        {
-            bool isSelected = (note == m_currentNote);
-
-            ImGui::PushID(note->fileName.c_str());
-
-            ImVec2 itemPos = ImGui::GetCursorScreenPos();
-            float itemWidth = ImGui::GetContentRegionAvail().x;
+            ImVec2 sMin = ImGui::GetItemRectMin();
+            ImVec2 sMax = ImGui::GetItemRectMax();
             ImDrawList* dl = ImGui::GetWindowDrawList();
-            bool isHovered = ImGui::IsMouseHoveringRect(
-                itemPos, ImVec2(itemPos.x + itemWidth, itemPos.y + itemHeight));
-
-            // Selection / hover highlight
-            if (isSelected)
-            {
-                dl->AddRectFilled(itemPos,
-                    ImVec2(itemPos.x + itemWidth, itemPos.y + itemHeight),
-                    ImGui::GetColorU32(Theme::ACCENT_COLOR), 4.0f);
-            }
-            else if (isHovered)
-            {
-                dl->AddRectFilled(itemPos,
-                    ImVec2(itemPos.x + itemWidth, itemPos.y + itemHeight),
-                    ImGui::GetColorU32(m_darkMode
-                        ? ImVec4(0.25f, 0.25f, 0.25f, 0.5f)
-                        : ImVec4(0.85f, 0.82f, 0.78f, 0.5f)),
-                    4.0f);
-            }
-
-            ImGui::SetCursorScreenPos(ImVec2(itemPos.x + 8.0f, itemPos.y + 2.0f));
-
-            // Note title (strip .md)
-            ImGui::PushStyleColor(ImGuiCol_Text, isSelected
-                ? ImVec4(1.0f, 1.0f, 1.0f, 1.0f)
-                : ImGui::GetStyle().Colors[ImGuiCol_Text]);
-
-            std::string displayName = note->fileName;
-            if (displayName.size() > 3 && displayName.substr(displayName.size() - 3) == ".md")
-                displayName = displayName.substr(0, displayName.size() - 3);
-            if (displayName.size() > 28)
-                displayName = displayName.substr(0, 25) + "...";
-
-            ImGui::Text("%s", displayName.c_str());
-            ImGui::PopStyleColor();
-
-            // Note preview (first line)
-            {
-                std::string preview = note->content;
-                size_t newlinePos = preview.find_first_of("\r\n");
-                if (newlinePos != std::string::npos)
-                    preview = preview.substr(0, newlinePos);
-                if (preview.size() > 35)
-                    preview = preview.substr(0, 32) + "...";
-
-                ImGui::SetCursorScreenPos(ImVec2(itemPos.x + 8.0f,
-                    itemPos.y + ImGui::GetTextLineHeight() + 4.0f));
-                ImGui::PushStyleColor(ImGuiCol_Text, isSelected
-                    ? ImVec4(1.0f, 1.0f, 1.0f, 0.6f)
-                    : ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
-                ImGui::Text("%s", preview.empty() ? "" : preview.c_str());
-                ImGui::PopStyleColor();
-            }
-
-            // Clickable area
-            ImGui::SetCursorScreenPos(itemPos);
-            ImGui::InvisibleButton("##noteBtn", ImVec2(itemWidth, itemHeight));
-            if (ImGui::IsItemClicked())
-            {
-                if (note != m_currentNote)
-                {
-                    if (m_currentNote && m_currentNote->dirty)
-                        m_vault.SaveNote(m_currentNote);
-                    m_currentNote = note;
-                    AddBreadcrumb("note.open", note->fileName.c_str());
-                }
-            }
-
-            // Right-click context menu
-            if (ImGui::BeginPopupContextItem())
-            {
-                if (ImGui::Selectable("Rename"))
-                {
-                    m_noteToRename = note;
-                    std::snprintf(m_renameBuffer, sizeof(m_renameBuffer), "%s", note->fileName.c_str());
-                }
-                if (ImGui::Selectable("Delete"))
-                    m_noteToDelete = note;
-                ImGui::EndPopup();
-            }
-
-            ImGui::SetCursorScreenPos(ImVec2(itemPos.x, itemPos.y + itemHeight));
-            ImGui::PopID();
-        }
-        ImGui::EndChild();
-
-        // Settings button at bottom
-        if (ImGui::Button("Settings", ImVec2(-1, 0)))
-        {
-            m_showSettings = true;
-            std::snprintf(m_vaultSwitchBuffer, sizeof(m_vaultSwitchBuffer),
-                          "%s", m_vault.GetVaultName().c_str());
+            ImVec4 sepCol = ImGui::GetStyle().Colors[ImGuiCol_Separator];
+            if (ImGui::IsItemHovered() || ImGui::IsItemActive())
+                sepCol = Theme::ACCENT_COLOR;
+            dl->AddLine(
+                ImVec2(sMin.x + SPLITTER_W * 0.5f, sMin.y),
+                ImVec2(sMin.x + SPLITTER_W * 0.5f, sMax.y),
+                ImGui::GetColorU32(sepCol), 1.0f);
         }
 
-        ImGui::EndChild();
-        ImGui::PopStyleColor();
-    }
+        // ---- Main area ----
+        ImGui::SameLine(0, 0);
+        ImGui::BeginChild("MainArea", ImVec2(0, 0), ImGuiChildFlags_None);
 
-    void KalamariApp::DrawMainArea()
-    {
+        // Tab bar
+        DrawTabBar();
+
+        // Editor area
         ImGui::BeginChild("EditorContainer", ImVec2(0, 0), ImGuiChildFlags_None);
-
-        // Add comfortable padding inside the editor area
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(20.0f, 12.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24, 12));
         ImGui::BeginChild("EditorInner", ImVec2(0, 0), ImGuiChildFlags_None);
-        m_editor.Draw(m_currentNote);
+
+        if (m_activeTab >= 0 && m_activeTab < static_cast<int>(m_tabs.size()))
+        {
+            auto& tab = m_tabs[m_activeTab];
+            tab->editor.Draw(tab->note);
+            HandleWikiLinkNav();
+        }
+        else
+        {
+            ImVec2 r = ImGui::GetContentRegionAvail();
+            float centerX = r.x * 0.5f;
+            float centerY = r.y * 0.4f;
+
+            ImGui::SetCursorPos(ImVec2(centerX - ImGui::CalcTextSize("Kalamari").x * 0.5f, centerY - 30));
+            ImGui::TextColored(Theme::ACCENT_COLOR, "Kalamari");
+            ImGui::SetCursorPosX(centerX - ImGui::CalcTextSize("Open a note or create a new one").x * 0.5f);
+            ImGui::TextDisabled("Open a note or create a new one");
+            ImGui::SetCursorPosX(centerX - ImGui::CalcTextSize("Ctrl+N  |  Ctrl+P").x * 0.5f);
+            ImGui::TextDisabled("Ctrl+N  |  Ctrl+P");
+        }
+
         ImGui::EndChild();
         ImGui::PopStyleVar();
-
         ImGui::EndChild();
 
-        HandleWikiLinkNavigation();
+        ImGui::EndChild();
     }
 
-    void KalamariApp::HandleWikiLinkNavigation()
+    void KalamariApp::DrawTabBar()
     {
-        const std::string& target = m_editor.GetWikiLinkTarget();
-        if (target.empty())
-            return;
-
-        // Find or create the linked note
-        auto linkedNote = m_vault.FindOrCreateNote(target);
-        if (linkedNote)
+        if (ImGui::BeginTabBar("Tabs", ImGuiTabBarFlags_AutoSelectNewTabs |
+                                       ImGuiTabBarFlags_Reorderable |
+                                       ImGuiTabBarFlags_FittingPolicyScroll))
         {
-            if (m_currentNote && m_currentNote->dirty)
-                m_vault.SaveNote(m_currentNote);
-            m_currentNote = linkedNote;
-            AddBreadcrumb("note.wikilink", target.c_str());
+            for (int i = 0; i < static_cast<int>(m_tabs.size()); )
+            {
+                bool open = true;
+                std::string title = m_tabs[i]->note->path.stem().string();
+                if (title.size() > 25) title = title.substr(0, 22) + "...";
+
+                ImGuiTabItemFlags flags = 0;
+                if (m_tabs[i]->note->dirty) flags |= ImGuiTabItemFlags_UnsavedDocument;
+
+                if (ImGui::BeginTabItem(title.c_str(), &open, flags))
+                {
+                    m_activeTab = i;
+                    ImGui::EndTabItem();
+                }
+
+                if (!open)
+                    CloseTab(i);
+                else
+                    ++i;
+            }
+            ImGui::EndTabBar();
+        }
+    }
+
+    void KalamariApp::OpenNote(const std::shared_ptr<Note>& note)
+    {
+        if (!note) return;
+
+        // Check if already open
+        for (int i = 0; i < static_cast<int>(m_tabs.size()); ++i)
+        {
+            if (m_tabs[i]->note == note)
+            {
+                m_activeTab = i;
+                return;
+            }
         }
 
-        m_editor.ClearWikiLinkTarget();
+        auto tab = std::make_unique<Tab>();
+        tab->note = note;
+        m_tabs.push_back(std::move(tab));
+        m_activeTab = static_cast<int>(m_tabs.size()) - 1;
+        AddBreadcrumb("note.open", note->fileName.c_str());
     }
 
+    void KalamariApp::CloseTab(int index)
+    {
+        if (index < 0 || index >= static_cast<int>(m_tabs.size())) return;
+        if (m_tabs[index]->note->dirty)
+            m_vault.SaveNote(m_tabs[index]->note);
+        m_tabs.erase(m_tabs.begin() + index);
+        if (m_activeTab >= static_cast<int>(m_tabs.size()))
+            m_activeTab = static_cast<int>(m_tabs.size()) - 1;
+    }
+
+    void KalamariApp::HandleWikiLinkNav()
+    {
+        if (m_activeTab < 0 || m_activeTab >= static_cast<int>(m_tabs.size())) return;
+        const std::string& target = m_tabs[m_activeTab]->editor.GetWikiLinkTarget();
+        if (target.empty()) return;
+
+        auto linked = m_vault.FindOrCreateNote(target);
+        if (linked)
+        {
+            OpenNote(linked);
+            AddBreadcrumb("note.wikilink", target.c_str());
+        }
+        m_tabs[m_activeTab]->editor.ClearWikiLinkTarget();
+    }
+
+    // =========================================================================
+    // Modals
+    // =========================================================================
     void KalamariApp::DrawSettingsModal()
     {
         if (m_showSettings)
@@ -431,113 +403,249 @@ namespace Kalamari
             m_showSettings = false;
         }
 
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
         if (ImGui::BeginPopupModal("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
+            // Appearance
             ImGui::Text("Appearance");
             ImGui::Separator();
-
-            if (ImGui::Button(m_darkMode ? "Switch to Light Mode" : "Switch to Dark Mode", ImVec2(-1, 0)))
+            if (ImGui::Button(m_darkMode ? "Switch to Light" : "Switch to Dark", ImVec2(-1, 0)))
             {
                 m_darkMode = !m_darkMode;
                 Theme::Apply(m_darkMode);
             }
 
             ImGui::Spacing();
-            ImGui::Text("Diagnostics");
+
+            // Vault
+            ImGui::Text("Vault");
             ImGui::Separator();
-            if (ImGui::Button("Send Sentry Test Event", ImVec2(-1, 0)))
+            ImGui::TextDisabled("Path: %s", m_vault.GetVaultPath().string().c_str());
+
+            if (ImGui::Button("Switch Vault...", ImVec2(-1, 0)))
             {
-                sentry_capture_event(sentry_value_new_message_event(
-                    SENTRY_LEVEL_INFO,
-                    "kalamari",
-                    "Sentry monitoring test event from Kalamari"));
+                SaveAllNotes();
+                SaveConfig();
+                m_tabs.clear();
+                m_activeTab = -1;
+                m_vault.CloseVault();
+                ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+                return;
             }
 
             ImGui::Spacing();
-            if (ImGui::Button("Close", ImVec2(120, 0)))
-            {
+
+            // About
+            ImGui::Text("About");
+            ImGui::Separator();
+            ImGui::TextDisabled("Kalamari v1.0.0");
+            ImGui::TextDisabled("A native markdown notebook");
+
+            ImGui::Spacing();
+            ImGui::Separator();
+            ImGui::Spacing();
+
+            if (ImGui::Button("Close", ImVec2(-1, 0)))
                 ImGui::CloseCurrentPopup();
-            }
             ImGui::EndPopup();
         }
     }
 
     void KalamariApp::DrawRenameModal()
     {
-        if (m_noteToRename)
-            ImGui::OpenPopup("Rename Note");
+        if (m_noteToRename && !m_showRename)
+        {
+            m_showRename = true;
+            std::snprintf(m_renameBuffer, sizeof(m_renameBuffer), "%s",
+                          m_noteToRename->fileName.c_str());
+            ImGui::OpenPopup("Rename");
+        }
 
-        bool open = m_noteToRename != nullptr;
-        if (ImGui::BeginPopupModal("Rename Note", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::BeginPopupModal("Rename", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
             ImGui::Text("New name:");
-            ImGui::InputText("##NewName", m_renameBuffer, sizeof(m_renameBuffer));
+            ImGui::InputText("##RenameBuf", m_renameBuffer, sizeof(m_renameBuffer));
+            ImGui::SetItemDefaultFocus();
+
             if (ImGui::Button("OK", ImVec2(120, 0)))
             {
-                std::string newFileName(m_renameBuffer);
-                if (!newFileName.empty() && m_noteToRename)
+                std::string name(m_renameBuffer);
+                if (!name.empty() && m_noteToRename)
                 {
-                    if (m_currentNote == m_noteToRename && m_currentNote->dirty)
-                        SaveCurrentNote();
-                    if (m_vault.RenameNote(m_noteToRename, newFileName))
-                        AddBreadcrumb("note.rename", newFileName.c_str());
+                    if (m_vault.RenameNote(m_noteToRename, name))
+                        AddBreadcrumb("note.rename", name.c_str());
                 }
                 m_noteToRename.reset();
-                std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+                m_showRename = false;
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
             if (ImGui::Button("Cancel", ImVec2(120, 0)))
             {
                 m_noteToRename.reset();
-                std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+                m_showRename = false;
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
         }
-        else if (open)
+    }
+
+    void KalamariApp::DrawCommandPalette()
+    {
+        if (m_showCommandPalette)
         {
-            // Popup failed to open; clear stale state
-            m_noteToRename.reset();
-            std::memset(m_renameBuffer, 0, sizeof(m_renameBuffer));
+            ImGui::OpenPopup("##CmdPalette");
+            m_showCommandPalette = false;
+            std::memset(m_commandBuf, 0, sizeof(m_commandBuf));
+        }
+
+        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.3f));
+        ImGui::SetNextWindowSize(ImVec2(450, 0));
+
+        if (ImGui::BeginPopup("##CmdPalette", ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+        {
+            ImGui::Text("Command Palette");
+            ImGui::Separator();
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##CmdInput", "Type to search notes or actions...",
+                                      m_commandBuf, sizeof(m_commandBuf));
+
+            // Close on Escape
+            if (ImGui::IsKeyPressed(ImGuiKey_Escape))
+            {
+                ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+                return;
+            }
+
+            std::string q(m_commandBuf);
+
+            // Cache search results for this frame
+            std::vector<std::shared_ptr<Note>> results;
+            if (!q.empty())
+                results = m_vault.Search(q);
+
+            // Close on Enter selecting first result
+            if (ImGui::IsKeyPressed(ImGuiKey_Enter) && !q.empty() && !results.empty())
+            {
+                OpenNote(results[0]);
+                ImGui::CloseCurrentPopup();
+                ImGui::EndPopup();
+                return;
+            }
+
+            ImGui::BeginChild("CmdResults", ImVec2(0, 300));
+
+            // Show built-in actions first
+            if (q.empty())
+            {
+                if (ImGui::Selectable("New Note"))
+                {
+                    auto n = m_vault.CreateNote();
+                    if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Selectable(m_darkMode ? "Switch to Light Theme" : "Switch to Dark Theme"))
+                {
+                    m_darkMode = !m_darkMode;
+                    Theme::Apply(m_darkMode);
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Selectable("Open Vault..."))
+                {
+                    SaveAllNotes();
+                    SaveConfig();
+                    m_tabs.clear();
+                    m_activeTab = -1;
+                    m_vault.CloseVault();
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::Separator();
+                ImGui::TextDisabled("  Type to search notes...");
+            }
+            else
+            {
+                for (const auto& n : results)
+                {
+                    std::string display = n->relativePath;
+                    if (display.size() > 3 && display.substr(display.size() - 3) == ".md")
+                        display = display.substr(0, display.size() - 3);
+                    if (ImGui::Selectable(display.c_str()))
+                    {
+                        OpenNote(n);
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
+                if (results.empty())
+                    ImGui::TextDisabled("  No results");
+            }
+
+            ImGui::EndChild();
+            ImGui::EndPopup();
         }
     }
 
-    void KalamariApp::DrawVaultPicker()
+    void KalamariApp::DrawOpenVaultModal()
     {
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        ImGui::SetNextWindowSize(ImVec2(400.0f * m_renderer.GetScale(), 0), ImGuiCond_Appearing);
+        ImGui::SetNextWindowSize(ImVec2(500, 0));
 
-        if (ImGui::Begin("Select Vault", nullptr,
-                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
-                         | ImGuiWindowFlags_AlwaysAutoResize))
+        if (ImGui::Begin("Open Vault", nullptr,
+                         ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+                         ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::Text("Choose an existing vault or create a new one.");
+            ImGui::SetWindowFontScale(1.2f);
+            ImGui::TextColored(Theme::ACCENT_COLOR, "Welcome to Kalamari");
+            ImGui::SetWindowFontScale(1.0f);
             ImGui::Spacing();
-
-            ImGui::BeginChild("VaultList", ImVec2(0, 200.0f), ImGuiChildFlags_Borders);
-            for (const auto& vaultName : Vault::GetAvailableVaults())
-            {
-                if (ImGui::Selectable(vaultName.c_str(), false, ImGuiSelectableFlags_None, ImVec2(-1, 0)))
-                    SwitchVault(vaultName);
-            }
-            ImGui::EndChild();
-
+            ImGui::TextWrapped("Enter a path to open an existing vault or create a new one.");
             ImGui::Spacing();
             ImGui::Separator();
             ImGui::Spacing();
 
-            ImGui::Text("Create new vault");
-            ImGui::InputTextWithHint("##NewVault", "vault name", m_newVaultBuffer, sizeof(m_newVaultBuffer));
-            ImGui::SameLine();
-            if (ImGui::Button("Create"))
+            ImGui::SetNextItemWidth(-1);
+            ImGui::InputTextWithHint("##VaultPath", "e.g. C:\\Users\\Me\\Documents\\MyVault",
+                                      m_newVaultBuffer, sizeof(m_newVaultBuffer));
+
+            ImGui::Spacing();
+
+            if (ImGui::Button("Open", ImVec2(-1, 0)))
             {
-                std::string newVaultName(m_newVaultBuffer);
-                if (IsValidVaultName(newVaultName))
+                std::string path(m_newVaultBuffer);
+                if (!path.empty())
                 {
-                    SwitchVault(newVaultName);
-                    std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
+                    if (m_vault.OpenVault(path))
+                    {
+                        m_config.lastVaultPath = path;
+                        LoadConfig();
+                        m_darkMode = m_config.darkMode;
+                        m_sidebarWidth = m_config.sidebarWidth;
+                        Theme::Apply(m_darkMode);
+                    }
+                }
+            }
+
+            // Show last vault if available
+            if (!m_config.lastVaultPath.empty())
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+                ImGui::Spacing();
+                ImGui::TextDisabled("Recent vault:");
+                if (ImGui::Selectable(m_config.lastVaultPath.c_str()))
+                {
+                    if (m_vault.OpenVault(m_config.lastVaultPath))
+                    {
+                        LoadConfig();
+                        m_darkMode = m_config.darkMode;
+                        m_sidebarWidth = m_config.sidebarWidth;
+                        Theme::Apply(m_darkMode);
+                    }
                 }
             }
 
@@ -545,97 +653,40 @@ namespace Kalamari
         }
     }
 
-    void KalamariApp::DrawCreateVaultModal()
+    // =========================================================================
+    // Sidebar callbacks
+    // =========================================================================
+    SidebarCallbacks KalamariApp::MakeSidebarCallbacks()
     {
-        if (m_showCreateVault)
-        {
-            ImGui::OpenPopup("Create New Vault");
-            m_showCreateVault = false;
-        }
-
-        if (ImGui::BeginPopupModal("Create New Vault", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
-        {
-            ImGui::InputTextWithHint("##NewVaultModal", "vault name", m_newVaultBuffer, sizeof(m_newVaultBuffer));
-            if (ImGui::Button("Create", ImVec2(120, 0)))
-            {
-                std::string newVaultName(m_newVaultBuffer);
-                if (IsValidVaultName(newVaultName))
-                {
-                    SwitchVault(newVaultName);
-                    std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
-                }
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(120, 0)))
-            {
-                std::memset(m_newVaultBuffer, 0, sizeof(m_newVaultBuffer));
-                ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-    }
-
-    void KalamariApp::SwitchVault(const std::string& vaultName)
-    {
-        if (vaultName == m_vault.GetVaultName())
-            return;
-
-        SaveCurrentNote();
-        m_vault.SetVault(vaultName);
-        AddBreadcrumb("vault.switch", vaultName.c_str());
-        m_currentNote.reset();
-        m_noteToRename.reset();
-        m_noteToDelete.reset();
-        std::memset(m_searchBuffer, 0, sizeof(m_searchBuffer));
-    }
-
-    void KalamariApp::SaveCurrentNote()
-    {
-        if (m_currentNote && m_currentNote->dirty)
-        {
-            m_vault.SaveNote(m_currentNote);
-            AddBreadcrumb("note.save", m_currentNote->fileName.c_str());
-        }
-    }
-
-    bool KalamariApp::IsValidVaultName(const std::string& name) const
-    {
-        if (name.empty())
-            return false;
-
-        size_t start = name.find_first_not_of(" \t\r\n");
-        if (start == std::string::npos)
-            return false;
-        size_t end = name.find_last_not_of(" \t\r\n");
-        std::string trimmed = name.substr(start, end - start + 1);
-
-        if (trimmed.empty() || trimmed == "." || trimmed == "..")
-            return false;
-
-        for (char c : trimmed)
-        {
-            if (c == '/' || c == '\\' || c == '\0')
-                return false;
-        }
-
-        return true;
-    }
-
-    void KalamariApp::ProcessDeferredOperations()
-    {
-        if (m_noteToDelete)
-        {
-            if (m_currentNote == m_noteToDelete && m_currentNote->dirty)
-                SaveCurrentNote();
-            std::string deletedFileName = m_noteToDelete->fileName;
-            if (m_vault.DeleteNote(m_noteToDelete))
-            {
-                if (m_currentNote == m_noteToDelete)
-                    m_currentNote.reset();
-                AddBreadcrumb("note.delete", deletedFileName.c_str());
-            }
-            m_noteToDelete.reset();
-        }
+        SidebarCallbacks cbs;
+        cbs.onSelectNote = [this](std::shared_ptr<Note> n) {
+            OpenNote(n);
+        };
+        cbs.onCreateNote = [this]() {
+            auto n = m_vault.CreateNote();
+            if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
+        };
+        cbs.onCreateNoteInFolder = [this](const std::string& folder) {
+            auto n = m_vault.CreateNote(folder);
+            if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
+        };
+        cbs.onRenameNote = [this](std::shared_ptr<Note> n) {
+            m_noteToRename = n;
+            m_showRename = false; // Will be set true when DrawRenameModal runs
+        };
+        cbs.onDeleteNote = [this](std::shared_ptr<Note> n) {
+            m_noteToDelete = n;
+        };
+        cbs.onOpenSettings = [this]() {
+            m_showSettings = true;
+        };
+        cbs.onSwitchVault = [this](const std::filesystem::path&) {
+            SaveAllNotes();
+            SaveConfig();
+            m_tabs.clear();
+            m_activeTab = -1;
+            m_vault.CloseVault();
+        };
+        return cbs;
     }
 }

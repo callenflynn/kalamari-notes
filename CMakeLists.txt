@@ -72,10 +72,13 @@ FetchContent_MakeAvailable(sentry)
 # ---------------------------------------------------------------------------
 add_executable(Kalamari WIN32 MACOSX_BUNDLE
     src/main.cpp
+    src/Config.cpp
     src/Theme.cpp
     src/Vault.cpp
+    src/Markdown.cpp
     src/AppRenderer.cpp
     src/Editor.cpp
+    src/Sidebar.cpp
     src/KalamariApp.cpp
     src/kalamari.rc
 )
