@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalamari - Work in Progress</title>
+    <meta name="description" content="Kalamari Notes is currently under development. Check out Quack in the meantime!">
+    <link rel="icon" href="assets/kalamari.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* Center the notice card on the screen using theme variables */
+        .wip-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--container-px);
+        }
+
+        .wip-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-strong);
+            border-radius: var(--radius-xl);
+            padding: 3.5rem 2rem;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .wip-tagline {
+            color: var(--accent);
+            font-family: var(--font-brand);
+            font-size: 2rem;
+            margin: 0.5rem 0 2rem;
+            line-height: 1;
+        }
+
+        .wip-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-top: 1.25rem;
+        }
+
+        .wip-card .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="wip-wrapper">
+        <div class="wip-card">
+            <img src="assets/kalamari.png" alt="Kalamari logo" class="hero__logo" onerror="this.style.display='none'">
+            <span class="brand-kalamari brand-kalamari--lg">Kalamari</span>
+            
+            <p class="section-label" style="margin-top: 1rem; margin-bottom: 0;">Work in Progress</p>
+            
+            <p class="wip-desc">
+                Kalamari Notes is currently under development. Until it's out, check out <strong>Quack!</strong> — a task and notes app all in the web.
+            </p>
+
+            <p class="wip-tagline">"keep your ducks in a row"</p>
+
+            <a href="https://quack.callen.page" class="btn btn--primary btn--lg" target="_blank" rel="noopener">
+                Check out Quack! &rarr;
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>
