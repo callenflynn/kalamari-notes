@@ -16,7 +16,7 @@ A fast, cross-platform markdown notebook built with **Tauri**, **React**, and **
 
 - [Node.js](https://nodejs.org/) 20+
 - [Rust](https://www.rust-lang.org/tools/install)
-- (Linux only) `libgtk-3-dev`, `libwebkit2gtk-4.0-dev`, `libappindicator3-dev`, `librsvg2-dev`, `patchelf`
+- (Linux only) `libgtk-3-dev`, `libwebkit2gtk-4.1-dev`, `libappindicator3-dev`, `librsvg2-dev`, `patchelf`
 
 ## Development
 
