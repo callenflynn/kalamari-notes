@@ -7,6 +7,12 @@ on:
       - 'v*'
   pull_request:
   workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a release after building'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -72,7 +78,7 @@ jobs:
   release:
     name: Create GitHub Release
     needs: [build]
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true')
     runs-on: ubuntu-latest
     permissions:
       contents: write
