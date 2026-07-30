@@ -1,0 +1,10 @@
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD-TEST\_DEPS\SDL3-SUBBUILD\CMAKEFILES\7BFB6072E4D884BC4664CB0EA449A08E\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes/build-test/_deps/sdl3-subbuild -BC:/Users/Notsk/kalamari-notes/build-test/_deps/sdl3-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Notsk/kalamari-notes/build-test/_deps/sdl3-subbuild/sdl3-populate.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

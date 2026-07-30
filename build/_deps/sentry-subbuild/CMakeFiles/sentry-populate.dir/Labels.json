@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/sentry-populate"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/7edd52fa34869bff825cadf9c66b3bcc/sentry-populate.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/fe1017c5fc14e83420660994e127b96e/sentry-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/509c7785b8690ec6fc2612370ed86274/sentry-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"sentry-populate"
+		],
+		"name" : "sentry-populate"
+	}
+}

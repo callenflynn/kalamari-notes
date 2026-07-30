@@ -1,0 +1,276 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\debug\alias.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_path.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_util.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\scoped_file.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\logging.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\process\memory.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\rand_util.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\pattern.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_number_conversions.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\stringprintf.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversions.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\third_party\icu\icu_utf.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversion_utils.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\page_size_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_clear_last_error_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock_impl_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\build\chromeos_buildflags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\build\build_config.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops_internals_atomicword_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops_internals_portable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\auto_reset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\bit_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\check.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\check_op.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\compiler_specific.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\checked_iterators.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\dynamic_extent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\span.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\debug\alias.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_path.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\scoped_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\format_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\immediate_crash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\free_deleter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\page_size.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\raw_ptr_exclusion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\scoped_policy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\histogram_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\histogram_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\persistent_histogram_allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\notreached.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\basic_ops_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\byte_conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\checked_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\checked_math_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\clamped_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\clamped_math_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions_arm_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_arm_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_clang_gcc_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_shared_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\process\memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\rand_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_clear_last_error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_generic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\pattern.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_number_conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\stringprintf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\sys_string_conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversion_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\condition_variable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\sys_byteorder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\template_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\third_party\icu\icu_utf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\types\cxx23_to_underlying.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\types\to_address.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{872BEEE0-83FE-39AA-850C-679EE25CFF0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CA69A482-3D21-3E07-8FA2-FFBD278BB7C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

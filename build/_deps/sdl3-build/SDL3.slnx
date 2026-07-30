@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Solution>
+	<Configurations>
+		<BuildType Name="Debug"/>
+		<BuildType Name="Release"/>
+		<BuildType Name="MinSizeRel"/>
+		<BuildType Name="RelWithDebInfo"/>
+		<Platform Name="x64"/>
+	</Configurations>
+	<Project Path="SDL3-shared.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="a105a867-9c12-3b46-9724-f2e79e1104b5">
+		<BuildDependency Project="SDL_uclibc.vcxproj"/>
+		<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="SDL3_test.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="c33ab426-402c-3b2f-bbbb-011332ee2e63">
+		<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Project Path="SDL_uclibc.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="ab2ed0cf-0b11-38a9-a6d3-aea4dabcc5a7">
+		<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+	</Project>
+	<Folder Name="/CMakePredefinedTargets/">
+		<Project Path="ALL_BUILD.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="791fbfc5-449f-390f-908f-58377f74987e" DefaultStartup="true">
+			<BuildDependency Project="SDL3-shared.vcxproj"/>
+			<BuildDependency Project="SDL3_test.vcxproj"/>
+			<BuildDependency Project="SDL_uclibc.vcxproj"/>
+			<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+		</Project>
+		<Project Path="INSTALL.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="98bf302d-803f-3fc1-8c6d-78b36bf5ad6a">
+			<BuildDependency Project="ALL_BUILD.vcxproj"/>
+			<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+			<Build Solution="Debug|*" Project="false"/>
+			<Build Solution="Release|*" Project="false"/>
+			<Build Solution="MinSizeRel|*" Project="false"/>
+			<Build Solution="RelWithDebInfo|*" Project="false"/>
+		</Project>
+		<Project Path="PACKAGE.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="fddb53f8-230b-3bc6-afe6-aa91e78a2f26">
+			<BuildDependency Project="ALL_BUILD.vcxproj"/>
+			<BuildDependency Project="../../ZERO_CHECK.vcxproj"/>
+			<Build Solution="Debug|*" Project="false"/>
+			<Build Solution="Release|*" Project="false"/>
+			<Build Solution="MinSizeRel|*" Project="false"/>
+			<Build Solution="RelWithDebInfo|*" Project="false"/>
+		</Project>
+		<Project Path="../../ZERO_CHECK.vcxproj" Type="8bc9ceb8-8b4a-11d0-8d11-00a0c91bc942" Id="3fbadaff-37d9-3d01-b16e-94f2a3c69801"/>
+	</Folder>
+</Solution>

@@ -1,0 +1,489 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C684C65E-144C-316A-BF22-53772C0D3B0D}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>sentry</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sentry.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">sentry</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sentry.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">sentry</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">sentry.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">sentry</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">sentry.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">sentry</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;5105</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(IncludePaths)</IncludePaths>
+      <AdditionalOptions>%(AdditionalOptions) /W4 /wd5105</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DisableSpecificWarnings>4127;5105</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(IncludePaths)</IncludePaths>
+      <AdditionalOptions>%(AdditionalOptions) /W4 /wd5105</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DisableSpecificWarnings>4127;5105</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(IncludePaths)</IncludePaths>
+      <AdditionalOptions>%(AdditionalOptions) /W4 /wd5105</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4127;5105</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;SENTRY_BACKEND_CRASHPAD;SENTRY_WITH_UNWINDER_DBGHELP;SENTRY_SCREENSHOT_WINDOWS;SENTRY_HANDLER_STACK_SIZE=64;SENTRY_THREAD_STACK_GUARANTEE_FACTOR=10;SENTRY_THREAD_STACK_GUARANTEE_AUTO_INIT;SENTRY_BUILD_STATIC;SIZEOF_LONG=4;_WIN32_WINNT=0x0A00;CRASHPAD_ZLIB_SOURCE_EMBEDDED;ZLIB_CONST;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(IncludePaths)</IncludePaths>
+      <AdditionalOptions>%(AdditionalOptions) /W4 /wd5105</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\compat\win;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mpack;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\external\crashpad\third_party\mini_chromium;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build --check-stamp-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\4.4.0\CMakeCCompiler.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\cmake.verify_globs;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\cmake\utils.cmake;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\sentry-config.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build --check-stamp-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\4.4.0\CMakeCCompiler.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\cmake.verify_globs;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\cmake\utils.cmake;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\sentry-config.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build --check-stamp-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\4.4.0\CMakeCCompiler.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\cmake.verify_globs;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\cmake\utils.cmake;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\sentry-config.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build --check-stamp-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Program Files\CMake\share\cmake-4.4\Modules\BasicConfigVersion-SameMajorVersion.cmake.in;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeCommonLanguageInclude.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakeLanguageInformation.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CMakePackageConfigHelpers.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckCSourceCompiles.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFile.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckIncludeFileCXX.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckLibraryExists.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\CheckTypeSize.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\CMakeCommonCompilerMacros.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Compiler\MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageHandleStandardArgs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindPackageMessage.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\FindThreads.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\GNUInstallDirs.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC-C.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\Platform\Windows-MSVC.cmake;C:\Program Files\CMake\share\cmake-4.4\Modules\WriteBasicConfigVersionFile.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\4.4.0\CMakeCCompiler.cmake;C:\Users\Notsk\kalamari-notes\build\CMakeFiles\cmake.verify_globs;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\cmake\utils.cmake;C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\sentry-config.cmake.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\vendor\mpack.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\include\sentry.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_alloc.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_alloc.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_app_hang_latch.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_app_hang_latch.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_app_hang_monitor.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_app_hang_monitor.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_attachment.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_attachment.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_backend.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_backend.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_batcher.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_batcher.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_boot.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_client_report.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_client_report.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_core.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_core.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_cpu_relax.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_database.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_database.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_envelope.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_envelope.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_hint.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_hint.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_info.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_json.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_json.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_logger.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_logger.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_logs.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_logs.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_metrics.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_metrics.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_options.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_options.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_os.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_os.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_path.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_process.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_ratelimiter.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_ratelimiter.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_retry.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_retry.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_ringbuffer.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_ringbuffer.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_sampling_context.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_scope.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_scope.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_screenshot.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_session_replay.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_session.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_session.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_slice.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_slice.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_string.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_string.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_symbolizer.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_sync.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_sync.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_thread_stackwalk.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_transport.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_transport.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_utils.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_utils.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_uuid.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_uuid.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_value.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_value.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_writer.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_writer.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_tracing.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_tracing.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\path\sentry_path.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\screenshot\sentry_screenshot.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\session_replay\sentry_session_replay.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_disk_transport.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_disk_transport.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_function_transport.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_http_transport.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_http_transport.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\unwinder\sentry_unwinder.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_random.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_random.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_windows_dbghelp.c" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_windows_dbghelp.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\path\sentry_path_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\process\sentry_process_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\symbolizer\sentry_symbolizer_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\modulefinder\sentry_modulefinder_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\transports\sentry_http_transport_winhttp.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\backends\sentry_backend_crashpad.cpp" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\unwinder\sentry_unwinder.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\sentry_thread_stackwalk_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\unwinder\sentry_unwinder_dbghelp.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\screenshot\sentry_screenshot_windows.c" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src\src\session_replay\sentry_session_replay_none.c" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\ZERO_CHECK.vcxproj">
+      <Project>{3FBADAFF-37D9-3D01-B16E-94F2A3C69801}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\client\crashpad_client.vcxproj">
+      <Project>{FC340CE6-E65F-353E-9E81-8661DC22F482}</Project>
+      <Name>crashpad_client</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\compat\crashpad_compat.vcxproj">
+      <Project>{43604971-966C-3107-8310-9873DCA5A828}</Project>
+      <Name>crashpad_compat</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\handler\crashpad_handler.vcxproj">
+      <Project>{DF5969A1-6F69-3B00-B159-D19EB9396509}</Project>
+      <Name>crashpad_handler</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\third_party\mpack\crashpad_mpack.vcxproj">
+      <Project>{96AA5C88-DC02-3D58-87D8-537B1F56D663}</Project>
+      <Name>crashpad_mpack</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\util\crashpad_util.vcxproj">
+      <Project>{1057F093-9612-34EB-97B5-15273E8D9678}</Project>
+      <Name>crashpad_util</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\handler\crashpad_wer.vcxproj">
+      <Project>{7390FD0D-930E-3D55-B004-9260F24C0656}</Project>
+      <Name>crashpad_wer</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\third_party\zlib\crashpad_zlib.vcxproj">
+      <Project>{916DACAB-1B17-370C-963B-FFD74B908733}</Project>
+      <Name>crashpad_zlib</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build\crashpad_build\third_party\mini_chromium\mini_chromium.vcxproj">
+      <Project>{5A71E8B5-BCDC-360A-82D8-EE75ACE268B2}</Project>
+      <Name>mini_chromium</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>

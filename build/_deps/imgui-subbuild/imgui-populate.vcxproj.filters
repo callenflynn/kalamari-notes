@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\8b903247ab392d026505e632ee86cdfc\imgui-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\64a237bd80b3385d58a68b3ae763775e\imgui-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\ac13ba7ed65a690bf8a979b604526d3e\imgui-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Notsk\kalamari-notes\build\_deps\imgui-subbuild\CMakeFiles\imgui-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{36EEAB48-508E-376C-A833-FAD2E58A4313}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

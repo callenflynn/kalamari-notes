@@ -1,0 +1,26 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-4.4/Modules/BasicConfigVersion-SameMajorVersion.cmake.in
+C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCInformation.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCommonLanguageInclude.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeLanguageInformation.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CMakePackageConfigHelpers.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CheckCSourceCompiles.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CheckIncludeFile.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CheckIncludeFileCXX.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CheckLibraryExists.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/CheckTypeSize.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/CMakeCommonCompilerMacros.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/FindThreads.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/GNUInstallDirs.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/Platform/Windows-MSVC-C.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/Platform/Windows-MSVC.cmake
+C:/Program Files/CMake/share/cmake-4.4/Modules/WriteBasicConfigVersionFile.cmake
+C:/Users/Notsk/kalamari-notes/build/CMakeFiles/4.4.0/CMakeCCompiler.cmake
+C:/Users/Notsk/kalamari-notes/build/CMakeFiles/cmake.verify_globs
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/CMakeLists.txt
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/cmake/utils.cmake
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-src/sentry-config.cmake.in

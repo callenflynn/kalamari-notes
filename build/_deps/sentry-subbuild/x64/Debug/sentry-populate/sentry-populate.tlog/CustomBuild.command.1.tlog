@@ -1,0 +1,150 @@
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/tmp/sentry-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/tmp/sentry-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps\sentry-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/tmp/sentry-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\509C7785B8690EC6FC2612370ED86274\SENTRY-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\Notsk\kalamari-notes\build\_deps\sentry-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\FE1017C5FC14E83420660994E127B96E\SENTRY-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/Debug/sentry-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate-prefix/src/sentry-populate-stamp/Debug/sentry-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\7EDD52FA34869BFF825CADF9C66B3BCC\SENTRY-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild -BC:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild --check-stamp-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

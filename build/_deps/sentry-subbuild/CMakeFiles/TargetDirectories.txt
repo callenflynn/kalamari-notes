@@ -1,0 +1,3 @@
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/sentry-populate.dir
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/ALL_BUILD.dir
+C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\annotation.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\annotation_list.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crash_report_database.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crashpad_info.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\prune_crash_reports.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\settings.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crash_report_database_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crashpad_client_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\annotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\annotation_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crash_report_database.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crashpad_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\crashpad_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\length_delimited_ring_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\ring_buffer_annotation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\prune_crash_reports.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\simple_address_range_bag.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\simple_string_dictionary.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\simulate_crash.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\simulate_crash_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\client\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{872BEEE0-83FE-39AA-850C-679EE25CFF0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CA69A482-3D21-3E07-8FA2-FFBD278BB7C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\509c7785b8690ec6fc2612370ed86274\sentry-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\fe1017c5fc14e83420660994e127b96e\sentry-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\7edd52fa34869bff825cadf9c66b3bcc\sentry-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\Notsk\kalamari-notes\build\_deps\sentry-subbuild\CMakeFiles\sentry-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{C4BADFEA-E08C-380C-8F44-E4DF4C947E22}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

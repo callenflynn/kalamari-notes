@@ -1,0 +1,544 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\delimited_file_reader.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_helper.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_io.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_reader.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_seeker.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_writer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\output_stream_file_writer.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\scoped_remove_file.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\string_file.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\initialization_state_dcheck.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\lexing.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\metrics.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\pdb_structures.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\random_string.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\range_set.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\reinterpret_bytes.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\scoped_forbid_return.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\time.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\uuid.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\zlib.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_body.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_body_gzip.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_multipart_builder.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_transport.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\url.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\checked_address_range.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory_range.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\aligned_allocator.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\string_number_conversion.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\strlcpy.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\strnlen.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\base94_output_stream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\file_encoder.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\file_output_stream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\log_output_stream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\zlib_output_stream.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\string\split_string.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\thread.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\thread_log_messages.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\worker_thread.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\directory_reader_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_io_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\filesystem_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\clock_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\paths_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\time_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_transport_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\synchronization\semaphore_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\thread_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\command_line.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\critical_section_with_debug_info.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\exception_handler_server.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\get_function.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\get_module_information.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\handle.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\initial_client_data.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\loader_lock.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\module_version.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\nt_internals.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\ntstatus_logging.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\process_info.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\registration_protocol_win.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_handle.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_local_alloc.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_process_suspend.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_set_event.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\screenshot.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\session_end_watcher.cc">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\delimited_file_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\directory_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_helper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_io.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_seeker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\file_writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\filesystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\output_stream_file_writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\scoped_remove_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\file\string_file.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\address_sanitizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\address_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\arraysize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\as_underlying_type.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\capture_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\clock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\elf_note_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\from_pointer_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\implicit_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\initialization_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\initialization_state_dcheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\lexing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\memory_sanitizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\metrics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\no_cfi_icall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\paths.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\pdb_structures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\random_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\range_set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\reinterpret_bytes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\scoped_forbid_return.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\symbolic_constants_common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\time.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\tri_state.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\uuid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\zlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_body.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_body_gzip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_headers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_multipart_builder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\http_transport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\net\url.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\checked_address_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\checked_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\checked_vm_address_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\in_range_cast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\int128.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\numeric\safe_assignment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_id.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory_native.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\aligned_allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\map_insert.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\objc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\string_number_conversion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\strlcpy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\strnlen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stdlib\thread_safe_vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\base94_output_stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\file_encoder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\file_output_stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\log_output_stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\output_stream_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\stream\zlib_output_stream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\string\split_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\synchronization\scoped_spin_guard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\synchronization\semaphore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\stoppable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\thread_log_messages.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\thread\worker_thread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\process\process_memory_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\address_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\checked_win_address_range.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\command_line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\context_wrappers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\critical_section_with_debug_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\exception_codes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\exception_handler_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\get_function.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\get_module_information.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\handle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\initial_client_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\loader_lock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\module_version.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\nt_internals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\ntstatus_logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\process_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\process_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\registration_protocol_win.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\registration_protocol_win_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\safe_terminate_process.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_handle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_local_alloc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_process_suspend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_registry_key.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\scoped_set_event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\screenshot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\session_end_watcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\termination_codes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\traits.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\xp_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\misc\capture_context_win.asm" />
+    <MASM Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\util\win\safe_terminate_process.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{872BEEE0-83FE-39AA-850C-679EE25CFF0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{CA69A482-3D21-3E07-8FA2-FFBD278BB7C6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

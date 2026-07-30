@@ -1,0 +1,10 @@
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD-TEST\_DEPS\IMGUI-SUBBUILD\CMAKEFILES\08A2E5137D479EBF50AEEE323FAE2A1B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild -BC:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/imgui-populate.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

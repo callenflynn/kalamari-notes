@@ -1,0 +1,10 @@
+^C:\USERS\NOTSK\KALAMARI-NOTES\BUILD\_DEPS\SENTRY-SUBBUILD\CMAKEFILES\7EDD52FA34869BFF825CADF9C66B3BCC\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild -BC:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Notsk/kalamari-notes/build/_deps/sentry-subbuild/sentry-populate.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

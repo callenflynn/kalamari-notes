@@ -1,0 +1,14 @@
+# Target labels
+ imgui-populate
+# Source files and their labels
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/imgui-populate
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/08a2e5137d479ebf50aeee323fae2a1b/imgui-populate.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/0164ed3a8abea3dfc4f37a0edc143b83/imgui-populate-complete.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-build.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-configure.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-download.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-install.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-mkdir.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-patch.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-test.rule
+C:/Users/Notsk/kalamari-notes/build-test/_deps/imgui-subbuild/CMakeFiles/7ac4351b9348d4c0dec12ba21f3c6dbb/imgui-populate-update.rule

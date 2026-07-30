@@ -1,0 +1,440 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{89011422-80C2-3819-93A6-DF14281DEE02}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>mini_chromium</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mini_chromium.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">mini_chromium</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mini_chromium.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">mini_chromium</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mini_chromium.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">mini_chromium</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.lib</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mini_chromium.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">mini_chromium</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8 /utf-8 /FS /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4201;4244;4996;4100;4127;4324;4351;4577</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(IncludePaths)</IncludePaths>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8 /utf-8 /FS /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DisableSpecificWarnings>4201;4244;4996;4100;4127;4324;4351;4577</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(IncludePaths)</IncludePaths>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8 /utf-8 /FS /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DisableSpecificWarnings>4201;4244;4996;4100;4127;4324;4351;4577</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(IncludePaths)</IncludePaths>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /utf-8 /utf-8 /FS /bigobj</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <BufferSecurityCheck></BufferSecurityCheck>
+      <CallingConvention></CallingConvention>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4201;4244;4996;4100;4127;4324;4351;4577</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <FloatingPointModel></FloatingPointModel>
+      <ForceConformanceInForLoopScope></ForceConformanceInForLoopScope>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RemoveUnreferencedCodeData></RemoveUnreferencedCodeData>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <SupportJustMyCode></SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType></TreatWChar_tAsBuiltInType>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <MASM>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;UNICODE;WIN32_LEAN_AND_MEAN;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;_UNICODE;CRASHPAD_FLOCK_ALWAYS_SUPPORTED=1;CRASHPAD_LSS_SOURCE_EMBEDDED;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <IncludePaths>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(IncludePaths)</IncludePaths>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </MASM>
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium;C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/external/crashpad/third_party/mini_chromium/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build-test --check-stamp-file C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/third_party/mini_chromium/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Notsk\kalamari-notes\build-test\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/external/crashpad/third_party/mini_chromium/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build-test --check-stamp-file C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/third_party/mini_chromium/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Notsk\kalamari-notes\build-test\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/external/crashpad/third_party/mini_chromium/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build-test --check-stamp-file C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/third_party/mini_chromium/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Notsk\kalamari-notes\build-test\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/external/crashpad/third_party/mini_chromium/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Notsk/kalamari-notes -BC:/Users/Notsk/kalamari-notes/build-test --check-stamp-file C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/third_party/mini_chromium/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Notsk\kalamari-notes\build-test\CMakeFiles\cmake.verify_globs;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-build\crashpad_build\third_party\mini_chromium\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\build\chromeos_buildflags.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\build\build_config.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops_internals_atomicword_compat.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\atomicops_internals_portable.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\auto_reset.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\bit_cast.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\check.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\check_op.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\compiler_specific.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\checked_iterators.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\dynamic_extent.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\span.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\containers\util.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\debug\alias.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\debug\alias.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_path.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_path.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_util.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\file_util.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\scoped_file.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\files\scoped_file.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\format_macros.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\immediate_crash.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\logging.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\logging.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\free_deleter.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\page_size.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\raw_ptr_exclusion.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\scoped_policy.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\histogram_functions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\histogram_macros.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\metrics\persistent_histogram_allocator.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\notreached.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\basic_ops_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\byte_conversions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\checked_math.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\checked_math_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\clamped_math.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\clamped_math_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions_arm_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_conversions_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_arm_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_clang_gcc_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\numerics\safe_math_shared_impl.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\process\memory.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\process\memory.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\rand_util.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\rand_util.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_clear_last_error.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_generic.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\pattern.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\pattern.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\strcat_internal.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_number_conversions.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_number_conversions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\stringprintf.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\stringprintf.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\sys_string_conversions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversion_utils.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversions.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversions.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\condition_variable.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock_impl.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\sys_byteorder.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\template_util.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\third_party\icu\icu_utf.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\third_party\icu\icu_utf.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\types\cxx23_to_underlying.h" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\types\to_address.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\utf_string_conversion_utils.cc" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\memory\page_size_win.cc" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\scoped_clear_last_error_win.cc" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util_win.cc" />
+    <ClInclude Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\strings\string_util_win.h" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\synchronization\lock_impl_win.cc" />
+    <ClCompile Include="C:\Users\Notsk\kalamari-notes\build-test\_deps\sentry-src\external\crashpad\third_party\mini_chromium\mini_chromium\base\threading\thread_local_storage_win.cc" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\Notsk\kalamari-notes\build-test\ZERO_CHECK.vcxproj">
+      <Project>{C2D0F07D-9A4D-3887-A8CF-6B5034E80426}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>
