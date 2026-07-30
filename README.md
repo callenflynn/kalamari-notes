@@ -1,44 +1,47 @@
 # Kalamari Notes
 
-![Kalamari Banner](src/assets/kalamari_banner.png)
+A fast, cross-platform markdown notebook built with **Tauri**, **React**, and **TypeScript**.
 
-A fast, cross-platform markdown notebook built with C++, SDL3, and Dear ImGui.
+## Features
+
+- Vault-based markdown note taking
+- Split-pane editor with live Markdown preview
+- Wiki-links (`[[Note]]`) and backlinks
+- Interactive graph view of note relationships
+- Daily notes and quick search
+- Plugin API for commands and panels
+- Light / dark theme
 
 ## Prerequisites
 
-- **CMake** 3.28+ (`winget install Kitware.CMake`)
-- **Visual Studio 2026** with "Desktop development with C++" workload
-- **WiX Toolset** (for MSI installer): `winget install WiXToolset.WiX`
+- [Node.js](https://nodejs.org/) 20+
+- [Rust](https://www.rust-lang.org/tools/install)
+- (Linux only) `libgtk-3-dev`, `libwebkit2gtk-4.0-dev`, `libappindicator3-dev`, `librsvg2-dev`, `patchelf`
 
-## Build (Windows)
-
-```powershell
-cmake -S . -B build -G "Visual Studio 18 2026" -A x64
-cmake --build build --config Release
-```
-
-## Package (Windows)
-
-```powershell
-cd build
-cpack -C Release
-```
-
-Outputs `Kalamari-*.msi` and `Kalamari-*.zip` in `build/`.
-
-## Build (macOS / Linux)
+## Development
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --config Release
-cd build && cpack -C Release
+cd tauri
+npm install
+npm run tauri dev
 ```
+
+## Build
+
+```bash
+cd tauri
+npm run tauri build
+```
+
+Build artifacts appear in `tauri/src-tauri/target/release/bundle/`.
 
 ## Release
 
-Push a tag to trigger the CI build and create a GitHub Release with installers:
+Pushes and pull requests to `main` trigger `.github/workflows/build-tauri.yml`, which builds for Linux, macOS, and Windows.
 
-```powershell
-git tag v1.0.0
-git push origin v1.0.0
+To create a manual release, push a tag:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
 ```
