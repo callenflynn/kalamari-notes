@@ -1,6 +1,0 @@
-# CMake generation dependency list for this directory.
-C:/Users/Notsk/kalamari-notes/build-test/CMakeFiles/cmake.verify_globs
-C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/handler/crashpad_handler.rc.in
-C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-build/crashpad_build/handler/crashpad_wer.rc.in
-C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/external/crashpad/handler/CMakeLists.txt
-C:/Users/Notsk/kalamari-notes/build-test/_deps/sentry-src/sentry.rc.in

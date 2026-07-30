@@ -9,7 +9,6 @@ dist/
 # ===========================
 tauri/src-tauri/target/
 *.rs.bk
-Cargo.lock
 
 # ===========================
 # IDE / Editor files
