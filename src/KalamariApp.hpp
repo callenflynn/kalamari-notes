@@ -56,6 +56,7 @@ namespace Kalamari
         // Splitter
         float m_sidebarWidth = 260.0f;
 
+        void DrawTopBar();
         void DrawAppLayout();
         void DrawTabBar();
         void DrawSettingsModal();
@@ -64,10 +65,10 @@ namespace Kalamari
         void DrawOpenVaultModal();
 
         void OpenNote(const std::shared_ptr<Note>& note);
-        void CloseTab(int index);
+        bool CloseTab(int index);
         void HandleWikiLinkNav();
 
-        void SaveAllNotes();
+        bool SaveAllNotes();
         void SaveConfig();
         void LoadConfig();
 

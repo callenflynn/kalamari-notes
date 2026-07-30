@@ -1,6 +1,7 @@
 #include "Markdown.hpp"
 
 #include "Theme.hpp"
+#include "UI.hpp"
 #include "imgui.h"
 #include <SDL3/SDL.h>
 #include <algorithm>
@@ -54,7 +55,6 @@ namespace Kalamari { namespace Markdown
         if (s + 1 >= line.size() || line[s] != '-' || line[s + 1] != ' ') return false;
 
         size_t contentStart = s + 2;
-        // Check for task: "- [ ]" or "- [x]"
         if (line.size() >= contentStart + 3 &&
             line[contentStart] == '[' && line[contentStart + 2] == ']')
         {
@@ -117,7 +117,6 @@ namespace Kalamari { namespace Markdown
 
     bool IsImageLink(const std::string& line, std::string& alt, std::string& url)
     {
-        // ![alt](url) -- at the start of the line only
         size_t s = line.find_first_not_of(" \t");
         if (s == std::string::npos || s + 1 >= line.size()) return false;
         if (line[s] != '!' || line[s + 1] != '[') return false;
@@ -138,36 +137,33 @@ namespace Kalamari { namespace Markdown
         ImGui::PushID(lineIndex);
         std::string wikiTarget;
 
-        // ---- Code block content ----
         if (inCodeBlock)
         {
             ImVec2 pos = ImGui::GetCursorScreenPos();
-            float h = ImGui::GetTextLineHeight();
-            ImDrawList* dl = ImGui::GetWindowDrawList();
             float availW = ImGui::GetContentRegionAvail().x;
-            // Darker code block background
-            bool isDark = ImGui::GetStyle().Colors[ImGuiCol_WindowBg].x < 0.5f;
-            ImU32 bgCol = isDark
-                ? ImGui::GetColorU32(ImVec4(0.13f, 0.13f, 0.14f, 1.0f))
-                : ImGui::GetColorU32(ImVec4(0.93f, 0.91f, 0.88f, 1.0f));
+            ImDrawList* dl = ImGui::GetWindowDrawList();
+            ImU32 bgCol = ImGui::GetColorU32(Theme::SURFACE_COLOR);
             ImU32 barCol = ImGui::GetColorU32(Theme::ACCENT_COLOR);
-            // Calculate height for wrapped text
+
+            // Wrapped text height approximation
             ImVec2 textSize = ImGui::CalcTextSize(line.empty() ? " " : line.c_str());
-            int wrapLines = (int)std::ceil(textSize.x / (availW - 16));
+            int wrapLines = (int)std::ceil(textSize.x / (availW - 32));
             if (wrapLines < 1) wrapLines = 1;
-            float blockH = h * wrapLines + 4;
-            dl->AddRectFilled(pos, ImVec2(pos.x + availW, pos.y + blockH), bgCol, 3);
-            dl->AddRectFilled(pos, ImVec2(pos.x + 3, pos.y + blockH), barCol);
-            ImGui::SetCursorScreenPos(ImVec2(pos.x + 12, pos.y + 2));
+            float blockH = ImGui::GetTextLineHeight() * wrapLines + 12;
+
+            dl->AddRectFilled(pos, ImVec2(pos.x + availW, pos.y + blockH), bgCol, 8.0f);
+            dl->AddRectFilled(pos, ImVec2(pos.x + 4, pos.y + blockH), barCol, 8.0f, ImDrawFlags_RoundCornersLeft);
+
+            ImGui::SetCursorScreenPos(ImVec2(pos.x + 16, pos.y + 6));
             ImVec4 tc = ImGui::GetStyle().Colors[ImGuiCol_Text];
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(tc.x * 0.85f, tc.y * 0.85f, tc.z * 0.9f, 1));
             ImGui::Text("%s", line.empty() ? " " : line.c_str());
             ImGui::PopStyleColor();
+
             ImGui::PopID();
             return "";
         }
 
-        // ---- Code fence line ----
         if (isFenceLine)
         {
             std::string lang;
@@ -179,48 +175,49 @@ namespace Kalamari { namespace Markdown
             return "";
         }
 
-        // ---- Heading ----
         HeadingInfo h = ParseHeading(line);
         if (h.level > 0)
         {
-            float scales[] = {0, 1.55f, 1.35f, 1.18f, 1.08f, 1.04f, 1.02f};
+            float scales[] = {0, 1.70f, 1.45f, 1.25f, 1.12f, 1.06f, 1.02f};
+            UI::PushHeadingFont();
             ImGui::SetWindowFontScale(scales[h.level]);
             ImGui::Spacing();
             ImVec4 c = Theme::ACCENT_COLOR;
-            if (h.level >= 2) c.w = 0.88f;
+            if (h.level >= 2) c.w = 0.90f;
             ImGui::TextColored(c, "%s", h.text.c_str());
             ImGui::SetWindowFontScale(1.0f);
+            UI::PopHeadingFont();
             if (h.level <= 2) ImGui::Spacing();
             ImGui::PopID();
             return "";
         }
 
-        // ---- Horizontal rule ----
         if (IsHorizontalRule(line))
         {
             ImGui::Spacing();
             ImVec2 pos = ImGui::GetCursorScreenPos();
             float w = ImGui::GetContentRegionAvail().x;
             ImDrawList* dl = ImGui::GetWindowDrawList();
-            ImVec4 c = Theme::ACCENT_COLOR;
-            c.w = 0.35f;
+            ImVec4 c = Theme::BORDER_COLOR;
             dl->AddLine(ImVec2(pos.x, pos.y + 4), ImVec2(pos.x + w, pos.y + 4),
-                        ImGui::GetColorU32(c), 1.5f);
+                        ImGui::GetColorU32(c), 1.0f);
             ImGui::Dummy(ImVec2(0, 9));
             ImGui::PopID();
             return "";
         }
 
-        // ---- Blockquote ----
         std::string qc;
         if (IsBlockquote(line, qc))
         {
             ImVec2 pos = ImGui::GetCursorScreenPos();
             float h = ImGui::GetTextLineHeight();
+            float availW = ImGui::GetContentRegionAvail().x;
             ImDrawList* dl = ImGui::GetWindowDrawList();
-            dl->AddRectFilled(pos, ImVec2(pos.x + 3, pos.y + h),
-                ImGui::GetColorU32(ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]));
-            ImGui::SetCursorScreenPos(ImVec2(pos.x + 10, pos.y));
+            // Subtle left bar + background
+            ImU32 bg = ImGui::GetColorU32(Theme::SURFACE_COLOR);
+            dl->AddRectFilled(pos, ImVec2(pos.x + availW, pos.y + h + 8), bg, 4.0f);
+            dl->AddRectFilled(pos, ImVec2(pos.x + 3, pos.y + h + 8), ImGui::GetColorU32(Theme::ACCENT_COLOR), 4.0f, ImDrawFlags_RoundCornersLeft);
+            ImGui::SetCursorScreenPos(ImVec2(pos.x + 12, pos.y + 4));
             ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
             if (qc.empty()) ImGui::Text(" ");
             else wikiTarget = RenderInline(qc);
@@ -229,13 +226,11 @@ namespace Kalamari { namespace Markdown
             return wikiTarget;
         }
 
-        // ---- Task list item ----
         std::string lc; bool isTask, checked;
         if (IsListItem(line, lc, isTask, checked))
         {
             if (isTask)
             {
-                // Checkbox + text
                 bool chk = checked;
                 ImGui::Checkbox(("##task" + std::to_string(lineIndex)).c_str(), &chk);
                 ImGui::SameLine();
@@ -257,11 +252,9 @@ namespace Kalamari { namespace Markdown
             return wikiTarget;
         }
 
-        // ---- Ordered list ----
         std::string ol;
         if (IsOrderedList(line, ol))
         {
-            // Show number prefix subtly
             ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyle().Colors[ImGuiCol_TextDisabled]);
             size_t s = line.find_first_not_of(" \t");
             size_t e = line.find('.', s);
@@ -273,7 +266,6 @@ namespace Kalamari { namespace Markdown
             return wikiTarget;
         }
 
-        // ---- Image ----
         std::string alt, url;
         if (IsImageLink(line, alt, url))
         {
@@ -284,7 +276,6 @@ namespace Kalamari { namespace Markdown
             return "";
         }
 
-        // ---- Empty line: vertical spacing ----
         if (line.empty())
         {
             ImGui::Spacing();
@@ -292,7 +283,6 @@ namespace Kalamari { namespace Markdown
             return "";
         }
 
-        // ---- Plain text with inline formatting ----
         wikiTarget = RenderInline(line);
         ImGui::PopID();
         return wikiTarget;
@@ -301,14 +291,23 @@ namespace Kalamari { namespace Markdown
     // =========================================================================
     // Inline formatting renderer
     // =========================================================================
-    std::string RenderInline(const std::string& text)
+    std::string RenderInline(const std::string& text, int maxDepth)
     {
+        if (maxDepth <= 0)
+        {
+            if (!text.empty())
+            {
+                ImGui::Text("%s", text.c_str());
+            }
+            return "";
+        }
+
         ImGuiStyle& style = ImGui::GetStyle();
         ImVec4 textColor = style.Colors[ImGuiCol_Text];
-        ImVec4 linkColor = ImVec4(0.929f, 0.314f, 0.004f, 0.9f);
-        ImVec4 linkHover = ImVec4(1.0f, 0.45f, 0.05f, 1.0f);
-        ImVec4 codeColor = ImVec4(0.929f, 0.314f, 0.004f, 0.85f);
-        ImVec4 strikeColor = ImVec4(textColor.x * 0.7f, textColor.y * 0.7f, textColor.z * 0.7f, textColor.w);
+        ImVec4 linkColor = Theme::ACCENT_COLOR;
+        ImVec4 linkHover = Theme::ACCENT_COLOR_HDR;
+        ImVec4 codeBg = Theme::SURFACE_COLOR;
+        ImVec4 strikeColor = ImVec4(textColor.x * 0.6f, textColor.y * 0.6f, textColor.z * 0.6f, textColor.w);
 
         std::string wikiTarget;
         std::string buf;
@@ -325,8 +324,8 @@ namespace Kalamari { namespace Markdown
 
         while (pos < text.size())
         {
-            // ---- [[Wiki-link]] ----
-            if (pos + 1 < text.size() && text[pos] == '[' && text[pos + 1] == '[')
+            // Wiki-link [[Name]]
+            if (pos + 1 < text.size() && text[pos] == '[' && text[pos + 1] == '[' )
             {
                 size_t end = text.find("]]", pos + 2);
                 if (end != std::string::npos)
@@ -359,7 +358,7 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- [Markdown link](url) ----
+            // Markdown link [label](url)
             if (text[pos] == '[' && pos > 0 && text[pos - 1] != '!')
             {
                 size_t br = text.find("](", pos + 1);
@@ -394,15 +393,23 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- `code` ----
+            // `code`
             if (text[pos] == '`')
             {
                 size_t end = text.find('`', pos + 1);
                 if (end != std::string::npos)
                 {
                     flush();
-                    ImGui::PushStyleColor(ImGuiCol_Text, codeColor);
-                    ImGui::Text("%s", text.substr(pos + 1, end - pos - 1).c_str());
+                    std::string inner = text.substr(pos + 1, end - pos - 1);
+                    ImVec2 cur = ImGui::GetCursorScreenPos();
+                    ImVec2 sz = ImGui::CalcTextSize(inner.c_str());
+                    float padX = 4, padY = 1;
+                    ImDrawList* dl = ImGui::GetWindowDrawList();
+                    dl->AddRectFilled(ImVec2(cur.x - padX, cur.y - padY),
+                                      ImVec2(cur.x + sz.x + padX, cur.y + sz.y + padY),
+                                      ImGui::GetColorU32(codeBg), 4.0f);
+                    ImGui::PushStyleColor(ImGuiCol_Text, Theme::ACCENT_COLOR);
+                    ImGui::Text("%s", inner.c_str());
                     ImGui::PopStyleColor();
                     ImGui::SameLine(0, 0);
                     pos = end + 1;
@@ -410,7 +417,7 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- **bold** ----
+            // **bold**
             if (pos + 1 < text.size() && text[pos] == '*' && text[pos + 1] == '*')
             {
                 size_t end = text.find("**", pos + 2);
@@ -421,7 +428,7 @@ namespace Kalamari { namespace Markdown
                         ImVec4((std::min)(textColor.x * 1.15f, 1.0f),
                                (std::min)(textColor.y * 1.05f, 1.0f),
                                textColor.z * 0.9f, 1));
-                    std::string sub = RenderInline(text.substr(pos + 2, end - pos - 2));
+                    std::string sub = RenderInline(text.substr(pos + 2, end - pos - 2), maxDepth - 1);
                     if (!sub.empty()) wikiTarget = sub;
                     ImGui::PopStyleColor();
                     ImGui::SameLine(0, 0);
@@ -430,7 +437,7 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- *italic* (not **) ----
+            // *italic* (not **)
             if (text[pos] == '*' && (pos == 0 || text[pos - 1] != '*') &&
                 (pos + 1 >= text.size() || text[pos + 1] != '*'))
             {
@@ -440,7 +447,7 @@ namespace Kalamari { namespace Markdown
                     flush();
                     ImGui::PushStyleColor(ImGuiCol_Text,
                         ImVec4(textColor.x * 0.85f, textColor.y * 0.85f, textColor.z * 0.85f, 0.85f));
-                    std::string sub = RenderInline(text.substr(pos + 1, end - pos - 1));
+                    std::string sub = RenderInline(text.substr(pos + 1, end - pos - 1), maxDepth - 1);
                     if (!sub.empty()) wikiTarget = sub;
                     ImGui::PopStyleColor();
                     ImGui::SameLine(0, 0);
@@ -449,7 +456,7 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- ~~strikethrough~~ ----
+            // ~~strikethrough~~
             if (pos + 1 < text.size() && text[pos] == '~' && text[pos + 1] == '~')
             {
                 size_t end = text.find("~~", pos + 2);
@@ -459,7 +466,7 @@ namespace Kalamari { namespace Markdown
                     ImVec2 cur = ImGui::GetCursorScreenPos();
                     ImVec2 sz = ImGui::CalcTextSize(text.substr(pos + 2, end - pos - 2).c_str());
                     ImGui::PushStyleColor(ImGuiCol_Text, strikeColor);
-                    std::string sub = RenderInline(text.substr(pos + 2, end - pos - 2));
+                    std::string sub = RenderInline(text.substr(pos + 2, end - pos - 2), maxDepth - 1);
                     if (!sub.empty()) wikiTarget = sub;
                     ImGui::PopStyleColor();
                     ImDrawList* dl = ImGui::GetWindowDrawList();
@@ -472,8 +479,8 @@ namespace Kalamari { namespace Markdown
                 }
             }
 
-            // ---- ==highlight== ----
-            if (pos + 1 < text.size() && text[pos] == '=' && text[pos + 1] == '=')
+            // ==highlight==
+            if (pos + 1 < text.size() && text[pos] == '=' && text[pos + 1] == '=' )
             {
                 size_t end = text.find("==", pos + 2);
                 if (end != std::string::npos)
@@ -483,16 +490,12 @@ namespace Kalamari { namespace Markdown
                     std::string inner = text.substr(pos + 2, end - pos - 2);
                     ImVec2 sz = ImGui::CalcTextSize(inner.c_str());
                     ImDrawList* dl = ImGui::GetWindowDrawList();
-                    // Highlight background
-                    bool isDark = ImGui::GetStyle().Colors[ImGuiCol_WindowBg].x < 0.5f;
-                    ImVec4 hlBg = isDark
-                        ? ImVec4(0.929f, 0.314f, 0.004f, 0.20f)
-                        : ImVec4(0.929f, 0.314f, 0.004f, 0.15f);
+                    ImVec4 hlBg = ImVec4(Theme::ACCENT_COLOR.x, Theme::ACCENT_COLOR.y, Theme::ACCENT_COLOR.z, 0.18f);
                     dl->AddRectFilled(
-                        ImVec2(cur.x - 2, cur.y - 1),
-                        ImVec2(cur.x + sz.x + 2, cur.y + sz.y + 1),
-                        ImGui::GetColorU32(hlBg), 2);
-                    std::string sub = RenderInline(inner);
+                        ImVec2(cur.x - 3, cur.y - 2),
+                        ImVec2(cur.x + sz.x + 3, cur.y + sz.y + 2),
+                        ImGui::GetColorU32(hlBg), 4.0f);
+                    std::string sub = RenderInline(inner, maxDepth - 1);
                     if (!sub.empty()) wikiTarget = sub;
                     ImGui::SameLine(0, 0);
                     pos = end + 2;

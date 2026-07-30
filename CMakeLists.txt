@@ -74,6 +74,7 @@ add_executable(Kalamari WIN32 MACOSX_BUNDLE
     src/main.cpp
     src/Config.cpp
     src/Theme.cpp
+    src/UI.cpp
     src/Vault.cpp
     src/Markdown.cpp
     src/AppRenderer.cpp

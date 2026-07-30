@@ -22,7 +22,8 @@ namespace Kalamari
 
         // Render inline formatting within a single line of text.
         // Returns the clicked wiki-link target, or empty string.
-        std::string RenderInline(const std::string& text);
+        // maxDepth guards against pathological nested input; callers can leave it at the default.
+        std::string RenderInline(const std::string& text, int maxDepth = 32);
 
         // ---- Helpers exposed for Editor integration ----
         struct HeadingInfo { int level; std::string text; };

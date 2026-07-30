@@ -1,6 +1,7 @@
 #include "Sidebar.hpp"
 
 #include "Theme.hpp"
+#include "UI.hpp"
 #include "imgui.h"
 #include <algorithm>
 #include <cstdio>
@@ -17,23 +18,23 @@ namespace Kalamari
                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             return s;
         }
+
     }
 
     void Sidebar::Draw(float width, Vault& vault, const std::shared_ptr<Note>& currentNote,
                        const SidebarCallbacks& cbs, char* searchBuffer, int searchBufferSize)
     {
-        ImGuiStyle& style = ImGui::GetStyle();
-        bool isDark = (style.Colors[ImGuiCol_WindowBg].x < 0.5f);
-
-        ImGui::PushStyleColor(ImGuiCol_ChildBg, isDark ? Theme::DARK_FRAME_BG : Theme::LIGHT_FRAME_BG);
-        ImGui::BeginChild("Sidebar", ImVec2(width, 0), ImGuiChildFlags_Borders);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(14, 14));
+        ImGui::BeginChild("Sidebar", ImVec2(width, 0), ImGuiChildFlags_None);
 
         float availW = ImGui::GetContentRegionAvail().x;
 
         // ---- App title ----
-        ImGui::SetCursorPosX((availW - ImGui::CalcTextSize("Kalamari").x) * 0.5f);
+        UI::PushHeadingFont();
+        ImVec2 titleSize = ImGui::CalcTextSize("Kalamari");
+        ImGui::SetCursorPosX((availW - titleSize.x) * 0.5f);
         ImGui::TextColored(Theme::ACCENT_COLOR, "Kalamari");
-        ImGui::Spacing();
+        UI::PopHeadingFont();
 
         // ---- Vault info ----
         std::string vaultName = vault.GetVaultName();
@@ -42,23 +43,23 @@ namespace Kalamari
             ImGui::SetCursorPosX((availW - ImGui::CalcTextSize(vaultName.c_str()).x) * 0.5f);
             ImGui::TextDisabled("%s", vaultName.c_str());
         }
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
 
-        // ---- New Note button ----
-        if (ImGui::Button("+ New Note", ImVec2(-1, 0)))
+        ImGui::Dummy(ImVec2(0.0f, 12.0f));
+
+        // ---- New Note ----
+        if (UI::ButtonPrimary("+ New Note", ImVec2(-1, 0)))
             cbs.onCreateNote();
-        ImGui::Spacing();
+
+        ImGui::Dummy(ImVec2(0.0f, 12.0f));
 
         // ---- Search ----
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, isDark ? Theme::DARK_BG : Theme::LIGHT_BG);
-        ImGui::InputTextWithHint("##Search", "Search notes...", searchBuffer, searchBufferSize);
-        ImGui::PopStyleColor();
-        ImGui::Spacing();
+        UI::SearchInput("##Search", searchBuffer, searchBufferSize, "Search notes...", -1.0f);
+
+        ImGui::Dummy(ImVec2(0.0f, 10.0f));
 
         // ---- File tree ----
-        ImGui::BeginChild("FileTree", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 24));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+        ImGui::BeginChild("FileTree", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 24), ImGuiChildFlags_None);
 
         int noteCount = 0;
         int folderCount = 0;
@@ -67,18 +68,20 @@ namespace Kalamari
         std::string filter(searchBuffer);
         DrawFileTree(vault, currentNote, cbs, vault.GetFileTree(), filter);
         ImGui::EndChild();
+        ImGui::PopStyleVar();
 
-        // ---- Bottom bar: note count + settings ----
-        ImGui::Separator();
+        // ---- Footer ----
+        ImGui::Dummy(ImVec2(0.0f, 6.0f));
+        UI::DrawDivider(6.0f);
         ImGui::TextDisabled("%d notes, %d folders", noteCount, folderCount);
         ImGui::SameLine();
-        float settingsW = ImGui::CalcTextSize("Settings").x + 16;
+        float settingsW = ImGui::CalcTextSize("Settings").x + 24.0f;
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - settingsW);
-        if (ImGui::SmallButton("Settings"))
+        if (UI::ButtonGhost("Settings"))
             cbs.onOpenSettings();
 
         ImGui::EndChild();
-        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
     }
 
     void Sidebar::CountEntries(const std::vector<std::shared_ptr<VaultEntry>>& entries,
@@ -111,7 +114,6 @@ namespace Kalamari
                 bool hasMatch = filter.empty();
                 if (!hasMatch)
                 {
-                    // Check children recursively for a match
                     std::function<bool(const std::vector<std::shared_ptr<VaultEntry>>&)> anyMatch =
                         [&](const std::vector<std::shared_ptr<VaultEntry>>& e) -> bool {
                             for (const auto& c : e)
@@ -129,11 +131,19 @@ namespace Kalamari
                 if (!hasMatch) continue;
 
                 ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow |
-                                           ImGuiTreeNodeFlags_SpanAvailWidth;
+                                           ImGuiTreeNodeFlags_SpanAvailWidth |
+                                           ImGuiTreeNodeFlags_FramePadding;
                 if (entry->children.empty()) flags |= ImGuiTreeNodeFlags_Leaf;
                 if (hasMatch && !filter.empty()) flags |= ImGuiTreeNodeFlags_DefaultOpen;
 
+                // Subtle folder row
+                ImGui::PushStyleColor(ImGuiCol_Header, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+                ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetColorU32(Theme::SURFACE_HOVER_COLOR));
+                ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImGui::GetColorU32(Theme::SURFACE_ACTIVE_COLOR));
+
                 bool open = ImGui::TreeNodeEx(entry->name.c_str(), flags);
+
+                ImGui::PopStyleColor(3);
 
                 if (open)
                 {
@@ -141,19 +151,15 @@ namespace Kalamari
                     ImGui::TreePop();
                 }
 
-                // Folder context menu
                 if (ImGui::BeginPopupContextItem())
                 {
                     if (ImGui::Selectable("New Note Here"))
-                    {
                         cbs.onCreateNoteInFolder(entry->relativePath);
-                    }
                     ImGui::EndPopup();
                 }
             }
             else
             {
-                // Filter non-matching files
                 if (!filter.empty())
                 {
                     std::string nameLower = ToLower(entry->name);
@@ -166,8 +172,22 @@ namespace Kalamari
 
                 ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_Leaf |
                                            ImGuiTreeNodeFlags_SpanAvailWidth |
+                                           ImGuiTreeNodeFlags_FramePadding |
                                            ImGuiTreeNodeFlags_NoTreePushOnOpen;
-                if (isSelected) flags |= ImGuiTreeNodeFlags_Selected;
+                if (isSelected)
+                {
+                    flags |= ImGuiTreeNodeFlags_Selected;
+                    ImGui::PushStyleColor(ImGuiCol_Header, ImGui::GetColorU32(Theme::ACCENT_COLOR));
+                    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetColorU32(Theme::ACCENT_COLOR_HDR));
+                    ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImGui::GetColorU32(Theme::ACCENT_COLOR_ACTIVE));
+                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
+                }
+                else
+                {
+                    ImGui::PushStyleColor(ImGuiCol_Header, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+                    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImGui::GetColorU32(Theme::SURFACE_HOVER_COLOR));
+                    ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImGui::GetColorU32(Theme::SURFACE_ACTIVE_COLOR));
+                }
 
                 ImGui::PushID(entry->relativePath.c_str());
 
@@ -176,13 +196,12 @@ namespace Kalamari
                     display = display.substr(0, display.size() - 3);
                 if (display.size() > 28) display = display.substr(0, 25) + "...";
 
-                if (isSelected)
-                    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1, 1, 1, 1));
-
                 ImGui::TreeNodeEx(display.c_str(), flags);
 
                 if (isSelected)
-                    ImGui::PopStyleColor();
+                    ImGui::PopStyleColor(4);
+                else
+                    ImGui::PopStyleColor(3);
 
                 if (ImGui::IsItemClicked())
                 {

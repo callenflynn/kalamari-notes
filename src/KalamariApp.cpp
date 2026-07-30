@@ -2,6 +2,7 @@
 
 #include "Markdown.hpp"
 #include "Theme.hpp"
+#include "UI.hpp"
 #include "imgui.h"
 #include "imgui_impl_sdl3.h"
 #include <SDL3/SDL.h>
@@ -13,14 +14,19 @@
 
 namespace Kalamari
 {
-    namespace
+    namespace Layout
     {
         constexpr Uint32 AUTO_SAVE_MS = 30000;
         constexpr Sint32 EVENT_TIMEOUT_MS = 100;
-        constexpr float SIDEBAR_MIN = 160;
+        constexpr float SIDEBAR_MIN = 180;
         constexpr float SIDEBAR_MAX = 500;
-        constexpr float SPLITTER_W = 6;
+        constexpr float TOPBAR_H = 52.0f;
+        constexpr float TOPBAR_ITEM_SPACING = 8.0f;
+        constexpr float SPLITTER_W = 6.0f;
+    }
 
+    namespace
+    {
         void AddBreadcrumb(const char* cat, const char* msg)
         {
             sentry_value_t c = sentry_value_new_breadcrumb(nullptr, msg);
@@ -35,7 +41,6 @@ namespace Kalamari
     // =========================================================================
     bool KalamariApp::Init()
     {
-        // Sentry
         sentry_options_t* opts = sentry_options_new();
         sentry_options_set_dsn(opts,
             "https://d93df2fd5b1f23837e7fde7246198213@o4511748121886720.ingest.us.sentry.io/4511748130078720");
@@ -49,7 +54,6 @@ namespace Kalamari
         sentry_options_set_enable_logs(opts, 1);
         sentry_init(opts);
 
-        // Config — load from global config file in Documents/kalamari
         {
             const char* docs = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
             std::string configDir = std::string(docs ? docs : ".") + "/kalamari";
@@ -59,23 +63,17 @@ namespace Kalamari
         m_darkMode = m_config.darkMode;
         m_sidebarWidth = m_config.sidebarWidth;
 
-        // Renderer
         if (!m_renderer.Init(m_config.windowW, m_config.windowH))
             return false;
 
         Theme::Apply(m_darkMode);
-        m_renderer.LoadFont("assets/Kameron/static/Kameron-Regular.ttf", 18.0f);
 
-        // Try loading last vault
-        if (!m_config.lastVaultPath.empty())
+        if (!m_config.lastVaultPath.empty() && std::filesystem::exists(m_config.lastVaultPath))
         {
-            if (std::filesystem::exists(m_config.lastVaultPath))
-            {
-                m_vault.OpenVault(m_config.lastVaultPath);
-                m_config = Config::Load(m_config.lastVaultPath);
-                m_darkMode = m_config.darkMode;
-                Theme::Apply(m_darkMode);
-            }
+            m_vault.OpenVault(m_config.lastVaultPath);
+            m_config = Config::Load(m_config.lastVaultPath);
+            m_darkMode = m_config.darkMode;
+            Theme::Apply(m_darkMode);
         }
 
         return true;
@@ -89,16 +87,21 @@ namespace Kalamari
         sentry_close();
     }
 
-    void KalamariApp::SaveAllNotes()
+    bool KalamariApp::SaveAllNotes()
     {
+        bool allSaved = true;
         if (m_vault.IsOpen())
         {
             for (auto& tab : m_tabs)
             {
                 if (tab->note && tab->note->dirty)
-                    m_vault.SaveNote(tab->note);
+                {
+                    if (!m_vault.SaveNote(tab->note))
+                        allSaved = false;
+                }
             }
         }
+        return allSaved;
     }
 
     void KalamariApp::SaveConfig()
@@ -112,10 +115,7 @@ namespace Kalamari
         m_config.windowW = w;
         m_config.windowH = h;
 
-        // Always save to global config
         m_config.SaveToPath(m_globalConfigPath);
-
-        // Also save to vault-specific config if a vault is open
         if (m_vault.IsOpen())
             m_config.Save(m_vault.GetVaultPath().string());
     }
@@ -137,7 +137,7 @@ namespace Kalamari
         while (!done)
         {
             SDL_Event evt;
-            bool hasEvent = SDL_WaitEventTimeout(&evt, EVENT_TIMEOUT_MS);
+            bool hasEvent = SDL_WaitEventTimeout(&evt, Layout::EVENT_TIMEOUT_MS);
 
             if (hasEvent)
             {
@@ -155,7 +155,6 @@ namespace Kalamari
             if (SDL_GetWindowFlags(m_renderer.GetWindow()) & SDL_WINDOW_MINIMIZED)
                 continue;
 
-            // ---- Render ----
             m_renderer.NewFrame();
 
             ImGuiIO& io = ImGui::GetIO();
@@ -175,31 +174,25 @@ namespace Kalamari
             }
             else
             {
+                DrawTopBar();
                 DrawAppLayout();
             }
 
             ImGui::End();
 
-            // ---- Keyboard shortcuts ----
-            // Ctrl+P: command palette
+            // Global keyboard shortcuts
             if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_P) && m_vault.IsOpen())
                 m_showCommandPalette = true;
-
-            // Ctrl+N: new note
             if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_N) && m_vault.IsOpen())
             {
                 auto n = m_vault.CreateNote();
                 if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
             }
-
-            // Ctrl+W: close tab
             if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_W) && m_vault.IsOpen())
             {
                 if (m_activeTab >= 0 && m_activeTab < static_cast<int>(m_tabs.size()))
-                    CloseTab(m_activeTab);
+                    static_cast<void>(CloseTab(m_activeTab));
             }
-
-            // Ctrl+Tab / Ctrl+Shift+Tab: cycle tabs
             if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_Tab) && m_tabs.size() > 1)
             {
                 if (ImGui::IsKeyDown(ImGuiKey_LeftShift))
@@ -208,15 +201,12 @@ namespace Kalamari
                     m_activeTab = (m_activeTab + 1) % static_cast<int>(m_tabs.size());
             }
 
-            // ---- Modals ----
             DrawSettingsModal();
             DrawRenameModal();
             DrawCommandPalette();
 
-            // ---- Deferred delete ----
             if (m_noteToDelete)
             {
-                // Close any tabs with this note
                 for (int i = static_cast<int>(m_tabs.size()) - 1; i >= 0; --i)
                 {
                     if (m_tabs[i]->note == m_noteToDelete)
@@ -227,9 +217,8 @@ namespace Kalamari
                 m_noteToDelete.reset();
             }
 
-            // ---- Auto-save ----
             Uint64 now = SDL_GetTicks();
-            if (now - lastSave >= AUTO_SAVE_MS)
+            if (now - lastSave >= Layout::AUTO_SAVE_MS)
             {
                 SaveAllNotes();
                 lastSave = now;
@@ -237,6 +226,52 @@ namespace Kalamari
 
             m_renderer.Render(Theme::GetClearColor(m_darkMode));
         }
+    }
+
+    // =========================================================================
+    // Top app bar
+    // =========================================================================
+    void KalamariApp::DrawTopBar()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(16, 12));
+        ImGui::BeginChild("TopBar", ImVec2(-1, Layout::TOPBAR_H), ImGuiChildFlags_None);
+
+        UI::PushHeadingFont();
+        ImGui::TextColored(Theme::ACCENT_COLOR, "Kalamari");
+        UI::PopHeadingFont();
+
+        ImGui::SameLine();
+        ImGui::TextDisabled("|  %s", m_vault.GetVaultName().c_str());
+
+        const char* themeLabel = m_darkMode ? "Light" : "Dark";
+        const float groupW = UI::ButtonWidth("New Note")
+                           + UI::ButtonWidth("Command Palette")
+                           + UI::ButtonWidth(themeLabel)
+                           + Layout::TOPBAR_ITEM_SPACING * 2.0f;
+
+        ImGui::SameLine();
+        float rightEdge = ImGui::GetWindowContentRegionMax().x;
+        float x = rightEdge - groupW;
+        if (x > ImGui::GetCursorPosX())
+            ImGui::SetCursorPosX(x);
+
+        if (UI::ButtonPrimary("New Note", ImVec2(0, 0)))
+        {
+            auto n = m_vault.CreateNote();
+            if (n) { AddBreadcrumb("note.create", n->fileName.c_str()); OpenNote(n); }
+        }
+        ImGui::SameLine(0, Layout::TOPBAR_ITEM_SPACING);
+        if (UI::ButtonSecondary("Command Palette", ImVec2(0, 0)))
+            m_showCommandPalette = true;
+        ImGui::SameLine(0, Layout::TOPBAR_ITEM_SPACING);
+        if (UI::ButtonSecondary(themeLabel, ImVec2(0, 0)))
+        {
+            m_darkMode = !m_darkMode;
+            Theme::Apply(m_darkMode);
+        }
+
+        ImGui::EndChild();
+        ImGui::PopStyleVar();
     }
 
     // =========================================================================
@@ -254,26 +289,25 @@ namespace Kalamari
 
         // ---- Splitter ----
         ImGui::SameLine(0, 0);
-        ImGui::InvisibleButton("##Splitter", ImVec2(SPLITTER_W, -1));
+        ImGui::InvisibleButton("##Splitter", ImVec2(Layout::SPLITTER_W, -1));
         if (ImGui::IsItemActive())
         {
             m_sidebarWidth += io.MouseDelta.x;
-            m_sidebarWidth = (std::max)(SIDEBAR_MIN, (std::min)(m_sidebarWidth, SIDEBAR_MAX));
+            m_sidebarWidth = (std::max)(Layout::SIDEBAR_MIN, (std::min)(m_sidebarWidth, Layout::SIDEBAR_MAX));
         }
         if (ImGui::IsItemHovered() || ImGui::IsItemActive())
             ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
 
-        // Draw splitter line
         {
             ImVec2 sMin = ImGui::GetItemRectMin();
             ImVec2 sMax = ImGui::GetItemRectMax();
             ImDrawList* dl = ImGui::GetWindowDrawList();
-            ImVec4 sepCol = ImGui::GetStyle().Colors[ImGuiCol_Separator];
+            ImVec4 sepCol = Theme::BORDER_COLOR;
             if (ImGui::IsItemHovered() || ImGui::IsItemActive())
                 sepCol = Theme::ACCENT_COLOR;
             dl->AddLine(
-                ImVec2(sMin.x + SPLITTER_W * 0.5f, sMin.y),
-                ImVec2(sMin.x + SPLITTER_W * 0.5f, sMax.y),
+                ImVec2(sMin.x + Layout::SPLITTER_W * 0.5f, sMin.y),
+                ImVec2(sMin.x + Layout::SPLITTER_W * 0.5f, sMax.y),
                 ImGui::GetColorU32(sepCol), 1.0f);
         }
 
@@ -281,12 +315,10 @@ namespace Kalamari
         ImGui::SameLine(0, 0);
         ImGui::BeginChild("MainArea", ImVec2(0, 0), ImGuiChildFlags_None);
 
-        // Tab bar
         DrawTabBar();
 
-        // Editor area
         ImGui::BeginChild("EditorContainer", ImVec2(0, 0), ImGuiChildFlags_None);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24, 12));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(24, 16));
         ImGui::BeginChild("EditorInner", ImVec2(0, 0), ImGuiChildFlags_None);
 
         if (m_activeTab >= 0 && m_activeTab < static_cast<int>(m_tabs.size()))
@@ -297,16 +329,7 @@ namespace Kalamari
         }
         else
         {
-            ImVec2 r = ImGui::GetContentRegionAvail();
-            float centerX = r.x * 0.5f;
-            float centerY = r.y * 0.4f;
-
-            ImGui::SetCursorPos(ImVec2(centerX - ImGui::CalcTextSize("Kalamari").x * 0.5f, centerY - 30));
-            ImGui::TextColored(Theme::ACCENT_COLOR, "Kalamari");
-            ImGui::SetCursorPosX(centerX - ImGui::CalcTextSize("Open a note or create a new one").x * 0.5f);
-            ImGui::TextDisabled("Open a note or create a new one");
-            ImGui::SetCursorPosX(centerX - ImGui::CalcTextSize("Ctrl+N  |  Ctrl+P").x * 0.5f);
-            ImGui::TextDisabled("Ctrl+N  |  Ctrl+P");
+            UI::EmptyState("Kalamari", "Open a note or create a new one", "Ctrl+N  |  Ctrl+P");
         }
 
         ImGui::EndChild();
@@ -338,7 +361,10 @@ namespace Kalamari
                 }
 
                 if (!open)
-                    CloseTab(i);
+                {
+                    if (!CloseTab(i))
+                        ++i; // keep tab open if save failed
+                }
                 else
                     ++i;
             }
@@ -350,7 +376,6 @@ namespace Kalamari
     {
         if (!note) return;
 
-        // Check if already open
         for (int i = 0; i < static_cast<int>(m_tabs.size()); ++i)
         {
             if (m_tabs[i]->note == note)
@@ -367,14 +392,21 @@ namespace Kalamari
         AddBreadcrumb("note.open", note->fileName.c_str());
     }
 
-    void KalamariApp::CloseTab(int index)
+    bool KalamariApp::CloseTab(int index)
     {
-        if (index < 0 || index >= static_cast<int>(m_tabs.size())) return;
+        if (index < 0 || index >= static_cast<int>(m_tabs.size())) return false;
         if (m_tabs[index]->note->dirty)
-            m_vault.SaveNote(m_tabs[index]->note);
+        {
+            if (!m_vault.SaveNote(m_tabs[index]->note))
+            {
+                AddBreadcrumb("note.save_failed", m_tabs[index]->note->fileName.c_str());
+                return false;
+            }
+        }
         m_tabs.erase(m_tabs.begin() + index);
         if (m_activeTab >= static_cast<int>(m_tabs.size()))
             m_activeTab = static_cast<int>(m_tabs.size()) - 1;
+        return true;
     }
 
     void KalamariApp::HandleWikiLinkNav()
@@ -406,25 +438,31 @@ namespace Kalamari
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
+        UI::PushCardStyle();
         if (ImGui::BeginPopupModal("Settings", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
+            UI::PushHeadingFont();
+            ImGui::Text("Settings");
+            UI::PopHeadingFont();
+            ImGui::Spacing();
+            UI::DrawDivider(6.0f);
+
             // Appearance
             ImGui::Text("Appearance");
-            ImGui::Separator();
-            if (ImGui::Button(m_darkMode ? "Switch to Light" : "Switch to Dark", ImVec2(-1, 0)))
+            if (UI::ButtonSecondary(m_darkMode ? "Switch to Light Theme" : "Switch to Dark Theme", ImVec2(-1, 0)))
             {
                 m_darkMode = !m_darkMode;
                 Theme::Apply(m_darkMode);
             }
 
             ImGui::Spacing();
+            UI::DrawDivider(6.0f);
 
             // Vault
             ImGui::Text("Vault");
-            ImGui::Separator();
-            ImGui::TextDisabled("Path: %s", m_vault.GetVaultPath().string().c_str());
+            ImGui::TextDisabled("%s", m_vault.GetVaultPath().string().c_str());
 
-            if (ImGui::Button("Switch Vault...", ImVec2(-1, 0)))
+            if (UI::ButtonSecondary("Switch Vault...", ImVec2(-1, 0)))
             {
                 SaveAllNotes();
                 SaveConfig();
@@ -433,25 +471,25 @@ namespace Kalamari
                 m_vault.CloseVault();
                 ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
+                UI::PopCardStyle();
                 return;
             }
 
             ImGui::Spacing();
+            UI::DrawDivider(6.0f);
 
             // About
             ImGui::Text("About");
-            ImGui::Separator();
             ImGui::TextDisabled("Kalamari v1.0.0");
             ImGui::TextDisabled("A native markdown notebook");
 
             ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            if (ImGui::Button("Close", ImVec2(-1, 0)))
+            if (UI::ButtonPrimary("Close", ImVec2(-1, 0)))
                 ImGui::CloseCurrentPopup();
+
             ImGui::EndPopup();
         }
+        UI::PopCardStyle();
     }
 
     void KalamariApp::DrawRenameModal()
@@ -464,13 +502,22 @@ namespace Kalamari
             ImGui::OpenPopup("Rename");
         }
 
+        UI::PushCardStyle();
         if (ImGui::BeginPopupModal("Rename", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::Text("New name:");
+            UI::PushHeadingFont();
+            ImGui::Text("Rename Note");
+            UI::PopHeadingFont();
+            ImGui::Spacing();
+
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+            ImGui::SetNextItemWidth(320.0f);
             ImGui::InputText("##RenameBuf", m_renameBuffer, sizeof(m_renameBuffer));
+            ImGui::PopStyleColor();
             ImGui::SetItemDefaultFocus();
 
-            if (ImGui::Button("OK", ImVec2(120, 0)))
+            ImGui::Spacing();
+            if (UI::ButtonPrimary("OK", ImVec2(120, 0)))
             {
                 std::string name(m_renameBuffer);
                 if (!name.empty() && m_noteToRename)
@@ -483,7 +530,7 @@ namespace Kalamari
                 ImGui::CloseCurrentPopup();
             }
             ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(120, 0)))
+            if (UI::ButtonSecondary("Cancel", ImVec2(120, 0)))
             {
                 m_noteToRename.reset();
                 m_showRename = false;
@@ -491,6 +538,7 @@ namespace Kalamari
             }
             ImGui::EndPopup();
         }
+        UI::PopCardStyle();
     }
 
     void KalamariApp::DrawCommandPalette()
@@ -504,43 +552,43 @@ namespace Kalamari
 
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.3f));
-        ImGui::SetNextWindowSize(ImVec2(450, 0));
+        ImGui::SetNextWindowSize(ImVec2(500, 0));
 
+        UI::PushCardStyle();
         if (ImGui::BeginPopup("##CmdPalette", ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
         {
+            UI::PushHeadingFont();
             ImGui::Text("Command Palette");
-            ImGui::Separator();
-            ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##CmdInput", "Type to search notes or actions...",
-                                      m_commandBuf, sizeof(m_commandBuf));
+            UI::PopHeadingFont();
+            ImGui::Spacing();
 
-            // Close on Escape
+            UI::SearchInput("##CmdInput", m_commandBuf, sizeof(m_commandBuf), "Type to search notes or actions...", -1.0f);
+
             if (ImGui::IsKeyPressed(ImGuiKey_Escape))
             {
                 ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
+                UI::PopCardStyle();
                 return;
             }
 
             std::string q(m_commandBuf);
-
-            // Cache search results for this frame
             std::vector<std::shared_ptr<Note>> results;
             if (!q.empty())
                 results = m_vault.Search(q);
 
-            // Close on Enter selecting first result
             if (ImGui::IsKeyPressed(ImGuiKey_Enter) && !q.empty() && !results.empty())
             {
                 OpenNote(results[0]);
                 ImGui::CloseCurrentPopup();
                 ImGui::EndPopup();
+                UI::PopCardStyle();
                 return;
             }
 
-            ImGui::BeginChild("CmdResults", ImVec2(0, 300));
+            ImGui::Spacing();
+            ImGui::BeginChild("CmdResults", ImVec2(0, 320), ImGuiChildFlags_None);
 
-            // Show built-in actions first
             if (q.empty())
             {
                 if (ImGui::Selectable("New Note"))
@@ -564,7 +612,7 @@ namespace Kalamari
                     m_vault.CloseVault();
                     ImGui::CloseCurrentPopup();
                 }
-                ImGui::Separator();
+                UI::DrawDivider(4.0f);
                 ImGui::TextDisabled("  Type to search notes...");
             }
             else
@@ -587,32 +635,34 @@ namespace Kalamari
             ImGui::EndChild();
             ImGui::EndPopup();
         }
+        UI::PopCardStyle();
     }
 
     void KalamariApp::DrawOpenVaultModal()
     {
         ImVec2 center = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-        ImGui::SetNextWindowSize(ImVec2(500, 0));
 
+        UI::PushCardStyle();
         if (ImGui::Begin("Open Vault", nullptr,
                          ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
                          ImGuiWindowFlags_AlwaysAutoResize))
         {
-            ImGui::SetWindowFontScale(1.2f);
+            UI::PushHeadingFont();
             ImGui::TextColored(Theme::ACCENT_COLOR, "Welcome to Kalamari");
-            ImGui::SetWindowFontScale(1.0f);
+            UI::PopHeadingFont();
             ImGui::Spacing();
+
             ImGui::TextWrapped("Enter a name for your vault. It will be created in your Documents folder.");
             ImGui::Spacing();
-            ImGui::Separator();
+            UI::DrawDivider(6.0f);
             ImGui::Spacing();
 
+            ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(Theme::SURFACE_COLOR));
             ImGui::SetNextItemWidth(-1);
-            ImGui::InputTextWithHint("##VaultName", "My Vault",
-                                      m_newVaultBuffer, sizeof(m_newVaultBuffer));
+            ImGui::InputTextWithHint("##VaultName", "My Vault", m_newVaultBuffer, sizeof(m_newVaultBuffer));
+            ImGui::PopStyleColor();
 
-            // Warn if vault already exists
             if (std::strlen(m_newVaultBuffer) > 0)
             {
                 const char* docs = SDL_GetUserFolder(SDL_FOLDER_DOCUMENTS);
@@ -622,8 +672,7 @@ namespace Kalamari
             }
 
             ImGui::Spacing();
-
-            if (ImGui::Button("Create & Open", ImVec2(-1, 0)))
+            if (UI::ButtonPrimary("Create & Open", ImVec2(-1, 0)))
             {
                 std::string name(m_newVaultBuffer);
                 if (!name.empty())
@@ -642,11 +691,10 @@ namespace Kalamari
                 }
             }
 
-            // Show recent vaults
             if (!m_config.lastVaultPath.empty())
             {
                 ImGui::Spacing();
-                ImGui::Separator();
+                UI::DrawDivider(6.0f);
                 ImGui::Spacing();
                 ImGui::TextDisabled("Recent vault:");
                 if (ImGui::Selectable(m_config.lastVaultPath.c_str()))
@@ -663,6 +711,7 @@ namespace Kalamari
 
             ImGui::End();
         }
+        UI::PopCardStyle();
     }
 
     // =========================================================================
@@ -684,7 +733,7 @@ namespace Kalamari
         };
         cbs.onRenameNote = [this](std::shared_ptr<Note> n) {
             m_noteToRename = n;
-            m_showRename = false; // Will be set true when DrawRenameModal runs
+            m_showRename = false;
         };
         cbs.onDeleteNote = [this](std::shared_ptr<Note> n) {
             m_noteToDelete = n;

@@ -7,20 +7,16 @@ namespace Theme
     // Accent
     extern const ImVec4 ACCENT_COLOR;
     extern const ImVec4 ACCENT_COLOR_HDR;
+    extern const ImVec4 ACCENT_COLOR_ACTIVE;
 
-    // Light theme
-    extern const ImVec4 LIGHT_BG;
-    extern const ImVec4 LIGHT_TEXT;
-    extern const ImVec4 LIGHT_BORDER;
-    extern const ImVec4 LIGHT_FRAME_BG;
-    extern const ImVec4 LIGHT_SCROLLBAR;
-
-    // Dark theme
-    extern const ImVec4 DARK_BG;
-    extern const ImVec4 DARK_TEXT;
-    extern const ImVec4 DARK_BORDER;
-    extern const ImVec4 DARK_FRAME_BG;
-    extern const ImVec4 DARK_SCROLLBAR;
+    // Core surfaces (updated by Apply)
+    extern ImVec4 BACKGROUND_COLOR;
+    extern ImVec4 SURFACE_COLOR;
+    extern ImVec4 SURFACE_HOVER_COLOR;
+    extern ImVec4 SURFACE_ACTIVE_COLOR;
+    extern ImVec4 TEXT_COLOR;
+    extern ImVec4 TEXT_MUTED_COLOR;
+    extern ImVec4 BORDER_COLOR;
 
     void Apply(bool darkMode);
     ImVec4 GetClearColor(bool darkMode);

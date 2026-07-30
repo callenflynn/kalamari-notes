@@ -310,9 +310,9 @@ namespace Kalamari
         return true;
     }
 
-    void Vault::SaveNote(const std::shared_ptr<Note>& note)
+    bool Vault::SaveNote(const std::shared_ptr<Note>& note)
     {
-        if (!note || !m_isOpen) return;
+        if (!note || !m_isOpen) return false;
 
         // Atomic save: write to temp file, then rename
         std::filesystem::path tempPath = note->path;
@@ -321,7 +321,7 @@ namespace Kalamari
         if (!WriteFile(tempPath, note->content))
         {
             SDL_Log("Vault: Failed to write temp file: %s", tempPath.string().c_str());
-            return;
+            return false;
         }
 
         if (!AtomicReplaceFile(tempPath, note->path))
@@ -329,10 +329,11 @@ namespace Kalamari
             SDL_Log("Vault: Atomic replace failed: %s", note->path.string().c_str());
             std::error_code ec;
             std::filesystem::remove(tempPath, ec);
-            return;
+            return false;
         }
 
         note->dirty = false;
+        return true;
     }
 
     // =========================================================================

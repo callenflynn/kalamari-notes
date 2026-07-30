@@ -37,10 +37,10 @@ namespace Kalamari
         int m_findIndex = -1;
         int m_findCount = 0;
 
+        void DrawToolbar(Note& note);
         void DrawReadingMode(const std::vector<std::string>& lines, Note& note);
         void DrawEditMode(Note& note);
         void DrawInlineEdit(int lineIndex, Note& note);
         void DrawFindBar(const std::string& content);
-        static int CountWords(const std::string& text);
     };
 }

@@ -1,5 +1,7 @@
 #include "AppRenderer.hpp"
 
+#include "Theme.hpp"
+#include "UI.hpp"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlrenderer3.h"
 #include <cstdio>
@@ -56,19 +58,35 @@ namespace Kalamari
         ImGuiStyle& style = ImGui::GetStyle();
         style.ScaleAllSizes(m_scale);
         style.FontScaleDpi = m_scale;
-        style.WindowRounding = 8.0f;
-        style.ChildRounding = 6.0f;
-        style.FrameRounding = 4.0f;
-        style.PopupRounding = 4.0f;
-        style.ScrollbarRounding = 6.0f;
-        style.GrabRounding = 4.0f;
-        style.TabRounding = 4.0f;
-        style.FramePadding = ImVec2(8, 4);
-        style.ItemSpacing = ImVec2(8, 6);
-        style.WindowPadding = ImVec2(8, 8);
+
+        // Modern base styling is applied through Theme::Apply, but make sure
+        // the default ImGui look is already scaled for high-DPI displays.
+        style.WindowRounding    = 10.0f;
+        style.ChildRounding     = 8.0f;
+        style.FrameRounding     = 8.0f;
+        style.PopupRounding     = 10.0f;
+        style.ScrollbarRounding = 8.0f;
+        style.GrabRounding      = 6.0f;
+        style.TabRounding       = 6.0f;
+        style.WindowBorderSize  = 0.0f;
+        style.ChildBorderSize   = 0.0f;
+        style.FrameBorderSize   = 0.0f;
+        style.PopupBorderSize   = 0.0f;
+        style.TabBorderSize     = 0.0f;
+        style.WindowPadding     = ImVec2(10, 10);
+        style.FramePadding      = ImVec2(10, 6);
+        style.ItemSpacing       = ImVec2(8, 8);
+        style.ItemInnerSpacing  = ImVec2(6, 6);
+        style.ScrollbarSize     = 8.0f;
 
         ImGui_ImplSDL3_InitForSDLRenderer(m_window, m_renderer);
         ImGui_ImplSDLRenderer3_Init(m_renderer);
+
+        // Load body + heading fonts and register them with the UI helpers.
+        // Use fixed point sizes; ImGui's DPI scaling (FontScaleDpi/ScaleAllSizes) handles HiDPI.
+        ImFont* bodyFont = LoadFont("assets/Kameron/static/Kameron-Regular.ttf", 17.0f);
+        ImFont* headingFont = LoadFont("assets/Kameron/static/Kameron-Bold.ttf", 22.0f);
+        UI::SetFonts(bodyFont, headingFont);
 
         return true;
     }

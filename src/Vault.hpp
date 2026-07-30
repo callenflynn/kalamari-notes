@@ -53,7 +53,7 @@ namespace Kalamari
         std::shared_ptr<Note> CreateNote(const std::string& relativeDir = "");
         bool RenameNote(const std::shared_ptr<Note>& note, const std::string& newName);
         bool DeleteNote(const std::shared_ptr<Note>& note);
-        void SaveNote(const std::shared_ptr<Note>& note);
+        bool SaveNote(const std::shared_ptr<Note>& note);
 
         // Search
         std::vector<std::shared_ptr<Note>> Search(const std::string& query) const;

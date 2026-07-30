@@ -2,6 +2,7 @@
 
 #include "Markdown.hpp"
 #include "Theme.hpp"
+#include "UI.hpp"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include <algorithm>
@@ -10,31 +11,25 @@
 
 namespace Kalamari
 {
-    // =========================================================================
-    // Helpers
-    // =========================================================================
-    int Editor::CountWords(const std::string& text)
+    namespace
     {
-        int count = 0;
-        bool inWord = false;
-        for (char c : text)
+        int CountWords(const std::string& text)
         {
-            if (std::isspace(static_cast<unsigned char>(c)))
+            int count = 0;
+            bool inWord = false;
+            for (char c : text)
             {
-                if (inWord) { ++count; inWord = false; }
+                if (std::isspace(static_cast<unsigned char>(c)))
+                {
+                    if (inWord) { ++count; inWord = false; }
+                }
+                else inWord = true;
             }
-            else
-            {
-                inWord = true;
-            }
-        }
-        if (inWord) ++count;
-        return count;
+            if (inWord) ++count;
+            return count;
+        }    
     }
 
-    // =========================================================================
-    // Draw — top-level entry point
-    // =========================================================================
     bool Editor::Draw(const std::shared_ptr<Note>& activeNote)
     {
         if (!activeNote)
@@ -50,7 +45,6 @@ namespace Kalamari
         m_wikiLinkTarget.clear();
         bool changed = false;
 
-        // Reset state on note change
         if (activeNote.get() != m_lastNote)
         {
             m_editMode = false;
@@ -61,23 +55,8 @@ namespace Kalamari
             m_findCount = 0;
         }
 
-        // ---- Title bar ----
-        std::string title = activeNote->path.stem().string();
-        if (title.size() > 50) title = title.substr(0, 47) + "...";
-
-        ImGui::SetWindowFontScale(1.35f);
-        ImGui::Text("%s", title.c_str());
-        ImGui::SetWindowFontScale(1.0f);
-
-        // Dirty indicator
-        if (activeNote->dirty)
-        {
-            ImGui::SameLine();
-            ImGui::TextDisabled("\xE2\x97\x8F"); // ●
-        }
-
-        ImGui::Spacing();
-        ImGui::Separator();
+        // ---- Header toolbar ----
+        DrawToolbar(*activeNote);
         ImGui::Spacing();
 
         // ---- Find bar ----
@@ -89,9 +68,8 @@ namespace Kalamari
         Markdown::SplitLines(activeNote->content, lines);
         if (lines.empty()) lines.emplace_back();
 
-        ImGui::BeginChild("EditorScroll", ImVec2(0, 0), ImGuiChildFlags_None);
+        ImGui::BeginChild("EditorScroll", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8), ImGuiChildFlags_None);
 
-        // Keyboard shortcuts
         if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_E))
             m_editMode = !m_editMode;
         if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F))
@@ -125,9 +103,6 @@ namespace Kalamari
 
         ImGui::EndChild();
 
-        // Auto-preview: switch to reading mode when editor loses focus.
-        // We track focus across frames to avoid timing issues with IsMouseClicked
-        // being processed before widget focus updates.
         if (m_editMode)
         {
             if (m_wasEditingLastFrame && !ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
@@ -139,35 +114,92 @@ namespace Kalamari
             m_wasEditingLastFrame = false;
         }
 
-        // ---- Word count (bottom bar) ----
+        // ---- Status bar ----
         ImGui::Separator();
         int wc = CountWords(activeNote->content);
         int lc = static_cast<int>(lines.size());
-        ImGui::TextDisabled("%d words, %d lines", wc, lc);
+        ImGui::TextDisabled("%d words  \xc2\xb7  %d lines", wc, lc);
         if (m_showFind && m_findCount > 0)
         {
             ImGui::SameLine();
-            ImGui::TextDisabled(" | %d matches", m_findCount);
+            ImGui::TextDisabled("  |  %d matches", m_findCount);
         }
 
         return changed;
     }
 
-    // =========================================================================
-    // Find bar
-    // =========================================================================
+    void Editor::DrawToolbar(Note& note)
+    {
+        std::string title = note.path.stem().string();
+        if (title.size() > 50) title = title.substr(0, 47) + "...";
+
+        // Title
+        ImGui::AlignTextToFramePadding();
+        UI::PushHeadingFont();
+        ImGui::Text("%s", title.c_str());
+        UI::PopHeadingFont();
+
+        // Dirty indicator
+        if (note.dirty)
+        {
+            ImGui::SameLine();
+            ImGui::TextColored(Theme::ACCENT_COLOR, "\xE2\x97\x8F"); // ●
+        }
+
+        // Right-align the Read/Edit/Find button group
+        const char* findLabel = m_showFind ? "Close Find" : "Find";
+        const float spacing = ImGui::GetStyle().ItemSpacing.x;
+        const float groupW = UI::ButtonWidth("Read") + UI::ButtonWidth("Edit") + UI::ButtonWidth(findLabel)
+                           + spacing * 2.0f;
+        const float rightEdge = ImGui::GetWindowContentRegionMax().x;
+        float x = rightEdge - groupW;
+        const float minX = ImGui::GetCursorPosX() + spacing;
+        if (x < minX) x = minX;
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(x);
+
+        // Read / Edit toggle
+        if (m_editMode)
+        {
+            if (UI::ButtonGhost("Read", ImVec2(0, 0))) m_editMode = false;
+            ImGui::SameLine(0, spacing);
+            ImGui::BeginDisabled();
+            UI::ButtonPrimary("Edit", ImVec2(0, 0));
+            ImGui::EndDisabled();
+        }
+        else
+        {
+            ImGui::BeginDisabled();
+            UI::ButtonPrimary("Read", ImVec2(0, 0));
+            ImGui::EndDisabled();
+            ImGui::SameLine(0, spacing);
+            if (UI::ButtonGhost("Edit", ImVec2(0, 0))) m_editMode = true;
+        }
+        ImGui::SameLine(0, spacing);
+        if (UI::ButtonGhost(findLabel, ImVec2(0, 0)))
+        {
+            m_showFind = !m_showFind;
+            if (!m_showFind) { m_findIndex = -1; m_findCount = 0; }
+        }
+    }
+
     void Editor::DrawFindBar(const std::string& content)
     {
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 3));
-        ImGui::SetNextItemWidth(200);
+        ImGui::Spacing();
+        ImVec2 avail = ImGui::GetContentRegionAvail();
+
+        // Search input
+        ImGui::SetNextItemWidth((std::max)(120.0f, (std::min)(300.0f, avail.x - 160.0f)));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 6));
         ImGui::InputTextWithHint("##FindInput", "Find...", m_findBuffer, sizeof(m_findBuffer));
+        ImGui::PopStyleVar();
+        ImGui::PopStyleColor();
 
         // Count matches
         std::string needle(m_findBuffer);
         if (needle.size() >= 2)
         {
-            // Case-insensitive count
-            m_findCount = 0;
             std::string haystackLower = content;
             std::string needleLower = needle;
             std::transform(haystackLower.begin(), haystackLower.end(), haystackLower.begin(),
@@ -175,15 +207,14 @@ namespace Kalamari
             std::transform(needleLower.begin(), needleLower.end(), needleLower.begin(),
                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
             size_t pos = 0;
+            m_findCount = 0;
             while ((pos = haystackLower.find(needleLower, pos)) != std::string::npos)
             {
                 ++m_findCount;
                 pos += needleLower.size();
             }
-            if (m_findCount > 0 && m_findIndex < 0)
-                m_findIndex = 0;
-            if (m_findIndex >= m_findCount)
-                m_findIndex = m_findCount - 1;
+            if (m_findCount > 0 && m_findIndex < 0) m_findIndex = 0;
+            if (m_findIndex >= m_findCount) m_findIndex = m_findCount - 1;
         }
         else
         {
@@ -192,10 +223,10 @@ namespace Kalamari
         }
 
         ImGui::SameLine();
-        if (ImGui::SmallButton("<") && m_findIndex > 0)
+        if (UI::ButtonSecondary("<", ImVec2(28, 0)) && m_findIndex > 0)
             --m_findIndex;
         ImGui::SameLine();
-        if (ImGui::SmallButton(">") && m_findIndex < m_findCount - 1)
+        if (UI::ButtonSecondary(">", ImVec2(28, 0)) && m_findIndex < m_findCount - 1)
             ++m_findIndex;
         ImGui::SameLine();
         if (m_findCount > 0)
@@ -203,21 +234,16 @@ namespace Kalamari
         else if (needle.size() >= 2)
             ImGui::TextDisabled("0");
         ImGui::SameLine();
-        if (ImGui::SmallButton("X"))
+        if (UI::ButtonGhost("X", ImVec2(28, 0)))
         {
             m_showFind = false;
             m_findBuffer[0] = '\0';
             m_findCount = 0;
             m_findIndex = -1;
         }
-
-        ImGui::PopStyleVar();
         ImGui::Spacing();
     }
 
-    // =========================================================================
-    // Reading Mode
-    // =========================================================================
     void Editor::DrawReadingMode(const std::vector<std::string>& lines, Note& note)
     {
         // Pre-compute code block state
@@ -238,12 +264,13 @@ namespace Kalamari
             }
         }
 
-        // Render each line
+        // Enable text wrapping for reading mode
+        ImGui::PushTextWrapPos(0.0f);
+
         for (int i = 0; i < static_cast<int>(lines.size()); ++i)
         {
             if (i == m_inlineEditLine)
             {
-                // Inline edit: show InputText for this line
                 DrawInlineEdit(i, note);
             }
             else
@@ -253,7 +280,8 @@ namespace Kalamari
             }
         }
 
-        // Click-to-edit: enter full edit mode
+        ImGui::PopTextWrapPos();
+
         if (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Left) &&
             m_wikiLinkTarget.empty() && m_inlineEditLine < 0)
         {
@@ -261,26 +289,21 @@ namespace Kalamari
         }
     }
 
-    // =========================================================================
-    // Inline line editing (for quick edits without leaving reading mode)
-    // =========================================================================
     void Editor::DrawInlineEdit(int lineIndex, Note& note)
     {
         ImGui::PushID(lineIndex + 100000);
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(ImGuiCol_WindowBg));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 1));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushItemWidth(-1);
 
         if (ImGui::InputText("##inline", &m_inlineBuffer,
                              ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_AutoSelectAll))
         {
-            // Commit the change: rebuild full content
             std::vector<std::string> lines;
             Markdown::SplitLines(note.content, lines);
             if (lineIndex >= 0 && lineIndex < static_cast<int>(lines.size()))
                 lines[lineIndex] = m_inlineBuffer;
 
-            // Rejoin
             note.content.clear();
             for (size_t i = 0; i < lines.size(); ++i)
             {
@@ -292,7 +315,6 @@ namespace Kalamari
             m_inlineFocusSet = false;
         }
 
-        // Auto-focus only once when entering inline edit
         if (!m_inlineFocusSet && ImGui::IsItemVisible())
         {
             ImGui::SetKeyboardFocusHere(-1);
@@ -305,13 +327,11 @@ namespace Kalamari
         ImGui::PopID();
     }
 
-    // =========================================================================
-    // Edit Mode — full InputTextMultiline
-    // =========================================================================
     void Editor::DrawEditMode(Note& note)
     {
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(ImGuiCol_WindowBg));
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(6, 8));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImGui::GetColorU32(Theme::SURFACE_COLOR));
+        ImGui::PushStyleColor(ImGuiCol_Border, ImGui::GetColorU32(Theme::BORDER_COLOR));
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12, 12));
         ImGui::PushItemWidth(-1);
 
         ImGuiInputTextFlags flags = ImGuiInputTextFlags_AllowTabInput;
@@ -323,6 +343,6 @@ namespace Kalamari
 
         ImGui::PopItemWidth();
         ImGui::PopStyleVar();
-        ImGui::PopStyleColor();
+        ImGui::PopStyleColor(2);
     }
 }
