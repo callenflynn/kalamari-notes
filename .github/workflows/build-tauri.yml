@@ -64,6 +64,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kalamari-${{ matrix.platform }}
+          # Only top-level installer files, not unpacked bundle contents
           path: |
             tauri/src-tauri/target/release/bundle/*.deb
             tauri/src-tauri/target/release/bundle/*.rpm
@@ -76,8 +77,7 @@ jobs:
   release:
     name: Create GitHub Release
     needs: [build]
-    # No if condition — always runs after build succeeds
-    # Step-level conditions handle when to actually create a release
+    if: github.event_name == 'push' && github.ref_name == 'main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -92,16 +92,13 @@ jobs:
           echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$APP_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create tag
-        id: create_tag
+      - name: Create tag if it doesn't exist
         uses: actions/github-script@v7
         with:
           script: |
             const tag = '${{ steps.version.outputs.tag }}';
-            let tagExists = false;
             try {
               await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo, ref: `tags/${tag}` });
-              tagExists = true;
               console.log(`Tag ${tag} already exists`);
             } catch (e) {
               await github.rest.git.createRef({
@@ -112,7 +109,6 @@ jobs:
               });
               console.log(`Created tag ${tag}`);
             }
-            core.setOutput('tag_exists', tagExists);
 
       - name: Download all build artifacts
         uses: actions/download-artifact@v4
@@ -122,8 +118,6 @@ jobs:
           merge-multiple: true
 
       - name: Create GitHub Release
-        # Only run on push to main or workflow_dispatch
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
